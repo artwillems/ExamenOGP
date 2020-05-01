@@ -41,7 +41,30 @@ public class Device {
 	/**********************************************************
      * alchemicIngredient
      **********************************************************/
+	/**
+	 * Variable referencing the name of this alchemic ingredient.
+	 */
+	private AlchemicIngredient alchemicIngredient = null;
 	
+    /**
+     * Return the name of this alchemic ingredient.
+     */
+    @Raw @Basic 
+    public String getAlchemicIngredient() {
+        return alchemicIngredient;
+    }
+    
+    /**
+     * Set the alchemic ingredient of this device to the given alchemic ingredient.
+     *
+     * @param   alchemicIngredient
+     * 			The new alchemic ingredient for this device.
+     */
+    @Raw @Model 
+    private void setAlchemicIngredient(AlchemicIngredient alchemicIngredient) {
+        this.alchemicIngredient = alchemicIngredient;
+    }
+    
 	/**********************************************************
      * laboratorium
      **********************************************************/
@@ -85,7 +108,7 @@ public class Device {
 	public void terminate() throws IllegalStateException {
 		if(!isTerminated()){
 			if (!canBeTerminated()) {
-				throw new IllegalStateException("This item cannot be terminated");
+				throw new IllegalStateException("This device cannot be terminated");
 			}
 			this.isTerminated = true;
 		}
@@ -160,7 +183,7 @@ public class Device {
 	/**********************************************************
      * methodes
      **********************************************************/
-	public void addQuantity(IngredientContainer container) {
+	public void addIngredientFrom(IngredientContainer container) {
 		
 	}
 	
@@ -168,7 +191,7 @@ public class Device {
 		return container;
 	}
 	
-	public void executeOperation() {
+	public void executeAlchemicalOperation() {
 		
 	}
 	
