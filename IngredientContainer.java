@@ -7,9 +7,28 @@
  *
  */
 public class IngredientContainer {
+	
 	  /******************************************************
 	    *constructor
 	    ****************************************************/
+	
+	/**
+	 * Initializes a new IngredientContainer with given AlchemicIngredient and capacity
+	 * 
+	 * @param ingredient
+	 * 		  The AlchemicIngredient to be put in a container
+	 * @param capacity
+	 * 		  The capacity of the given container 
+	 * @effect if the quantity of a given AlchemicIngredient is valid, then 
+	 * 		   the quantity of the ingredient in the container will be set to this quantity
+	 * 		   | setQuantity(ingredient) 
+	 * @effect if the capacity of the container is valid, then the 
+	 * 		   capacity of the container will be set to the new capacity
+	 * 		   | setCapacity(capacity)
+	 * @effect if the state of the ingredient is a liquid, then the container will be for liquids
+	 * 		   if the AlchemicIngredient is a powder, the container will be set for powders.
+	 * 		   | setContainer(ingredient)
+	 */
 
 
 	  public IngredientContainer(AlchemicIngredient ingredient, long capacity){
@@ -17,8 +36,18 @@ public class IngredientContainer {
 	    setCapacity(capacity);
 	    setContainer(ingredient); 
 	  }
+	  
+	  /**
+	   * Initializes a new IngredientContainer with given capacity but no contents
+	   * 
+	   * @param capacity
+	   * 		the capacity of the given container
+	   * @effect if the capacity for the container is valid, the capacity of the container
+	   * 		 will be set to the new capacity
+	   * 		 |setCapacity(capacity)
+	   */
 
-	  public IngredientContainer(null, long capacity){ 
+	  public IngredientContainer(long capacity){ 
 	    setCapacity(capacity);
 	  }
 	  
@@ -49,6 +78,16 @@ public class IngredientContainer {
 			  this.quantity = ingredient.getQuantity(); 
 		  }
 		  this.quantity = this.capacity; 
+	  }
+	  
+	  /**
+	   * get the quantity of AlchemicIngredient in this container
+	   * 
+	   * @return the quantity of a certain ingredient in this container
+	   * 		 |this.quantity
+	   */
+	  public long getContainerContents() {
+		  return this.quantity; 
 	  }
 	  
 	  /********************************************************
