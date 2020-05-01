@@ -249,3 +249,4 @@ public class IngredientType {
         return [0,20];
     }
 }
+
