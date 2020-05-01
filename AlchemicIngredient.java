@@ -1,15 +1,22 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import be.kuleuven.cs.som.annotate.*;
 
 public class AlchemicIngredient {
 	/**********************************************************
      * Constructors
      **********************************************************/
-	public AlchemicIngredient(int quantity, IngredientType ingredientType, long hotness, long coldness, String state) {
+	public AlchemicIngredient(int quantity,String unit, IngredientType ingredientType, long hotness, long coldness, String state) {
 		setIngredientType(ingredientType);
+		setState(state);
 		setQuantity(quantity);
+		setUnit(unit);
 		setHotness(hotness);
 		setColdness(coldness);
-		setState(state);
+		
+		
 		
 	}
 	
@@ -47,10 +54,45 @@ public class AlchemicIngredient {
 		return (quantity >= 0);
 	}
 	
-	
+	/*
+	 * dit wordt nog aangepast zodat dit altijd in spoons is.
+	 */
 	public int getQuantity() {
 		return this.quantity;
 	}
+	
+	/**********************************************************
+     * Unit
+     **********************************************************/
+	private static List<String> liquidUnits = new ArrayList<String>(Arrays.asList("drop","spoon","vial","bottle","jug","barrel","storeroom"));
+	private static List<String> powderUnits = new ArrayList<String>(Arrays.asList("pinch","spoon","sachet","box","sack","chest","storeroom"));
+	
+	public static List<String> getLiquidUnits(){
+		return liquidUnits;
+	}
+	
+	public static List<String> getPowderUnits(){
+		return powderUnits;
+		
+	}
+	
+	
+	private String unit = null;
+	
+	
+	private void setUnit(String unit) {
+		
+	}
+	
+	public boolean isValidUnit(String unit) {
+		if (this.getState() == "Powder") {
+			return (getPowderUnits().contains(unit));
+		}
+	}
+	
+	
+	
+	
 	
 	
 	
@@ -59,6 +101,29 @@ public class AlchemicIngredient {
      * State
      **********************************************************/
 	private String state = null;
+	
+	public String getState() {
+		return state;
+	}
+	
+	public static boolean isValidState(String state) {
+		return ((state == "Liquid") || (state == "Powder"));
+	}
+	
+	private void setState(String state) {
+		if (isValidState(state)) {
+			this.state = state;
+		}
+		else {
+			this.state = this.getDefaultState();
+		}
+	}
+	
+	private String getDefaultState() {
+		return ingredientType.getState();
+	}
+	
+	
 	
 	
 	
