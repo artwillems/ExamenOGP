@@ -20,6 +20,10 @@ public class IngredientContainer {
 	  public IngredientContainer(null, long capacity){
 	    setCapacity(capacity);
 	  }
+	  
+	  /**************************************************
+	   * Quantity. 
+	   ***************************************/
 
 	  /* Ik heb nog geen idee hoe we het teruggeven van de "quantity" gaan noemen,
 	  dit is een workaround.
@@ -29,6 +33,11 @@ public class IngredientContainer {
 	  private void setQuantity(AlchemicIngredient ingredient){
 
 	  }
+	  
+	  public static boolean isValidQuantity(int quantity){
+
+	  }
+
 
 	  /**
 	    * Variable referencing the the capacity of this ingredient IngredientContainer
@@ -38,6 +47,16 @@ public class IngredientContainer {
 
 	  /**
 	    *Set the capacity of this ingredient container to the given capacity
+	    *
+	    *@param capacity 
+	    *		the capacity of this ingredient container
+	    *
+	    *@post  If the capacity for the container is valid,
+	    *		the capacity for the container will be set to the given
+	    *		capacity, otherwise the capacity will be set to zero.
+	    *		| if(isValidCapacity(capacity)
+	    *			then new.getContainerCapacity().equals(capacity)
+	    *			else new.getContainerCapacity().equals(capacity)
 	    */
 
 	  private void setCapacity(long capacity){
@@ -51,16 +70,12 @@ public class IngredientContainer {
 	  Variable referencing the highest possible value for setCapacity
 	  */
 
-	  private static max_capacity = long.MAX_VALUE;
+	  private static max_capacity = long.MAX_VALUE; 
 
 
 
 	  public static boolean isValidCapacity(long capacity){
 	    return((capacity >= 0) && (capacity < max_capacity));
-	  }
-
-	  public static boolean isValidQuantity(int quantity){
-
 	  }
 
 }
