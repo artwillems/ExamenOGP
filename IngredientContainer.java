@@ -32,8 +32,8 @@ public class IngredientContainer {
 
 
 	  public IngredientContainer(AlchemicIngredient ingredient, long capacity){
+		setCapacity(capacity);  
 	    setQuantity(ingredient);
-	    setCapacity(capacity);
 	    setContainer(ingredient); 
 	  }
 	  
@@ -74,7 +74,7 @@ public class IngredientContainer {
 	   */
 	  
 	  private void setQuantity(AlchemicIngredient ingredient){
-		  if(isQuantityNotGreaterThanCapacity(ingredient.getQuantity(), this.capacity)) {
+		  if(isQuantityNotGreaterThanCapacity(this.getContainerContents(), this.capacity)) {
 			  this.quantity = ingredient.getQuantity(); 
 		  }
 		  this.quantity = this.capacity; 
@@ -153,7 +153,7 @@ public class IngredientContainer {
 	   * 		| then True
 	   */
 	  
-	  public static boolean isQuantityNotGreaterThanCapacity(int quantity, long capacity) {
+	  public static boolean isQuantityNotGreaterThanCapacity(long quantity, long capacity) {
 		  return(capacity >= quantity); 
 	  }
 	  
