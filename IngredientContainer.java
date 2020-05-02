@@ -170,6 +170,13 @@ public class IngredientContainer {
 	   * Container
 	   ************************************/
 	  
+	 
+	  /**
+	   * Variable reference the container for the ingredient in this container
+	   */
+	  
+	  private String container = null; 
+	  
 	  /**
 	   * Sets the container type for an AlchemicIngredient according to the state of the ingredient
 	   * 
@@ -181,11 +188,19 @@ public class IngredientContainer {
 	   * 
 	   */
 	  
-	  private String container = null; 
-	  
 	  private void setContainer(AlchemicIngredient ingredient) {
-		  
-		
+		  this.container = ingredient.getUnit(); 
+		 
+	  }
+	  
+	  /**
+	   * Get the container unit for the ingredient in this container
+	   * 
+	   * @return the unit of this ingredient 
+	   */
+	  
+	  public String getContainer() {
+		  return this.container; 
 	  }
 	  
 }
