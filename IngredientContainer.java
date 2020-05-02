@@ -31,7 +31,7 @@ public class IngredientContainer {
 	 */
 
 
-	  public IngredientContainer(AlchemicIngredient ingredient, long capacity){
+	  public IngredientContainer(AlchemicIngredient ingredient, int capacity){
 		setCapacity(capacity);  
 	    setQuantity(ingredient);
 	    setContainer(ingredient); 
@@ -47,7 +47,7 @@ public class IngredientContainer {
 	   * 		 |setCapacity(capacity)
 	   */
 
-	  public IngredientContainer(long capacity){ 
+	  public IngredientContainer(int capacity){ 
 	    setCapacity(capacity);
 	  }
 	  
@@ -59,7 +59,7 @@ public class IngredientContainer {
 	   * Variable referencing the quantity of AlchemicIngredient
 	   */
 	  
-	  private long quantity = 0;
+	  private int quantity = 0;
 	  
 	  
 	 /**
@@ -74,7 +74,7 @@ public class IngredientContainer {
 	   */
 	  
 	  private void setQuantity(AlchemicIngredient ingredient){
-		  if(isQuantityNotGreaterThanCapacity(this.getContainerContents(), this.capacity)) {
+		  if(isQuantityNotGreaterThanCapacity(this.getContainerContents(), this.getCapacity())) {
 			  this.quantity = ingredient.getQuantity(); 
 		  }
 		  this.quantity = this.capacity; 
@@ -86,7 +86,7 @@ public class IngredientContainer {
 	   * @return the quantity of a certain ingredient in this container
 	   * 		 |this.quantity
 	   */
-	  public long getContainerContents() {
+	  public int getContainerContents() {
 		  return this.quantity; 
 	  }
 	  
@@ -98,7 +98,7 @@ public class IngredientContainer {
 	    * Variable referencing the the capacity of this ingredient IngredientContainer
 	    */
 	  
-	  private long capacity = 0;
+	  private int capacity = 0;
 
 	  /**
 	    *Set the capacity of this ingredient container to the given capacity
@@ -114,7 +114,7 @@ public class IngredientContainer {
 	    *			else new.getContainerCapacity().equals(capacity)
 	    */
 
-	  private void setCapacity(long capacity){
+	  private void setCapacity(int capacity){
 	    if(isValidCapacity(capacity)){
 	      this.capacity = capacity;
 	    }
@@ -125,7 +125,7 @@ public class IngredientContainer {
 	  Variable referencing the highest possible value for setCapacity
 	  */
 
-	  private static long maximumCapacity = Long.MAX_VALUE; 
+	  private static int maximumCapacity = Integer.MAX_VALUE; 
 
 	  /**
 	   * Checks whether the capacity of the ingredient container is valid
@@ -139,7 +139,7 @@ public class IngredientContainer {
 	   * 		
 	   */
 
-	  public static boolean isValidCapacity(long capacity){
+	  public static boolean isValidCapacity(int capacity){
 		  return((capacity >= 0) && (capacity < maximumCapacity));
 	  }
 	  /**
@@ -153,10 +153,19 @@ public class IngredientContainer {
 	   * 		| then True
 	   */
 	  
-	  public static boolean isQuantityNotGreaterThanCapacity(long quantity, long capacity) {
+	  public static boolean isQuantityNotGreaterThanCapacity(int quantity, int capacity) {
 		  return(capacity >= quantity); 
 	  }
 	  
+	  /**
+	   * 
+	   * Get the capacity of this container 
+	   * 
+	   * @return
+	   */
+	  public int getCapacity() {
+		  return this.capacity; 
+	  }
 	  /**********************************************************************
 	   * Container
 	   ************************************/
@@ -171,8 +180,12 @@ public class IngredientContainer {
 	   * 		will be one of the powder containers like sachet, sack, chest…
 	   * 
 	   */
+	  
+	  private String container = null; 
+	  
 	  private void setContainer(AlchemicIngredient ingredient) {
-		 
+		  
+		
 	  }
 	  
 }
