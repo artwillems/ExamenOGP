@@ -52,6 +52,25 @@ public class IngredientContainer {
 	  }
 	  
 	  /**************************************************
+	   * Alchemic ingredient
+	   ***************************************/
+	  /**
+	   * Variable referencing the alchemic ingredient
+	   */
+	  
+	  private AlchemicIngredient ingredient = null;
+	  
+		/**
+		 * Return the alchemic ingredient in this ingredient container.
+		 *
+		 */
+		
+		@Basic @Raw
+		public AlchemicIngredient getAlchemicIngredient() {
+			return ingredient;
+		}
+	  
+	  /**************************************************
 	   * Quantity. 
 	   ***************************************/
 
@@ -202,5 +221,59 @@ public class IngredientContainer {
 	  public String getContainer() {
 		  return this.container; 
 	  }
+	  
+	  /**********************************************************************
+	   * Delete
+	   ************************************/
+	  
+	  /**
+	   * Variable registering whether or not this ingredient container has been deleted.
+	   */
+	  private boolean isDeleted = false;
+
+	  /**
+	   * Check whether this ingredient container has been deleted.
+	   * 
+	   * @return	True if the ingredient container has been deleted.
+	   * 			| isDeleted
+	   */
+	  public boolean isDeleted() {
+	  	return isDeleted;
+	  }
+
+	  /**
+	   * 
+	   * @param 	isDeleted
+	   * 			The new status of isDeleted.
+	   * @post		The new given status to isDeleted is registered as the new status to isDeleted for 
+	   * 			this ingredient container.
+	   * 			| new.isDeleted() == isDeleted
+	   */
+	  public void setDelete(boolean isDeleted) {
+	  	this.isDeleted = isDeleted;
+	  }
+
+
+	  /**
+	   * Delete this ingredient container.
+	   * 
+	   * @effect	This ingredient container has been deleted,
+	   * 			if the ingredient container has not already been deleted
+	   * 			| if (this.isDeleted() == false)
+	   * 			| then this.setDelete(true)
+	   * @throws	AlreadyDeletedException(this)
+	   *			The ingredient container has already been deleted.
+	   *			| this.isDeleted() == true
+	   */
+	  public void delete() throws AlreadyDeletedException{
+	  	if (this.isDeleted() == false) {
+	      	this.setDelete(true);	
+	  	}
+	  	else {
+	  		throw new AlreadyDeletedException(this);	
+	  		
+	  	}
+	  }
+
 	  
 }

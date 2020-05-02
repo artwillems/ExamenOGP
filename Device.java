@@ -1,12 +1,16 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
+import filesystem.DiskItem;
 
 
 /**
- * An abstract class of devices involving an alchemic ingredient and a laboratorium that owns this device.
+ * An abstract class of devices involving a laboratory that owns this device.
  * 
- * @invar	Each device must have a proper laboratorium. 
+ * @invar	Each device must have a proper laboratory. 
  * 			| hasProperLaboratorium()
  * 
 * @author Jérôme D'hulst, Marie Levrau, Art Willems
@@ -19,55 +23,42 @@ public class Device {
      **********************************************************/
 	
 	/**
-	 * Initialize a new device with given alchemic ingredient and laboratorium that owns this device.
-	 * @param 	alchemicIngredient
-	 * 			The alchemicIngredient to put in this device.
-	 * @param 	laboratorium
-	 * 			The laboratorium that has this device.
-	 *
-	 * @effect  The alchemic ingredient of the device is set to the given alchemic ingredient.
-	 * 			If the given alchemic ingredient is not valid, a default alchemic ingredient is set.
-	 *          | setAlchemicIngredient(alchemicIngredient) 
-	 * @effect  This new device is moved to the given laboratorium. 
-	 * 			If the given laboratorium is not valid, a default laboratorium is set.
-	 *          | moveTo(laboratorium)          
+	 * Initialize a new device with given laboratory that owns this device.
+	 * @param 	laboratory
+	 * 			The laboratory that owns this new device.
+	 * @effect  This new device is moved to the given laboratory. 
+	 * 			If the given laboratory is not valid, a default laboratory is set.
+	 *          | moveTo(laboratory)          
 	 */
 	@Model @Raw
-	protected Device(AlchemicIngredient alchemicIngredient, Laboratorium laboratorium) {
-		setAlchemicIngredient(alchemicIngredient);
-		moveTo(laboratorium);
+	protected Device(Laboratory laboratory) {
+		moveTo(laboratory);
 	}
 	
-	/**********************************************************
-     * alchemicIngredient
-     **********************************************************/
 	/**
-	 * Variable referencing the name of this alchemic ingredient.
-	 */
-	private AlchemicIngredient alchemicIngredient = null;
+	 * Variable referencing a list collecting all alchemic ingredients that are in this device.
+	 * 
+	 * @invar ingredientList references an effective list. 
+	 *        | alchemicIngredients != null
+	 */	
+	private final List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
 	
-    /**
-     * Return the name of this alchemic ingredient.
-     */
-    @Raw @Basic 
-    public String getAlchemicIngredient() {
-        return alchemicIngredient;
-    }
-    
-    /**
-     * Set the alchemic ingredient of this device to the given alchemic ingredient.
-     *
-     * @param   alchemicIngredient
-     * 			The new alchemic ingredient for this device.
-     */
-    @Raw @Model 
-    private void setAlchemicIngredient(AlchemicIngredient alchemicIngredient) {
-        this.alchemicIngredient = alchemicIngredient;
-    }
+	/**
+	 * Variable referencing a list collecting all quantities of the alchemic ingredients that are in this device.
+	 * 
+	 * @invar quantityList references an effective list. 
+	 *        | quantities != null
+	 */	
+	private final List<Integer> quantityList = new ArrayList<Integer>();
     
 	/**********************************************************
-     * laboratorium
+     * laboratory
      **********************************************************/
+	
+	/**
+	 * An object of the class Laboratory that refers to the laboratory that owns this device.
+	 */
+	private Laboratory laboratory = null;
 	
 	/**********************************************************
      * termination
@@ -77,6 +68,7 @@ public class Device {
 	 * Variable registering whether or not this device has been terminated.
 	 */
 	private boolean isTerminated = false;
+
 
 
 	/**
@@ -115,82 +107,99 @@ public class Device {
 	}	
 	
 	/**********************************************************
-     * bidirection relation with laboratorium
+     * bidirection relation with laboratory
      **********************************************************/
 	
 	/**
-	 * Return the laboratorium that has this device.
+	 * Return the laboratory that has this device.
 	 *
 	 */
 	
 	@Basic @Raw
-	public Laboratorium getLaboratiorium() {
-		return laboratorium;
+	public Laboratory getLaboratory() {
+		return laboratory;
 	}
 	
+	
 	/** 
-	 * Check whether this device can have the given laboratorium as
-	 * its laboratorium.
+	 * Check whether this device can have the given laboratory as
+	 * its laboratory.
 	 * 
-	 * @param  	laboratorium
-	 *          The laboratorium to check.
+	 * @param  	laboratory
+	 *          The laboratory to check.
 	 * @return  
 	 */
 	@Raw 
-	public boolean canHaveAsLaboratorium(Laboratorium laboratorium) {
+	public boolean canHaveAsLaboratory(Laboratory laboratory) {
 		if (this.isTerminated())
-			return (laboratorium == null);
+			return (laboratory == null);
 		else 
-			return ( (laboratorium != null) && (!laboratorium.isTerminated()));
+			return ( (laboratory != null) && (!this.isTerminated()));
 	}
 	
 	/** 
-	 * Check whether this device has a proper laboratorium. 
+	 * Check whether this device has a proper laboratory. 
 	 * 
 	 * @return  
 	 */
 	@Raw 
-	public boolean hasProperLaboratorium() {
-		return (canHaveAsLaboratorium(getLaboratorium()) NOG DINGEN TOEVOEGEN);
+	public boolean hasProperLaboratory() {
+		return (canHaveAsLaboratory(getLaboratory()) NOG DINGEN TOEVOEGEN);
 	}
 	
 	/**
-	 * Move this device into the given laboratorium.
+	 * Move this device into the given laboratory.
 	 *
-	 * @param   laboratorium
-	 *          The laboratorium where this device is moved to.
-	 * @post    This device is moved into the given laboratorium
-	 *          | new.getLaboratorium() == laboratorium
-	 * @throws  IllegalLaboratoriumException
-	 *          This device cannot have the given laboratorium as the laboratorium where this device can move into.
-	 *          | !canHaveAsLaboratorium(laboratorium)
+	 * @param   laboratory
+	 *          The laboratory where this device is moved to.
+	 * @post    This device is moved into the given laboratory
+	 *          | new.getLaboratory() == laboratory
+	 * @throws  IllegalLaboratoryException
+	 *          This device cannot have the given laboratory as the laboratory where this device can move into.
+	 *          | !canHaveAsLaboratory(laboratory)
 	 * @throws 	IllegalStateException
 	 * 			This device is already terminated
 	 * 			| isTerminated()
 	 * 
 	 */
 	@Raw @Model
-	private void moveTo(Laboratorium laboratorium)
-			throws IllegalLaboratoriumException, IllegalStateException {
+	private void moveTo(Laboratory laboratory)
+			throws IllegalLaboratoryException, IllegalStateException {
 		if (isTerminated()) 
 			throw new IllegalStateException("Device is terminated!");
-		if (!canHaveAsLaboratorium(laboratorium)) {
-			throw new IllegalLaboratoriumException("Inappropriate laboratorium!");
+		if (!canHaveAsLaboratory(laboratory)) {
+			throw new IllegalLaboratoryException("Inappropriate laboratorium!");
 		}
-		this.laboratorium = laboratorium;
+		this.laboratory  = laboratory;
 	}
 	
 	/**********************************************************
      * methodes
      **********************************************************/
 	public void addIngredientFrom(IngredientContainer container) {
-		
+		ingredientList.add(container.getAlchemicIngredient());
+		quantityList.add(container.getContainerContents());
+		container.setDelete(true);
 	}
 	
-	public IngredientContainer removeResult() {
-		return container;
+	/*NOG KIJKEN WAT IK BIJ newAlchemicIngredient zet, want dit moet resultaat zijn van de hele ingredientList*/
+	public IngredientContainer removeAlchemicResult() {
+		AlchemicIngredient newAlchemicIngredient = ;
+		int newQuantity = this.sumOfQuantities();
+		IngredientContainer newContainer = new IngredientContainer(newAlchemicIngredient,newQuantity);
+		ingredientList.clear();
+		quantityList.clear();
+		return newContainer;
 	}
 	
+	public int sumOfQuantities() {
+		int sum = 0;
+		for (int i = 0; i < quantityList.size(); i++) {
+			  sum = sum + quantityList.get(i);
+			}
+		return sum;
+	}
+
 	public void executeAlchemicalOperation() {
 		
 	}
