@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -186,34 +189,33 @@ public class IngredientType {
 	 */
 	private int standardColdness = 0;
 	
-    /**
-     * Return the standard temperature of this ingredientType.
-     */
-    @Raw @Basic 
-    public int[] getStandardTemperature() {
-        return [standardHotness,standardColdness];
-    }
-    
-    /**VANAF HIER VERWIJDEREN**/
-    /**
-	 * Variable referencing the standard temperature of this ingredientType.
-	 */
-	private int[] standardTemperature = new int[2];
+	
+
 	
     /**
      * Return the standard temperature of this ingredientType.
      */
     @Raw @Basic 
-    public int[] getStandardTemperature() {
+    public List<Integer> getStandardTemperature() {
+    	List<Integer> standardTemperature = new ArrayList<Integer>();
+    	standardTemperature.add(standardColdness);
+    	standardTemperature.add(standardHotness);
         return standardTemperature;
     }
     
+
+    /**
+	 * Variable referencing the standard temperature of this ingredientType.
+	 */
+
     @Raw @Model 
-    private void setStandardTemperature(int[] standardTemperature) {
-        if (isValidStandardTemperature(standardTemperature)) {
-        		this.standardTemperature = standardTemperature;
+    private void setStandardTemperature(int standardColdness,int standardHotness) {
+        if (isValidStandardTemperature(standardColdness,standardHotness)) {
+        		this.standardColdness = standardColdness;
+        		this.standardHotness = standardHotness;
         } else {
-        		this.name = getDefaultStandardTemperature();
+        		this.standardColdness = this.getDefaultStandardTemperature().get(0);
+        		this.standardHotness = this.getDefaultStandardTemperature().get(1);
         }
     }
     
@@ -225,11 +227,11 @@ public class IngredientType {
      * @return	True if the given standard temperature is strictly higher than [0,0] and 
      * 			the coldness and hotness are not both different from 0. 
      */
-    public static boolean isValidStandardTemperature(int[] standardTemperature) {
-        if (standardTemperature[0] != 0  && standardTemperature[1] != 0) {
+    public static boolean isValidStandardTemperature(int standardColdness,int standardHotness) {
+        if ((standardColdness != 0)  && (standardHotness != 0)) {
         	return false;
         }
-        else if (standardTemperature[0] == 0  && standardTemperature[1] == 0){
+        else if ((standardColdness == 0)  && (standardHotness == 0)){
         	return false;
         }
         else {
@@ -245,8 +247,11 @@ public class IngredientType {
      *         | isValidStandardTemperature(result)
      */
     @Model
-    private static int[2] getDefaultStandardTemperature() {
-        return [0,20];
+    private static List<Integer> getDefaultStandardTemperature() {
+    	List<Integer> defaultStandardTemperature = new ArrayList<Integer>();
+    	defaultStandardTemperature.add(0);
+    	defaultStandardTemperature.add(20);
+        return defaultStandardTemperature;
     }
 }
 
