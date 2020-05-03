@@ -174,7 +174,7 @@ public class Laboratory{
 	 * @return a new container of given capacity 
 	 */
 	
-	public IngredientContainer createContainer(long amount) {
+	public IngredientContainer createContainer(int amount) {
 		IngredientContainer newContainer = new IngredientContainer(amount); 
 		return newContainer; 
 	}
@@ -201,7 +201,7 @@ public class Laboratory{
 	
 	/* de juiste container zal meegeven worden via setContainer in class IngredientContainer*/
 	
-	public IngredientContainer getAmountFromLabo(AlchemicIngredient ingr, long amount) {
+	public IngredientContainer getAmountFromLabo(AlchemicIngredient ingr, int amount) {
 		IngredientContainer aContainer = new IngredientContainer(ingr, amount); 
 		return aContainer; 
 	}
