@@ -28,7 +28,9 @@ public class Device {
 	 * 			The laboratory that owns this new device.
 	 * @effect  This new device is moved to the given laboratory. 
 	 * 			If the given laboratory is not valid, a default laboratory is set.
-	 *          | moveTo(laboratory)          
+	 *          | moveTo(laboratory)    
+	 * @post    The new device is not terminated.
+	 *          | !new.isTerminated()      
 	 */
 	@Model @Raw
 	protected Device(Laboratory laboratory) {
