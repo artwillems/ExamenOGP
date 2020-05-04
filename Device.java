@@ -46,6 +46,14 @@ public class Device {
 	private final List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
 	
 	/**
+	 * Return the number of ingredients in this device.
+	 */
+	@Basic @Raw 
+	public int countIngredients() {
+		return ingredientList.size();
+	}
+	
+	/**
 	 * Variable referencing a list collecting all quantities of the alchemic ingredients that are in this device.
 	 * 
 	 * @invar quantityList references an effective list. 
@@ -178,6 +186,10 @@ public class Device {
 	/**********************************************************
      * methodes
      **********************************************************/
+	
+	/**
+	 * Add an ingredient into this device.
+	 */
 	public void addIngredientFrom(IngredientContainer container) {
 		ingredientList.add(container.getAlchemicIngredient());
 		quantityList.add(container.getContainerContents());
@@ -202,7 +214,8 @@ public class Device {
 		return sum;
 	}
 
-	public void executeAlchemicalOperation() {
+	/*HEEFT HET NUT DEZE IN SUPERCLASS TE ZETTEN? WANT BIJ IEDERE SUBCLASS ANDERS, EN HIER GEVEN WE NIKS VAN CODE IN*/
+	public void executeAlchemicOperation() {
 		
 	}
 	

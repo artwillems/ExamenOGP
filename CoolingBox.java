@@ -77,41 +77,32 @@ public class CoolingBox extends Device {
 	        		this.presetHotness = presetHotness;   
 	    }
 	    
-	    /**
-	     * Check whether the given standard temperature is a legal standard temperature for a ingredientType.
-	     * 
-	     * @param  	standardTemperature
-	     *			The standard temperature to be checked
-	     * @return	True if the given standard temperature is strictly higher than [0,0] and 
-	     * 			the coldness and hotness are not both different from 0. 
-	     */
-	    public static boolean isValidStandardTemperature(int standardColdness,int standardHotness) {
-	        if ((standardColdness != 0)  && (standardHotness != 0)) {
-	        	return false;
-	        }
-	        else if ((standardColdness == 0)  && (standardHotness == 0)){
-	        	return false;
-	        }
-	        else {
-	        	return true;
-	        }
-	    }
+		/**********************************************************
+		 * methodes
+		 **********************************************************/
 	    
 	    /**
-	     * Return the standard temperature for a new ingredientType which is to be used when the
-	     * given standard temperature is not valid.
-	     *
-	     * @return   A valid standard temperature.
-	     *         | isValidStandardTemperature(result)
-	     */
-	    @Model
-	    private static List<Integer> getDefaultStandardTemperature() {
-	    	List<Integer> defaultStandardTemperature = new ArrayList<Integer>();
-	    	defaultStandardTemperature.add(0);
-	    	defaultStandardTemperature.add(20);
-	        return defaultStandardTemperature;
-	    }
+		 * Add an ingredient into this cooling box.
+		 */
+	    @Override
+		public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException {
+	    	if (this.countIngredients() > 1) {
+	    		throw new IllegalIngredientAdditionException("The cooling box allows only one alchemic ingredient");
+	    	}
+		}
 	
+	    /**
+		 * Cool the ingredient. 
+		 */
+	    @Override
+	    public void executeAlchemicOperation() NoIngredientInDeviceException{
+			if (this.countIngredients() < 1) {
+				throw new NoIngredientInDeviceException("There is no ingredient in this cooling box");
+			}
+			else {
+				/*VERLAGEN NAAR INGESTELDE TEMPERATUUR*/
+			}
+		}
 	
 	
 }

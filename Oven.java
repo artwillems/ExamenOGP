@@ -28,5 +28,33 @@ public class Oven extends Device {
 		super(laboratory);
 	}
 	
+	/**********************************************************
+	 * methodes
+	 **********************************************************/
+	
+	 /**
+	 * Add an ingredient into this oven.
+	 */
+    @Override
+	public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException {
+    	if (this.countIngredients() > 1) {
+    		throw new IllegalIngredientAdditionException("The oven allows only one alchemic ingredient");
+    	}
+	}
+
+    /**
+	 * Heat the ingredient. 
+	 */
+    @Override
+    public void executeAlchemicOperation() NoIngredientInDeviceException{
+		if (this.countIngredients() < 1) {
+			throw new NoIngredientInDeviceException("There is no ingredient in this oven");
+		}
+		else {
+			/*VERhogen NAAR INGESTELDE TEMPERATUUR, hou rekening met 5%*/
+		}
+	}
+
+	
 	
 }
