@@ -6,6 +6,7 @@
  * @author willemsart, Jérôme D'hulst, Marie Levrau
  *
  */
+import be.kuleuven.cs.som.annotate.*;
 public class IngredientContainer {
 	
 	  /******************************************************
