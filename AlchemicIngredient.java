@@ -8,8 +8,8 @@ public class AlchemicIngredient {
 	/**********************************************************
      * Constructors
      **********************************************************/
-	public AlchemicIngredient(int quantity,String unit, IngredientType ingredientType, long hotness, long coldness, String state) {
-		setIngredientType(ingredientType);
+	public AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state) {
+		setIngredientTypeList(ingredientTypeList);
 		setState(state);
 		setQuantity(quantity);
 		setUnit(unit);
@@ -45,20 +45,48 @@ public class AlchemicIngredient {
 	 * Variable referencing the quantity of this ingredient.
 	 */
 	private int quantity = 0;
+	private static int maximumQuantity = Integer.MAX_VALUE;
 	
-	
-	private void setQuantity(int quantity) throws InvalidQuantityException {
-		if (isCorrectQuantity(quantity)) {
-			this.quantity = quantity;
-		}
-		else {
-			throw new InvalidQuantityException(this);
-		}
+	/**
+	 * Return the quantity of this ingredient measured in its own unit.
+	 */
+	public int getQuantity() {
+		return this.quantity;
 	}
 	
 	
+	/**
+	 * Set the quantity of this ingredient to the given quantity
+	 * 
+	 * @param 	quantity 
+	 * 			The new quantity for this file.
+	 * @pre 	The given quantity must be legal
+	 * 			| isCorrectQuantity(quantity)
+	 * @post	The given quantity is registered as the quantity of this ingredient.
+	 * 			| new.getQuantity() == quantity
+	 */
+	private void setQuantity(int quantity) throws InvalidQuantityException {
+		this.quantity = quantity;
+		}
+	
+	/**
+	 * Check whether the given quantity is a valid quantity for an ingredient.
+	 * 
+	 * @param 	quantity
+	 * 			The quantity to check.
+	 * @return	True if and only if the given quantity is strictly positive and 
+	 * 			does not exceed the maximum quantity.
+	 * 			| result == ((quantity > 0) && (quantity <= getMaximumQuantity()))
+	 */
 	public boolean isCorrectQuantity(int quantity) {
-		return (quantity >= 0);
+		return ((quantity > 0) && (quantity <= getMaximumQuantity()));
+	}
+	
+	/**
+	 * Return the maximum quantity of an ingredient.
+	 */
+	public int getMaximumQuantity() {
+		return maximumQuantity;
 	}
 	
 	/**
@@ -111,9 +139,7 @@ public class AlchemicIngredient {
 		
 	}
 	
-	public int getQuantity() {
-		return this.quantity;
-	}
+	
 	
 	
 	
@@ -158,8 +184,11 @@ public class AlchemicIngredient {
 	 * 
 	 * @param 	unit
 	 * 			The new unit for this ingredient.
+	 * @pre		The given unit must be legal.	
+	 * 			| isValidUnit(unit)
 	 * @post 	If the given unit is a valid unit, the unit of this ingredient
 	 * 			is set to the given unit.
+	 * 			| new.getUnit() == unit
 	 */
 	private void setUnit(String unit) {
 		if (isValidUnit(unit)) {
@@ -168,6 +197,16 @@ public class AlchemicIngredient {
 		
 	}
 	
+	/**
+	 * Check whether the given unit is a valid unit for this ingredient depending
+	 * on its state (powder or liquid).
+	 * 
+	 * @param 	unit
+	 * 			The unit to check.
+	 * @return	True if this unit is a powder unit if the ingredient is a powder or  
+	 * 			if the unit is a liquid unit if the ingredient is a liquid.
+	 * 			
+	 */
 	public boolean isValidUnit(String unit) {
 		if (this.getState() == "Powder") {
 			return getPowderUnits().contains(unit);
@@ -177,6 +216,9 @@ public class AlchemicIngredient {
 		}
 	}
 	
+	/**
+	 * Return the unit of this ingredient.
+	 */
 	public String getUnit() {
 		return this.unit;
 	}
@@ -261,9 +303,36 @@ public class AlchemicIngredient {
 	/**
 	 * Variable referencing the ingredientType of this ingredient.
 	 */
-	private IngredientType ingredientType = null;
+	private List<IngredientType> ingredientTypeList = new ArrayList<IngredientType>();
+
+	/**
+	 * Set the list of ingredientTypes of this ingredient to the given list.
+	 * 
+	 * @param 	ingredientTypeList
+	 * 			The new list of ingredientTypes of this ingredient.
+	 * @post	
+	 */
+	private void setIngredientTypeList(List<IngredientType> ingredientTypeList) {
+		if (isValidIngredientTypeList(ingredientTypeList)) {
+			this.ingredientTypeList = ingredientTypeList;
+			}
+		else {
+			this.ingredientTypeList.add(water);
+		}
+	}
 	
+	/**
+	 * Return the list of ingredientTypes of this ingredient.
+	 */
+	public List<IngredientType> getIngredientTypeList(){
+		return this.ingredientTypeList;
+	}
 	
+	public boolean isValidIngredientTypeList(List<IngredientType> ingredientTypeList) {
+		return (!(ingredientTypeList.contains(null)) && !(ingredientTypeList.isEmpty()));
+	}
+	
+	/* volgende functies zijn wrs overbodig*/
 	/**
 	 * Set the ingredientType of this ingredient to the given ingredientType.
 	 * 
@@ -273,12 +342,12 @@ public class AlchemicIngredient {
 	 * 			is set to the given ingredientType otherwise an exception is thrown.
 	 * @throws 	InvalidIngredientTypeException
 	 */
-	private void setIngredientType(IngredientType ingredientType) throws InvalidIngredientTypeException {
+	private void setIngredientType(IngredientType ingredientType) {
 		if (isValidIngredientType(ingredientType)) {
 			this.ingredientType = ingredientType;
 		}
 		else {
-			throw new InvalidIngredientTypeException(this);
+			
 		}
 	}
 	
@@ -344,48 +413,91 @@ public class AlchemicIngredient {
 	}
 	
 	
-	private void setColdness(long coldness) throws InvalidTemperatureException{
-		if (isValidTemperature(coldness)) {
-			this.coldness = coldness;
-		}
-		else {
-			throw new InvalidTemperatureException(this);
-		}
+	/**
+	 * Set the coldness of this ingredient to the given coldness.
+	 * 
+	 * @param 	coldness
+	 * 			The new coldness for this ingredient.
+	 * @pre 	The given coldness must be legal.
+	 * 			| isValidTemperature(coldness)
+	 * @post	The given coldness is registered as the coldness of this ingredient.
+	 * 			| new.getColdness() == coldness
+	 */
+	private void setColdness(long coldness) {
+		this.coldness = coldness;
 	}
 	
+	/**
+	 * Return the coldness of this ingredient.
+	 */
 	public long getColdness() {
 		return coldness;
 	}
 	
-	private void setHotness(long hotness) throws InvalidTemperatureException{
-		if (isValidTemperature(hotness)) {
+	/**
+	 * Set the hotness of this ingredient to the given hotness.
+	 * 
+	 * @param 	hotness
+	 * 			The new hotness for this ingredient.
+	 * @pre    	The given hotness must be legal.
+	 * 			| isValidTemperature(hotness)
+	 * @post	The given hotness is registered as the hotness of this ingredient.
+	 * 			| new.getHotness() == hotness
+	 */
+	private void setHotness(long hotness) {
 			this.hotness = hotness;
-		}
-		else {
-			throw new InvalidTemperatureException(this);
-		}
 	}
 	
+	/**
+	 * Return the hotness of this ingredient.
+	 */
 	public long getHotness() {
 		return hotness;
 	}
 	
-	
+	/**
+	 * Check whether the given temperature (hotness or coldness) is a valid temperature
+	 * for an ingredient
+	 *  
+	 * @param 	temperature
+	 * 			The temperature to check
+	 * @return	True if and only if the given temperature is positive and does not
+	 * 			exceed the maximum temperature.
+	 * 			| result == (temperature >= 0 && temperature <= getMaxTemp())
+	 */
 	public boolean isValidTemperature(long temperature) {
-		return (temperature > 0 && temperature <= getMaxTemp());
+		return (temperature >= 0 && temperature <= getMaxTemp());
 	}
 	
-	
-	private void setTemperature(long hotness, long coldness) throws InvalidTempCombinationException {
+	/**
+	 * Set the temperature of this ingredient to the given temperature (hotness and coldness)
+	 * 
+	 * @param 	hotness
+	 * 			The new hotness for this ingredient.
+	 * @param 	coldness
+	 * 			The new coldness for this ingredient.
+	 */
+	private void setTemperature(long hotness, long coldness) {
 		if (isValidTempCombination(hotness,coldness)) {
 			setHotness(hotness);
 			setColdness(coldness);
 		}
 		else {
-			throw new InvalidTempCombinationException(this);
+			setHotness(ingredientType.getStandardHotness());
+			setColdness(ingredientType.getStandardColdness());
 		}
 	}
 	
+	/**
+	 * Check whether the given combination of hotness and coldness is a legal combination.
+	 * 
+	 * @param 	hotness
+	 * 			The hotness to check.
+	 * @param 	coldness
+	 * 			The coldness to check.
+	 * @return	True if and only if the hotness and the coldness are not greater than zero at the same time.
+	 * 			| result == !(hotness>0 && coldness >0)
+	 */
 	public boolean isValidTempCombination(long hotness, long coldness) {
 		return !(hotness > 0 && coldness > 0);
 	}
