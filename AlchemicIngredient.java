@@ -21,7 +21,7 @@ public class AlchemicIngredient {
 	}
 	
 	public AlchemicIngredient(int quantity, IngredientType ingredientType) {
-		this(quantity,"spoons",ingredientType)
+		this(quantity,"spoons",ingredientType); 
 	}
 	
 	
