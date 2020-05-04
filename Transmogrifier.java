@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * A class to transform the state of an AlchemicIngredient and with it its
  * quantity and IngredientContainer
@@ -83,10 +85,19 @@ public class Transmogrifier extends Device{
 			newUnit = "drop";
 		}
 		if(unitBfrTransmog == "sachet") {
-			newUnit = "vial"; 
+			newUnit = "bottle"; 
 		}
 		if(unitBfrTransmog == "box") {
 			newUnit = "jug"; 
+		}
+		if(unitBfrTransmog == "sack") {
+			newUnit = "barrel";
+		}
+		if(unitBfrTransmog == "chest") {
+			newUnit = "barrel";
+		}
+		if(unitBfrTransmog == "storeroom") {
+			newUnit = unitBfrTransmog; 
 		}
 		return newUnit; 
 	}
@@ -120,6 +131,7 @@ public class Transmogrifier extends Device{
 	 */
 	
 	public void changeIngredient(AlchemicIngredient ingr) {
+		
 		int newQuant = this.changeQuantity(ingr); 
 		String newUnit = this.changeUnit(ingr); 
 		IngredientType type = ingr.getIngredientType(); 
@@ -140,9 +152,11 @@ public class Transmogrifier extends Device{
 	 * 		  The original ingredient that has to be removed. 
 	 * 		 
 	 */
-	private void destroyOldIngredient(AlchemicIngredient ingr) {
+	private List<AlchemicIngredient> destroyOldIngredient(AlchemicIngredient ingr) {
 		Laboratory labo = this.getLaboratory(); 
-		
+		List<AlchemicIngredient> oldIngredients = labo.getIngredients();
+		oldIngredients.remove(ingr); 
+		return oldIngredients; 
 	}
 	
 	/**
@@ -153,7 +167,7 @@ public class Transmogrifier extends Device{
 	 * 		  of the laboratory in which the transmogrifier is placed. 
 	 */
 	private void addTransmogrifiedToLabo(AlchemicIngredient transmogrifiedIngredient) {
-		
+
 	}
 	
 
