@@ -120,7 +120,7 @@ public class Laboratory{
 	 * @return the list of ingredients
 	 */
 	
-	private List<AlchemicIngredient> getIngredients(){
+	public List<AlchemicIngredient> getIngredients(){
 		return this.listOfIngredients; 
 	}
 	
@@ -166,6 +166,10 @@ public class Laboratory{
 		return (listLength == setLength); 
 	}
 	
+	/********************************************
+	 * storing and adding ingredients 
+	 ***************/
+	
 	/**
 	 * Creates a new container of a given amount
 	 * 
@@ -179,13 +183,53 @@ public class Laboratory{
 		return newContainer; 
 	}
 	
-	
-	public void storeIngredient(IngredientContainer container) {
-		
-		
+	/**
+	 * Work in progress
+	 * 
+	 * @param ingredient
+	 * 		  The ingredient that needs to be added to the laboratory. 
+	 */
+	private void storeNewAmountInLabo(AlchemicIngredient ingredient) {
+		for(AlchemicIngredient someIngredient : getIngredients()) {
+			if(someIngredient.getIngredientType() == ingredient.getIngredientType()) {
+				int oldAmount = someIngredient.getQuantityInSpoons();
+				getIngredients().remove(someIngredient);
+				int newAmount = oldAmount + ingredient.getQuantityInSpoons(); 
+			}
+		}
 	}
 	
-	private Map<String, Long> catalogue = new HashMap<String, Long>(); 
+	/**
+	 * Takes the ingredient out of its container to be stored in the laboratory and destroys the
+	 * container
+	 * 
+	 * @param container
+	 * 		  The IngredientContainer in which the ingredient arrives in the laboratory
+	 */
+	public void storeIngredient(IngredientContainer container) {
+		AlchemicIngredient ingredientToBeStored = container.getAlchemicIngredient();
+		storeNewAmountInLabo(ingredientToBeStored); 
+		/**container.delete();*/
+	}
+	
+	private Map<IngredientType, Integer> catalogue = new HashMap<IngredientType, Integer>(); 
+	
+	
+	/**
+	 * Make and get a catalogue of all the ingredients present in this laboratory
+	 * together with their total amounts
+	 * 
+	 * @return The catalogue for this laboratory. 
+	 */
+	
+	public Map<IngredientType, Integer> getCatalogue(){
+		for(AlchemicIngredient ingredient : getIngredients()) {
+			IngredientType typeOfIngredient = ingredient.getIngredientType(); 
+			int amount = getFullAmountFromLabo(ingredient); 
+			catalogue.put(typeOfIngredient, amount); 
+		}
+		return catalogue; 
+	}
 	
 	
 	/**
@@ -206,6 +250,7 @@ public class Laboratory{
 		return aContainer; 
 	}
 	
+
 	/**
 	 * Get the full amount of a specific ingredient stored in various places and containers within this laboratory
 	 * NOTE: deze getter moet nog throwen, exception nog niet geschreven
