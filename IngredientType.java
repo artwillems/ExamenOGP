@@ -30,8 +30,10 @@ public class IngredientType {
 	 * 			The name of the new ingredientType.
 	 * @param 	state
 	 * 			The state of the new ingredientType.
-	 * @param	standardTemperature
-	 * 			The standard temperature of the new ingredientType.
+	 * @param	standardColdness
+	 * 			The standard coldness of the new ingredientType.
+	 * @param	standardHotness
+	 * 			The standard hotness of the new ingredientType.
 	 * 
 	 * @effect  The name of the ingredient type is set to the given name.
 	 * 			If the given name is not valid, a default name is set.
@@ -41,12 +43,12 @@ public class IngredientType {
 	 *          | setState(state) 
 	 * @effect  The standard temperature of the ingredient type is set to the given standard temperature.
 	 * 			If the given standard temperature is not valid, a default standard temperature is set.
-	 *          | setStandardTemperature(standard temperature) 	 
+	 *          | setStandardTemperature(standardTemperature) 	 
 	 */
 	public IngredientType(String name, String state, int standardColdness,int standardHotness) {
 		setName(name);
 		setState(state);
-		setStandardTemperature(standardTemperature);
+		setStandardTemperature(standardColdness,standardHotness);
 	}
 	
 	/**********************************************************
