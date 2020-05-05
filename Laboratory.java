@@ -149,9 +149,16 @@ public class Laboratory{
 		
 	}
 	
+	/**
+	 * Get the list of devices present in the laboratory
+	 * 
+	 * @return The list of devices in the laboratory. All the devices for this laboratory are unique. 
+	 */
+	
 	protected List<Device> getDevices(){
 		return this.listOfDevices; 
 	}
+	
 	/**
 	 * 
 	 * Checks whether there are no duplicate devices present at the laboratory
@@ -186,19 +193,24 @@ public class Laboratory{
 	}
 	
 	/**
-	 * Work in progress
 	 * 
-	 * @param ingredient
-	 * 		  The ingredient that needs to be added to the laboratory. 
+	 * @param fromContainer
+	 * 		  The IngredientContainer out of which we take the AlchemicIngredient to be stored
+	 * 		  in this laboratory. 
 	 */
-	private void storeNewAmountInLabo(AlchemicIngredient ingredient) {
-		for(AlchemicIngredient someIngredient : getIngredients()) {
-			if(someIngredient.getIngredientType() == ingredient.getIngredientType()) {
-				int oldAmount = someIngredient.getQuantityInSpoons();
-				getIngredients().remove(someIngredient);
-				int newAmount = oldAmount + ingredient.getQuantityInSpoons(); 
+	
+	private int storeNewAmountIngredient(IngredientContainer fromContainer) {
+		int newAmount = 0; 
+		IngredientType newIngredientType = fromContainer.getAlchemicIngredient().getIngredientType(); 
+		Map<IngredientType, Integer> currentCatalogue = getCatalogue(); 
+		for(Map.Entry<IngredientType, Integer> entry : currentCatalogue.entrySet()) {
+			if(newIngredientType == entry.getKey()) {
+				newAmount = entry.getValue() + fromContainer.getContainerContents();
+				
 			}
+			newAmount = fromContainer.getContainerContents(); 
 		}
+		return newAmount; 
 	}
 	
 	/**
@@ -208,10 +220,11 @@ public class Laboratory{
 	 * @param container
 	 * 		  The IngredientContainer in which the ingredient arrives in the laboratory
 	 */
+	
 	public void storeIngredient(IngredientContainer container) {
-		AlchemicIngredient ingredientToBeStored = container.getAlchemicIngredient();
-		storeNewAmountInLabo(ingredientToBeStored); 
-		/**container.delete();*/
+		int newAmount = storeNewAmountIngredient(container);
+		
+		
 	}
 	
 	private Map<IngredientType, Integer> catalogue = new HashMap<IngredientType, Integer>(); 
@@ -248,8 +261,13 @@ public class Laboratory{
 	/* de juiste container zal meegeven worden via setContainer in class IngredientContainer*/
 	
 	public IngredientContainer getAmountFromLabo(AlchemicIngredient ingr, int amount) {
-		IngredientContainer aContainer = new IngredientContainer(ingr, amount); 
-		return aContainer; 
+		if(amount <= getFullAmountFromLabo(ingr)) {
+			IngredientContainer aContainer = new IngredientContainer(ingr, amount); 
+			return aContainer; 
+		}
+		/* exception zal hiervoor in de plaats komen*/
+		return null; 
+		
 	}
 	
 
@@ -263,8 +281,8 @@ public class Laboratory{
 	 */
 	
 	public int getFullAmountFromLabo(AlchemicIngredient ingredient) {
-		List<AlchemicIngredient> allIngredients = this.getIngredients(); 
-		if(allIngredients.contains(ingredient)) {
+		Map<IngredientType, Integer> catalogue = getCatalogue(); 
+		if(catalogue.containsKey(ingredient.getIngredientType())) {
 			return 0; 
 		}
 		return 0; 
