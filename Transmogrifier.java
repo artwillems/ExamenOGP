@@ -178,7 +178,7 @@ public class Transmogrifier extends Device{
 	 * @return the transmogrified of the original AlchemicIngredient
 	 */
 
-	private AlchemicIngredient setIngredient(AlchemicIngredient ingredient) {
+	private AlchemicIngredient setTransmogrifiedIngredient(AlchemicIngredient ingredient) {
 		int newQuant = changeQuantity(ingredient);
 		String newUnit = changeUnit(ingredient); 
 		String newState = changeState(ingredient); 
@@ -200,8 +200,8 @@ public class Transmogrifier extends Device{
 	public void changeIngredient(AlchemicIngredient ingr) {
 		List<AlchemicIngredient> ingredientsInLab = this.getLaboratory().getIngredients(); 
 		if(ingredientsInLab.contains(ingr)) {
+			AlchemicIngredient transmogrified = setTransmogrifiedIngredient(ingr); 
 			ingredientsInLab.remove(ingr); 
-			AlchemicIngredient transmogrified = setIngredient(ingr); 
 			addTransmogrifiedToLabo(ingredientsInLab, transmogrified); 
 			
 		}
