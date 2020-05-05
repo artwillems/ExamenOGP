@@ -281,10 +281,6 @@ public class Laboratory{
 	 */
 	
 	public int getFullAmountFromLabo(AlchemicIngredient ingredient) {
-		Map<IngredientType, Integer> catalogue = getCatalogue(); 
-		if(catalogue.containsKey(ingredient.getIngredientType())) {
-			return 0; 
-		}
 		return 0; 
 	}
 	
