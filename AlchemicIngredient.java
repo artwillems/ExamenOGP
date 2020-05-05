@@ -379,9 +379,23 @@ public class AlchemicIngredient {
      * Name
      **********************************************************/
 	
+	
+	
+	
+	
+    /**
+     * Check whether the given name is a legal name for an ingredient.
+     * 
+     * @param  	name
+     *			The name to be checked
+     * @return	True if 
+     */
+    public static boolean isValidName(String name) {
+        return (name != null && name.matches("[a-zA-Z^()]+") && (name.length() >= 2) );
+    
+        
 	/**
-	 * 
-	 * @return
+	 * Return in alphabetical order the simple names of each ingredientType of this ingredient.
 	 */
 	public List<String> getAlphabeticNameList(){
 		List<String> AlphabeticNameList = new ArrayList<String>();
@@ -392,6 +406,9 @@ public class AlchemicIngredient {
 		return AlphabeticNameList;
 	}
 
+	/**
+	 * Return the simple name/ simple names of the ingredientType/Types of this ingredient. 
+	 */
 	public List<String> getSimpleName(){
 		List<String> SimpleNameList = getAlphabeticNameList();
 		for (int i = 0; i < getIngredientTypeList().size();i++) {
@@ -400,8 +417,9 @@ public class AlchemicIngredient {
 		return SimpleNameList;
 	}
 	
-	
-	
+	 /**
+	  * Return the complete name of this ingredient.
+	  */
 	public String getCompleteName() {
 		List<String> AlphabeticNameList = getAlphabeticNameList();
 		String CompleteName = AlphabeticNameList.get(0) + " mixed with";
@@ -419,8 +437,33 @@ public class AlchemicIngredient {
 		return CompleteName;
 	}
 	
+	/**
+	 * Variable referencing the specialName of this ingredient.
+	 */
+	private String specialName = null;
 	
+	/**
+	 * Set the special name of this ingredient to the given special name.
+	 * 
+	 * @param 	specialName
+	 * 			The new special name of this ingredient.
+	 * @post	If the given special name is valid, the special name of this ingredient is
+	 * 			set to the given special name, otherwise the special name is unchanged.
+	 * 			| if (isValidName(specialName))
+	 * 			|		then new.getSpecialName().equals(name)
+	 */
+	private void setSpecialName(String specialName) {
+		if (isValidName(specialName)) {
+			this.specialName = specialName;
+		}
+	}
 	
+	/**
+	 * Return the special name of this ingredient.
+	 */
+	public String getSpecialName() {
+		return specialName;
+	}
 	
 	
 	
