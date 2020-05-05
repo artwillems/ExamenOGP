@@ -149,7 +149,9 @@ public class Laboratory{
 		
 	}
 	
-	
+	protected List<Device> getDevices(){
+		return this.listOfDevices; 
+	}
 	/**
 	 * 
 	 * Checks whether there are no duplicate devices present at the laboratory
