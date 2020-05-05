@@ -97,7 +97,7 @@ public class IngredientContainer {
 		  if(isQuantityNotGreaterThanCapacity(this.getContainerContents(), this.getCapacity())) {
 			  this.quantity = ingredient.getQuantity(); 
 		  }
-		  this.quantity = this.capacity; 
+		  this.quantity = getCapacity(); 
 	  }
 	  
 	  /**
