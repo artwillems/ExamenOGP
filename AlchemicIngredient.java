@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,13 +9,14 @@ public class AlchemicIngredient {
 	/**********************************************************
      * Constructors
      **********************************************************/
-	public AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state) {
+	public AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, Sting specialName) {
 		setIngredientTypeList(ingredientTypeList);
 		setState(state);
 		setQuantity(quantity);
 		setUnit(unit);
 		setHotness(hotness);
 		setColdness(coldness);
+		setSpecialName(specialName);
 		
 		
 		
@@ -27,9 +29,7 @@ public class AlchemicIngredient {
 	
 	
 	
-	/**********************************************************
-     * Name
-     **********************************************************/
+	
 	
 	
 	
@@ -375,7 +375,49 @@ public class AlchemicIngredient {
 	
 	
 	
+	/**********************************************************
+     * Name
+     **********************************************************/
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<String> getAlphabeticNameList(){
+		List<String> AlphabeticNameList = new ArrayList<String>();
+		for (int i=0; i<getIngredientTypeList().size();i++) {
+			AlphabeticNameList.add(getIngredientTypeList().get(i).getName());
+		}
+		Collections.sort(AlphabeticNameList);
+		return AlphabeticNameList;
+	}
+
+	public List<String> getSimpleName(){
+		List<String> SimpleNameList = getAlphabeticNameList();
+		for (int i = 0; i < getIngredientTypeList().size();i++) {
+			SimpleNameList.add(getIngredientTypeList().get(i).getName());
+		}
+		return SimpleNameList;
+	}
+	
+	
+	
+	public String getCompleteName() {
+		List<String> AlphabeticNameList = getAlphabeticNameList();
+		String CompleteName = AlphabeticNameList.get(0) + " mixed with";
+		for (int i=1; i<AlphabeticNameList.size();i++) {
+			if (i==AlphabeticNameList.size() - 1) {
+				CompleteName = CompleteName + " and" + AlphabeticNameList.get(i);
+			}
+			else if (i == AlphabeticNameList.size() -2) {
+				CompleteName = CompleteName + AlphabeticNameList.get(i);
+			}
+			else {
+				CompleteName = CompleteName + AlphabeticNameList.get(i) +", ";
+			}
+		}
+		return CompleteName;
+	}
 	
 	
 	
