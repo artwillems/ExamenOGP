@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import be.kuleuven.cs.som.annotate.*;
 
 
 /**
@@ -9,8 +10,8 @@ import java.util.Map;
  */
 
 /**
- * @author willemsart, Jérôme D'hulst, Marie Levrau
- * @version 1.8 
+ * @author	willemsart, Jérôme D'hulst, Marie Levrau
+ * @version	1.8 
  */
 public class Transmogrifier extends Device{
 	
@@ -22,8 +23,8 @@ public class Transmogrifier extends Device{
 	 * Initializes a transmogrifier that changes the state and by extent the quantity of an
 	 * AlchemicIngredient. 
 	 *
-	 * @param labo
-	 * 		  the laboratory in which the transmogrifier is set. 
+	 * @param	labo
+	 * 			the laboratory in which the transmogrifier is set. 
 	 */
 	
 	public Transmogrifier(Laboratory labo) {
@@ -37,10 +38,10 @@ public class Transmogrifier extends Device{
 	/**
 	 * Change the state of the AlchemicIngredient
 	 * 
-	 * @param ingredient
-	 * 		  The ingredient of which the state has to be changed.
-	 * @return The new state of the AlchemicIngredient
-	 * 		   If the ingredient were a liquid, it will now be a powder and vice versa. 
+	 * @param	ingredient
+	 * 			The ingredient of which the state has to be changed.
+	 * @return	The new state of the AlchemicIngredient
+	 * 			If the ingredient were a liquid, it will now be a powder and vice versa. 
 	 */
 	
 	private String changeState(AlchemicIngredient ingredient) {
@@ -51,56 +52,55 @@ public class Transmogrifier extends Device{
 		
 	}
 	
+	private static Map<String, String> liquidToPowder(){
+		Map<String, String> liquidToPowderUnit = new HashMap<String, String>(); 
+		liquidToPowderUnit.put("drop", "pinch");
+		liquidToPowderUnit.put("vial", "sachet"); 
+		liquidToPowderUnit.put("bottle", "box"); 
+		liquidToPowderUnit.put("jug", "sack"); 
+		liquidToPowderUnit.put("barrel", "chest"); 
+		liquidToPowderUnit.put("storeroom", "storeroom"); 
+		return liquidToPowderUnit; 
+	}
+	
+	
+	private static Map<String, String> powderToLiquid(){
+		Map<String, String> powderToLiquidUnit = new HashMap<String, String>(); 
+		powderToLiquidUnit.put("pinch", "drop");
+		powderToLiquidUnit.put("sachet", "bottle");
+		powderToLiquidUnit.put("box", "jug"); 
+		powderToLiquidUnit.put("sack", "jug"); 
+		powderToLiquidUnit.put("chest", "barrel"); 
+		powderToLiquidUnit.put("storeroom", "storeroom");
+		return powderToLiquidUnit; 
+	}
+	
 	
 	/**
 	 * Change the unit when transmogrifying by going from liquid units to powder units and 
 	 * vice versa. 
 	 * 
-	 * @param ingredient
-	 * 		  The ingredient that needs to be transmogrified. 
-	 * @return The new unit of the transmogrified ingredient. 
+	 * @param	ingredient
+	 * 			The ingredient that needs to be transmogrified. 
+	 * @return	The new unit of the transmogrified ingredient. 
 	 */
 	
 	private String changeUnit(AlchemicIngredient ingredient) {
 		String newUnit = null; 
-		String unitBfrTransmog = ingredient.getUnit(); 
-		if(this.changeState(ingredient)=="Liquid") {
-			if(unitBfrTransmog == "drop") {
-				newUnit = "pinch"; 
-			}
-			if(unitBfrTransmog == "vial") {
-				newUnit = "sachet"; 
-			}
-			if(unitBfrTransmog == "bottle") {
-				newUnit = "box"; 
-			}
-			if(unitBfrTransmog == "jug") {
-				newUnit = "sack";
-			}
-			if(unitBfrTransmog == "barrel") {
-				newUnit = "chest"; 
-			}
-			if(unitBfrTransmog == "storeroom") {
-				newUnit = "storeroom"; 
+		String unitBfrTransmog = ingredient.getState(); 
+		if(unitBfrTransmog == "Liquid") {
+			Map<String, String> liquidToPowder = liquidToPowder(); 
+			for(Map.Entry<String, String> entry : liquidToPowder.entrySet()) {
+				if(ingredient.getUnit().equals(entry.getKey())) {
+					newUnit = entry.getValue(); 
+				}
 			}
 		}
-		if(unitBfrTransmog == "pinch") {
-			newUnit = "drop";
-		}
-		if(unitBfrTransmog == "sachet") {
-			newUnit = "bottle"; 
-		}
-		if(unitBfrTransmog == "box") {
-			newUnit = "jug"; 
-		}
-		if(unitBfrTransmog == "sack") {
-			newUnit = "barrel";
-		}
-		if(unitBfrTransmog == "chest") {
-			newUnit = "barrel";
-		}
-		if(unitBfrTransmog == "storeroom") {
-			newUnit = unitBfrTransmog; 
+		Map<String, String> powderToLiquid = powderToLiquid(); 
+		for(Map.Entry<String, String> entry : powderToLiquid.entrySet()) {
+			if(ingredient.getUnit().equals(entry.getKey())) {
+				newUnit = entry.getValue(); 
+			}
 		}
 		return newUnit; 
 	}
@@ -108,7 +108,7 @@ public class Transmogrifier extends Device{
 	/**
 	 * Makes a map of all the units for liquids and their conversion numbers when going from liquid to powder.
 	 * 
-	 * @return The map with the liquid units as keys and the conversion numbers as values. 
+	 * @return	The map with the liquid units as keys and the conversion numbers as values. 
 	 */
 	
 	private Map<String, Integer> liquidConversion(){
@@ -143,9 +143,9 @@ public class Transmogrifier extends Device{
 	 * Change the quantity of the the transmogrified ingredient based on its new state and its new 
 	 * unit. 
 	 * 
-	 * @param ingredient
-	 * 		  The ingredient that has to be transmogrified. 
-	 * @return The new quantity of the transmogrified ingredient. 
+	 * @param	ingredient
+	 * 			The ingredient that has to be transmogrified. 
+	 * @return	The new quantity of the transmogrified ingredient. 
 	 * 
 	 */
 	
@@ -173,9 +173,9 @@ public class Transmogrifier extends Device{
 	/**
 	 * Initialize the transmogrified element as a new AlchemicIngredient
 	 * 
-	 * @param ingredient
-	 * 		  The AlchemicIngredient that has to be transmogrified
-	 * @return the transmogrified of the original AlchemicIngredient
+	 * @param	ingredient
+	 * 			The AlchemicIngredient that has to be transmogrified
+	 * @return	the transmogrified of the original AlchemicIngredient
 	 */
 
 	private AlchemicIngredient setTransmogrifiedIngredient(AlchemicIngredient ingredient) {
@@ -192,9 +192,9 @@ public class Transmogrifier extends Device{
 	/**
 	 * Transmogrify the ingredient in this laboratory. 
 	 * 
-	 * @param ingr
-	 * 		  the ingredient that has to be transmogrified
-	 * @return the transmogrified ingredient 
+	 * @param	ingr
+	 * 			the ingredient that has to be transmogrified
+	 * @return	the transmogrified ingredient 
 	 */
 	
 	public void changeIngredient(AlchemicIngredient ingr) {
@@ -213,9 +213,9 @@ public class Transmogrifier extends Device{
 	/**
 	 * Add the transmogrified ingredient to a the list of ingredients in the laboratory. 
 	 * 
-	 * @param transmogrifiedIngredient
-	 * 		  The transmogrified ingredient that needs to be added to the ingredients
-	 * 		  of the laboratory in which the transmogrifier is placed. 
+	 * @param	transmogrifiedIngredient
+	 * 			The transmogrified ingredient that needs to be added to the ingredients
+	 * 			of the laboratory in which the transmogrifier is placed. 
 	 */
 	
 	private void addTransmogrifiedToLabo(List<AlchemicIngredient> oldIngredients, AlchemicIngredient transmogrifiedIngredient) {
