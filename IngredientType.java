@@ -51,6 +51,27 @@ public class IngredientType {
 		setStandardTemperature(standardColdness,standardHotness);
 	}
 	
+	/**
+	 * Initialize a new ingredientType with given name and standard temperature.
+	 * @param 	name
+	 * 			The name of the new ingredientType.
+	 * @param	standardColdness
+	 * 			The standard coldness of the new ingredientType.
+	 * @param	standardHotness
+	 * 			The standard hotness of the new ingredientType.
+	 * 
+	 * @effect  The name of the ingredient type is set to the given name.
+	 * 			If the given name is not valid, a default name is set.
+	 *          | setName(name) 
+	 * @effect  The standard temperature of the ingredient type is set to the given standard temperature.
+	 * 			If the given standard temperature is not valid, a default standard temperature is set.
+	 *          | setStandardTemperature(standardTemperature) 	 
+	 */
+	public IngredientType(String name, int standardColdness,int standardHotness) {
+		setName(name);
+		setStandardTemperature(standardColdness,standardHotness);
+	}
+	
 	/**********************************************************
      * name 
      **********************************************************/
@@ -74,9 +95,23 @@ public class IngredientType {
      * @param  	name
      *			The name to be checked
      * @return	True if 
+     * (name.charAt(0)).matches("[A-Z^()]+")
      */
     public static boolean isValidName(String name) {
-        return (name != null && name.matches("[a-zA-Z^()]+") && (name.length() >= 2) );
+    	String[] splitName = name.split(" ");
+    	boolean result = true;
+    	if (splitName.length > 1) {
+    		for (int i = 0; i < splitName.length ; i++) {
+    			  if  ((splitName[i] == null) || (splitName[i].length() < 2) || (name.matches("[a-zA-Z^()]+") == false)) {
+    				  result = false;
+    				  break;
+    			  }
+    			}
+    		return result;
+    	}
+    	else {
+    		return (name != null && name.matches("[a-zA-Z^()]+") && (name.length() >= 3)  );
+    	}
     }
     
     /**
