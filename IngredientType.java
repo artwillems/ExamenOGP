@@ -184,7 +184,7 @@ public class IngredientType {
     /**
 	 * Variable referencing the standard hotness of this ingredientType.
 	 */
-	private int standardHotness = 20;
+	private int standardHotness = 0;
 	
     /**
 	 * Variable referencing the standard coldness of this ingredientType.

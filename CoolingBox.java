@@ -45,7 +45,7 @@ public class CoolingBox extends Device {
 	   /**
 		 * Variable referencing the preset hotness of this cooling box.
 		 */
-		private int presetHotness = 20;
+		private int presetHotness = 0;
 		
 	    /**
 		 * Variable referencing the preset coldness of this cooling box.
