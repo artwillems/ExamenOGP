@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import be.kuleuven.cs.som.annotate.*;
 
@@ -9,22 +11,140 @@ public class AlchemicIngredient {
 	/**********************************************************
      * Constructors
      **********************************************************/
-	public AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, Sting specialName) {
+	
+	/**
+	 * Initialize a new ingredient with a quantity, unit, ingredientType list, 
+	 * hotness, coldness, state and special name.
+	 * 
+	 * @param 	quantity
+	 * 			The quantity of the new ingredient.	
+	 * @param 	unit
+	 * 			The unit of the new ingredient in which the quantity is measured.
+	 * @param 	ingredientTypeList
+	 * 			The ingredientType list of the new ingredient.
+	 * @param 	hotness
+	 * 			The hotness of the new ingredient.
+	 * @param 	coldness
+	 * 			The coldness of the new ingredient.
+	 * @param 	state
+	 * 			The state of the new ingredient.
+	 * @param 	specialName
+	 * 			The special name of the new ingredient.
+	 * @effect	The ingredientType list is set to the given ingredientType list (must be valid)
+	 * 			| setIngredientTypeList(ingredientTypeList)
+	 * @effect	The state is set to the given state (must be valid)
+	 * 			| setState(state)
+	 * @effect	The quantity is set to the given quantity (must be valid)
+	 * 			| setQuantity(quantity)
+	 * @effect	The unit is set to the given unit.
+	 * 			| setUnit(unit)
+	 * @effect	The temperature is set to the given hotness and coldness (must be valid)
+	 * 			| setTemperature(hotness,coldness)
+	 * @effect	The special name is set to the given name (must be valid)
+	 * 			| setSpecialName(specialName)
+	 */
+	public AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
 		setIngredientTypeList(ingredientTypeList);
 		setState(state);
 		setQuantity(quantity);
 		setUnit(unit);
-		setHotness(hotness);
-		setColdness(coldness);
+		setTemperature(hotness,coldness);
 		setSpecialName(specialName);
 		
 		
 		
 	}
 	
-	public AlchemicIngredient(int quantity, IngredientType ingredientType) {
-		this(quantity,"spoons",ingredientType); 
+	
+	/**
+	 * Initialize a new ingredient with a quantity, unit and ingredientType list, 
+	 * 
+	 * @param 	quantity
+	 * 			The quantity of the new ingredient.	
+	 * @param 	unit
+	 * 			The unit of the new ingredient in which the quantity is measured.
+	 * @param 	ingredientTypeList
+	 * 			The ingredientType list of the new ingredient.
+	 * @effect	This new ingredient is initialized with a quantity, unit, ingredientTypeList
+	 * 			and without a special name (null)
+	 * 			| this(quantity,unit,ingredientTypeList,0,0,"Powder",null);
+	 * @effect	The temperature is set to the standard temperature of its ingredientType
+	 * 			| setTemperature(ingredientType.getTemperature().get(1),ingredientType.getTemperature().get(0));
+	 * @effect 	The state is set to the standard state of its ingredientType
+	 * 			| setState(ingredientType.getState())
+	 * 
+	 */
+	public AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList) {
+		this(quantity,unit,ingredientTypeList,0,0,"Powder",null);
+		setTemperature(ingredientType.getTemperature().get(1),ingredientType.getTemperature().get(0));
+		setState(ingredientType.getState());
 	}
+	
+	/**
+	 * Initialize a new ingredient with a quantity, unit, ingredientType list, 
+	 * hotness, coldness and state.
+	 * 
+	 * @param 	quantity
+	 * 			The quantity of the new ingredient.	
+	 * @param 	unit
+	 * 			The unit of the new ingredient in which the quantity is measured.
+	 * @param 	ingredientTypeList
+	 * 			The ingredientType list of the new ingredient.
+	 * @param 	hotness
+	 * 			The hotness of the new ingredient.
+	 * @param 	coldness
+	 * 			The coldness of the new ingredient.
+	 * @param 	state
+	 * 			The state of the new ingredient.
+	 *@effect	This new ingredient is initialized with a given quantity, unit, ingredientType list, hotness,
+	 *			coldness, state and without a special name.
+	 *			| this(quantity,unit,ingredientTypeList, hotness, coldness, state ,null)
+
+	 */
+	public AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList,long hotness, long coldness, String state) {
+		this(quantity,unit,ingredientTypeList, hotness, coldness, state ,null); 
+	}
+	
+	/**
+	 * Initialize a new ingredient with a quantity, ingredientType list, 
+	 * hotness, coldness, state and special name.
+	 * 
+	 * @param 	quantity
+	 * 			The quantity of the new ingredient.	
+	 * @param 	ingredientTypeList
+	 * 			The ingredientType list of the new ingredient.
+	 * @param 	hotness
+	 * 			The hotness of the new ingredient.
+	 * @param 	coldness
+	 * 			The coldness of the new ingredient.
+	 * @param 	state
+	 * 			The state of the new ingredient.
+	 *@effect	This new ingredient is initialized with a given quantity, a spoon unit, ingredientType list, hotness,
+	 *			coldness, state and without a special name.
+	 *			| this(quantity,"spoon",ingredientTypeList, hotness, coldness, state ,null)
+
+	 */
+	public AlchemicIngredient(int quantity, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
+		this(quantity, "spoon", ingredientTypeList, hotness, coldness, state, specialName);
+	}
+	
+	
+	/**
+	 * This new ingredient is initialized as an ingredient of the ingredientType water with a given 
+	 * quantity.
+	 * 
+	 * @param 	quantity
+	 * 			The quantity of the new ingredient.
+	 * @effect	This new ingredient is initialized with a given quantity, a spoon unit,
+	 * 			the ingredientType water, standard temperature, Liquid state and without a special name (null)
+	 * @effect	The temperature is set to the standard temperaturen of water
+	 * 			| setTemperature(water.getTemperature().get(1), water.getTemperature().get(0))
+	 */
+	public AlchemicIgredient(int quantity) {
+		this(quantity, "spoon", water, 0, 0, "Liquid",null);
+		setTemperature(water.getTemperature().get(1), water.getTemperature().get(0));
+	} 
+	
 	
 	
 	
@@ -45,7 +165,13 @@ public class AlchemicIngredient {
 	 * Variable referencing the quantity of this ingredient.
 	 */
 	private int quantity = 0;
+	
+	/**
+	 * Variable referencing the maximum quantity of an ingredient.
+	 */
 	private static int maximumQuantity = Integer.MAX_VALUE;
+	
+	
 	
 	/**
 	 * Return the quantity of this ingredient measured in its own unit.
@@ -65,7 +191,7 @@ public class AlchemicIngredient {
 	 * @post	The given quantity is registered as the quantity of this ingredient.
 	 * 			| new.getQuantity() == quantity
 	 */
-	private void setQuantity(int quantity) throws InvalidQuantityException {
+	private void setQuantity(int quantity) {
 		this.quantity = quantity;
 		}
 	
@@ -139,6 +265,13 @@ public class AlchemicIngredient {
 		
 	}
 	
+	private static Map<String,Integer> unitLibrary = new HashMap<String,Integer>(){
+		{
+			put("drop",1/8);
+			put("vial",5);
+			put()
+		}
+	};
 	
 	
 	
@@ -422,7 +555,9 @@ public class AlchemicIngredient {
 	  */
 	public String getCompleteName() {
 		List<String> AlphabeticNameList = getAlphabeticNameList();
-		String CompleteName = AlphabeticNameList.get(0) + " mixed with";
+		String CompleteName = null;
+		if (/*Standaardtemperatuur afkomstig van welk ingredientType*/)
+		CompleteName = AlphabeticNameList.get(0) + " mixed with";
 		for (int i=1; i<AlphabeticNameList.size();i++) {
 			if (i==AlphabeticNameList.size() - 1) {
 				CompleteName = CompleteName + " and" + AlphabeticNameList.get(i);
@@ -453,7 +588,7 @@ public class AlchemicIngredient {
 	 * 			|		then new.getSpecialName().equals(name)
 	 */
 	private void setSpecialName(String specialName) {
-		if (isValidName(specialName)) {
+		if (isValidSpecialName(specialName)) {
 			this.specialName = specialName;
 		}
 	}
@@ -465,6 +600,10 @@ public class AlchemicIngredient {
 		return specialName;
 	}
 	
+	
+	public static boolean isValidSpecialName(String name) {
+        return (name.matches("[a-zA-Z^()]+") && (name.length() >= 2) );
+    
 	
 	
 	
@@ -587,12 +726,14 @@ public class AlchemicIngredient {
 		return !(hotness > 0 && coldness > 0);
 	}
 	
-	/*
-	 * public getTemperature
-	 */
 	
-	public int[][] getTemperature(){
-		return {getColdness(),getHotness()};
+	
+	public List<Long> getTemperature(){
+		List<Long> Temperature = new ArrayList<Long>();
+		Temperature.add(getColdness());
+		Temperature.add(getHotness());
+		return Temperature;
+		
 	}
 	
 	

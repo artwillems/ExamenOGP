@@ -219,12 +219,12 @@ public class IngredientType {
     /**
 	 * Variable referencing the standard hotness of this ingredientType.
 	 */
-	private int standardHotness = 0;
+	private long standardHotness = 0;
 	
     /**
 	 * Variable referencing the standard coldness of this ingredientType.
 	 */
-	private int standardColdness = 0;
+	private long standardColdness = 0;
 	
 	
 
@@ -233,8 +233,8 @@ public class IngredientType {
      * Return the standard temperature of this ingredientType.
      */
     @Raw @Basic 
-    public List<Integer> getStandardTemperature() {
-    	List<Integer> standardTemperature = new ArrayList<Integer>();
+    public List<Long> getStandardTemperature() {
+    	List<Long> standardTemperature = new ArrayList<Long>();
     	standardTemperature.add(standardColdness);
     	standardTemperature.add(standardHotness);
         return standardTemperature;
@@ -246,7 +246,7 @@ public class IngredientType {
 	 */
 
     @Raw @Model 
-    private void setStandardTemperature(int standardColdness,int standardHotness) {
+    private void setStandardTemperature(long standardColdness,long standardHotness) {
         if (isValidStandardTemperature(standardColdness,standardHotness)) {
         		this.standardColdness = standardColdness;
         		this.standardHotness = standardHotness;
@@ -264,7 +264,7 @@ public class IngredientType {
      * @return	True if the given standard temperature is strictly higher than [0,0] and 
      * 			the coldness and hotness are not both different from 0. 
      */
-    public static boolean isValidStandardTemperature(int standardColdness,int standardHotness) {
+    public static boolean isValidStandardTemperature(long standardColdness,long standardHotness) {
         if ((standardColdness != 0)  && (standardHotness != 0)) {
         	return false;
         }
