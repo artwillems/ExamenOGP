@@ -6,6 +6,9 @@
  * @author willemsart, Jérôme D'hulst, Marie Levrau
  *
  */
+import java.util.HashMap;
+import java.util.Map;
+
 import be.kuleuven.cs.som.annotate.*;
 public class IngredientContainer {
 	
@@ -16,24 +19,25 @@ public class IngredientContainer {
 	/**
 	 * Initializes a new IngredientContainer with given AlchemicIngredient and capacity
 	 * 
-	 * @param ingredient
-	 * 		  The AlchemicIngredient to be put in a container
-	 * @param capacity
-	 * 		  The capacity of the given container 
-	 * @effect if the quantity of a given AlchemicIngredient is valid, then 
-	 * 		   the quantity of the ingredient in the container will be set to this quantity
-	 * 		   | setQuantity(ingredient) 
-	 * @effect if the capacity of the container is valid, then the 
-	 * 		   capacity of the container will be set to the new capacity
-	 * 		   | setCapacity(capacity)
-	 * @effect if the state of the ingredient is a liquid, then the container will be for liquids
-	 * 		   if the AlchemicIngredient is a powder, the container will be set for powders.
-	 * 		   | setContainer(ingredient)
+	 * @param		ingredient
+	 * 		  		The AlchemicIngredient to be put in a container
+	 * @param 		capacity
+	 * 		  		The capacity of the given container 
+	 * @effect 		if the quantity of a given AlchemicIngredient is valid, then 
+	 * 		   		the quantity of the ingredient in the container will be set to this quantity
+	 * 		   		| setQuantity(ingredient) 
+	 * @effect 		if the capacity of the container is valid, then the 
+	 * 		   		capacity of the container will be set to the new capacity
+	 * 		   		| setCapacity(capacity)
+	 * @effect 		if the state of the ingredient is a liquid, then the container will be for liquids
+	 * 		   		if the AlchemicIngredient is a powder, the container will be set for powders.
+	 * 		   		| setContainer(ingredient)
 	 */
 
 
 	  public IngredientContainer(AlchemicIngredient ingredient, int capacity){
-		setCapacity(capacity);  
+		setCapacity(capacity); 
+		setIngredient(ingredient); 
 	    setQuantity(ingredient);
 	    setContainer(ingredient); 
 	  }
@@ -41,11 +45,11 @@ public class IngredientContainer {
 	  /**
 	   * Initializes a new IngredientContainer with given capacity but no contents
 	   * 
-	   * @param capacity
-	   * 		the capacity of the given container
-	   * @effect if the capacity for the container is valid, the capacity of the container
-	   * 		 will be set to the new capacity
-	   * 		 |setCapacity(capacity)
+	   * @param		capacity
+	   * 			the capacity of the given container
+	   * @effect	if the capacity for the container is valid, the capacity of the container
+	   * 		 	will be set to the new capacity
+	   * 		 	|setCapacity(capacity)
 	   */
 
 	  public IngredientContainer(int capacity){ 
@@ -60,6 +64,20 @@ public class IngredientContainer {
 	   */
 	  
 	  private AlchemicIngredient ingredient = null;
+	  
+	  
+	  /**
+	   * Sets the AlchemicIngredient for this ingredient container
+	   * 
+	   * @param	ingredient
+	   * 		The AlchemicIngredient present in this IngredientContainer. 
+	   */
+	  
+	  private void setIngredient(AlchemicIngredient ingredient) {
+		  this.ingredient = ingredient; 
+	  }
+	  
+	  	
 	  
 		/**
 		 * Return the alchemic ingredient in this ingredient container.
@@ -95,7 +113,7 @@ public class IngredientContainer {
 	  
 	  private void setQuantity(AlchemicIngredient ingredient){
 		  if(isQuantityNotGreaterThanCapacity(this.getContainerContents(), this.getCapacity())) {
-			  this.quantity = ingredient.getQuantity(); 
+			  this.quantity = ingredient.getQuantityInSpoons(); 
 		  }
 		  this.quantity = getCapacity(); 
 	  }
@@ -123,15 +141,15 @@ public class IngredientContainer {
 	  /**
 	    *Set the capacity of this ingredient container to the given capacity
 	    *
-	    *@param capacity 
-	    *		the capacity of this ingredient container
+	    *@param		capacity 
+	    *			the capacity of this ingredient container
 	    *
-	    *@post  If the capacity for the container is valid,
-	    *		the capacity for the container will be set to the given
-	    *		capacity, otherwise the capacity will be set to zero.
-	    *		| if(isValidCapacity(capacity)
-	    *			then new.getContainerCapacity().equals(capacity)
-	    *			else new.getContainerCapacity().equals(capacity)
+	    *@post  	If the capacity for the container is valid,
+	    *			the capacity for the container will be set to the given
+	    *			capacity, otherwise the capacity will be set to zero.
+	    *			| if(isValidCapacity(capacity)
+	    *				then new.getContainerCapacity().equals(capacity)
+	    *				else new.getContainerCapacity().equals(capacity)
 	    */
 
 	  private void setCapacity(int capacity){
@@ -190,7 +208,78 @@ public class IngredientContainer {
 	   * Container
 	   ************************************/
 	  
-	 
+	  /**
+	   * Create a map with integer keys and string values to ascribe the right container to a certain AlchemicIngredient,
+	   * if the specific AlchemicIngredient.getState() == "Liquid".
+	   * 
+	   * @return A map with as keys the maximum quantity in spoons the corresponding IngredientContainers can carry
+	   * 		 and as values the name of the IngredientContainer, in correspondence with the unit of the AlchemicIngredient. 
+	   */
+	  
+	  private Map<Integer, String> liquidContainersAndContents(){
+		  /* AlchemicIngredient.getUnit() == "vial" can contain a maximum amount of 5 spoons, so if 
+		   * AlchemicIngredient.getQuantityInSpoons > liquidContainersAndContents.getValue(5), the
+		   * AlchemicIngredient will not fit in a vial*/
+		  Map<Integer, String> liquidContainersAndContents = new HashMap<Integer, String>(); 
+		  liquidContainersAndContents.put(5, "glass vial");
+		  liquidContainersAndContents.put(15, "glass bottle");
+		  liquidContainersAndContents.put(105, "metal jug"); 
+		  liquidContainersAndContents.put(1260, "blue barrel");
+		  liquidContainersAndContents.put(3600, "storeroom"); 
+		  return liquidContainersAndContents; 
+	  }
+	  
+	  /**
+	   * Create a map with integer keys and string values to ascribe the right container to a certain AlchemicIngredient,
+	   * if the specific AlchemicIngredient.getState() == "Powder".
+	   * 
+	   * @return A map that has as keys the maximum quantity in spoons that can be carried by the corresponding values of the map.
+	   * 		The values are the names of the IngredientContainers, in correspondence with the the unit of the AlchemicIngredient.
+	   */
+	  
+	  private Map<Integer, String> powderContainersAndContents(){
+		  Map<Integer, String> powderContainersAndContents = new HashMap<Integer, String>();
+		  /*Maximum 7 spoons in a sachet as unit of measurements, therefore only seven spoons in a sachet as a
+		   * physical item.*/
+		  powderContainersAndContents.put(7, "felt sachet");
+		  powderContainersAndContents.put(36, "wooden box");
+		  powderContainersAndContents.put(108, "leather sack"); 
+		  powderContainersAndContents.put(1080, "iron chest");
+		  powderContainersAndContents.put(3600, "storeroom"); 
+		  return powderContainersAndContents; 
+	  }
+	  
+	  /**
+	   * Determine the right IngredientContainer for an AlchemicIngredient, based on the state of the ingredient
+	   * and its quantity measured in spoons. 
+	   * 
+	   * 
+	   * @param ingredient
+	   * 		The AlchemicIngredient for which a container is sought and given. 
+	   * @return The IngredientContainer for the AlchemicIngredient. 
+	   */
+	  
+	  private String determineRightContainer(AlchemicIngredient ingredient) {
+		  String container = null;
+		  if(ingredient.getState().equals("Liquid")) {
+			  Map<Integer, String> map = liquidContainersAndContents(); 
+			  for(Map.Entry<Integer, String> entry : map.entrySet()) {
+				  if((ingredient.getQuantityInSpoons() % entry.getKey()) == 0) {
+					  container = entry.getValue(); 
+				  }
+			  }
+		  }
+		  Map<Integer, String> map = powderContainersAndContents(); 
+		  for(Map.Entry<Integer, String> entry : map.entrySet()) {
+			  if((ingredient.getQuantityInSpoons() % entry.getKey()) == 0) {
+				  container = entry.getValue(); 
+				  	
+			  }
+		  }
+		  
+		  return container;  
+	  }
+	  
 	  /**
 	   * Variable reference the container for the ingredient in this container
 	   */
@@ -209,7 +298,7 @@ public class IngredientContainer {
 	   */
 	  
 	  private void setContainer(AlchemicIngredient ingredient) {
-		  this.container = ingredient.getUnit(); 
+		  this.container = determineRightContainer(ingredient); 
 		 
 	  }
 	  
@@ -250,6 +339,7 @@ public class IngredientContainer {
 	   * 			this ingredient container.
 	   * 			| new.isDeleted() == isDeleted
 	   */
+	  
 	  public void setDelete(boolean isDeleted) {
 	  	this.isDeleted = isDeleted;
 	  }
@@ -266,6 +356,7 @@ public class IngredientContainer {
 	   *			The ingredient container has already been deleted.
 	   *			| this.isDeleted() == true
 	   */
+	  
 	  public void delete() throws AlreadyDeletedException{
 	  	if (this.isDeleted() == false) {
 	      	this.setDelete(true);	
