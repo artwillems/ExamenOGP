@@ -221,55 +221,35 @@ public class AlchemicIngredient {
 	public int getQuantityInSpoons() {
 		int result = getQuantity();
 		if (getState()=="Liquid") {
-			if (getUnit()=="drop") {
-				result = result * (1/8);
-			}
-			if (getUnit()=="vial") {
-				result = result * 5;
-			}
-			if (getUnit()=="bottle") {
-				result = result * 15;
-			}
-			if (getUnit()=="jug") {
-				result = result * 105;
-			}
-			if (getUnit()=="barrel") {
-				result = result * 1260;
-			}
-			if (getUnit()=="storeroom") {
-				result = result * 6300;
-			}
+			
 		}
 		else {
-			if (getUnit()=="pinch") {
-				result = result * (1/6);
-			}
-			if (getUnit()=="sachet") {
-				result = result * 7;
-			}
-			if (getUnit()=="box") {
-				result = result * 42;
-			}
-			if (getUnit()=="sack") {
-				result = result * 126;
-			}
-			if (getUnit()=="chest") {
-				result = result * 1260;
-			}
-			if (getUnit()=="storeroom") {
-				result = result * 6300;
-			}
+			
 			
 		}
 		return result;
 		
 	}
 	
-	private static Map<String,Integer> unitLibrary = new HashMap<String,Integer>(){
+	private static Map<String,Integer> liquidLibrary = new HashMap<String,Integer>(){
 		{
 			put("drop",1/8);
 			put("vial",5);
-			put()
+			put("bottle",15);
+			put("jug",105);
+			put("barrel",1260);
+			put("storeroom",6300);
+		}
+	};
+	
+	private static Map<String,Integer> powderLibrary = new HashMap<String,Integer>(){
+		{
+			put("pinch",1/6);
+			put("sachet",7);
+			put("box",42);
+			put("sack",126);
+			put("chest",1260);
+			put("storeroom",6300);
 		}
 	};
 	
