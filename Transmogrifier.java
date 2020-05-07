@@ -36,7 +36,7 @@ public class Transmogrifier extends Device{
 	 *********************/
 	
 	/**
-	 * Change the state of the AlchemicIngredient
+	 * Changes the state of the AlchemicIngredient
 	 * 
 	 * @param	ingredient
 	 * 			The ingredient of which the state has to be changed.
@@ -52,6 +52,12 @@ public class Transmogrifier extends Device{
 		
 	}
 	
+	/**
+	 * Creates a map with liquid units as keys and their corresponding powder units as values. 
+	 * 
+	 * @return A map with liquid units as keys and powder units as values. 
+	 */
+	
 	private static Map<String, String> liquidToPowder(){
 		Map<String, String> liquidToPowderUnit = new HashMap<String, String>(); 
 		liquidToPowderUnit.put("drop", "pinch");
@@ -63,6 +69,11 @@ public class Transmogrifier extends Device{
 		return liquidToPowderUnit; 
 	}
 	
+	/**
+	 * Creates a map with powder units as keys and their corresponding liquid units as values. 
+	 * 
+	 * @return A map with powder units as keys and liquid units as values. 
+	 */
 	
 	private static Map<String, String> powderToLiquid(){
 		Map<String, String> powderToLiquidUnit = new HashMap<String, String>(); 
@@ -189,41 +200,20 @@ public class Transmogrifier extends Device{
 		return transmogrified; 
 	}
 	
+	private final Laboratory lab; 
+	
 	/**
-	 * Transmogrify the ingredient in this laboratory. 
-	 * 
-	 * @param	ingr
-	 * 			the ingredient that has to be transmogrified
-	 * @return	the transmogrified ingredient 
+	 * THIS METHOD WILL HAVE TO REQUIRE AN ALCHEMIC INGREDIENT. 
 	 */
 	
-	public void changeIngredient(AlchemicIngredient ingr) {
-		List<AlchemicIngredient> ingredientsInLab = this.getLaboratory().getIngredients(); 
-		if(ingredientsInLab.contains(ingr)) {
-			AlchemicIngredient transmogrified = setTransmogrifiedIngredient(ingr); 
-			ingredientsInLab.remove(ingr); 
-			addTransmogrifiedToLabo(ingredientsInLab, transmogrified); 
-			
-		}
-		/**throw exception*/
+	@Override
+	public void executeAlchemicOperation() {
+		List<AlchemicIngredient> ingredientsInLaboratory = this.getLaboratory().getIngredients();
+		/**
+		 * ingredientsInLaboratory.remove(AlchemicIngredient ingredient); 
+		 * ingredientsInLaboratory.add(setTransmogrifiedIngredient);
+		 */ 
 		
 	}
-	
-
-	/**
-	 * Add the transmogrified ingredient to a the list of ingredients in the laboratory. 
-	 * 
-	 * @param	transmogrifiedIngredient
-	 * 			The transmogrified ingredient that needs to be added to the ingredients
-	 * 			of the laboratory in which the transmogrifier is placed. 
-	 */
-	
-	private void addTransmogrifiedToLabo(List<AlchemicIngredient> oldIngredients, AlchemicIngredient transmogrifiedIngredient) {
-		oldIngredients.add(transmogrifiedIngredient);
-		Laboratory lab = getLaboratory(); 
-		
-	}
-	
-
 	
 }
