@@ -257,9 +257,7 @@ public class Laboratory{
 	 * 		  The amount of AlchemicIngredient to be taken from this laboratory
 	 * @return a new IngredientContainer with the requested ingredient in its appropriate container
 	 */
-	
-	/* de juiste container zal meegeven worden via setContainer in class IngredientContainer*/
-	
+		
 	public IngredientContainer getAmountFromLabo(AlchemicIngredient ingr, int amount) {
 		if(amount <= getFullAmountFromLabo(ingr)) {
 			IngredientContainer aContainer = new IngredientContainer(ingr, amount); 
@@ -281,6 +279,9 @@ public class Laboratory{
 	 */
 	
 	public int getFullAmountFromLabo(AlchemicIngredient ingredient) {
+		if(getIngredients().contains(ingredient)) {
+			/* search for another instance of ingredient in the list*/
+		}
 		return 0; 
 	}
 	
