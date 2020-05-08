@@ -51,6 +51,8 @@ public class Device {
 	 */	
 	private final List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
 	
+	
+	
 	/**
 	 * Return the number of ingredients in this device.
 	 */
@@ -58,6 +60,7 @@ public class Device {
 	public int countIngredients() {
 		return ingredientList.size();
 	}
+	
 	
 	/**
 	 * Variable referencing a list collecting all quantities of the alchemic ingredients that are in this device.
@@ -75,6 +78,8 @@ public class Device {
 	 * An object of the class Laboratory that refers to the laboratory that owns this device.
 	 */
 	private Laboratory laboratory = null;
+	
+	
 	
 	/**********************************************************
      * termination
@@ -225,4 +230,115 @@ public class Device {
 		
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	 * PROBEERSEL JEROME
+	 */
+	
+	/**********************************************************
+     * Constructors
+     **********************************************************/
+	/**
+	 * Initialize a new device with given laboratory that owns this device.
+	 * @param 	laboratory
+	 * 			The laboratory that owns this new device.
+	 * @effect  This new device is moved to the given laboratory. 
+	 * 			If the given laboratory is not valid, a default laboratory is set.
+	 *          | moveTo(laboratory)    
+	 * @post    The new device is not terminated.
+	 *          | !new.isTerminated()      
+	 */
+	@Model @Raw
+	protected Device(Laboratory laboratory) {
+		setLaboratory(laboratory);
+	}
+	
+	
+	
+	/**********************************************************
+     * Ingredient
+     **********************************************************/
+	
+	private List<AlchemicIngredient> IngredientList = new ArrayList<AlchemicIngredient>();
+	
+	public boolean isValidIngredientList(List<AlchemicIngredient> IngredientList) {
+		return (IngredientList.size() <= 1);
+	}
+	
+	public List<AlchemicIngredient> getIngredientList(){
+		return IngredientList;
+	}
+	
+	
+	
+	
+	
+	/**********************************************************
+     * Laboratory
+     **********************************************************/
+	
+	private Laboratory laboratory = null;
+	
+	private void setLaboratory(Laboratory laboratory) throws InvalidLaboratoryException{
+		if () {
+			this.laboratory = laboratory;
+		}
+		else {
+			throw new InvalidLaboratoryException("This device cannot be placed in this laboratory");
+		}
+	}
+	
+	
+	public Laboratory getLaboratory() {
+		return laboratory;
+	}
+	
+	
+	public boolean isValidLaboratory(Laboratory laboratory) {
+		return ((laboratory != null) && 
+	}
+	
+	
+	
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
