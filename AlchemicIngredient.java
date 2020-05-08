@@ -43,7 +43,7 @@ public class AlchemicIngredient {
 	 * @effect	The special name is set to the given name (must be valid)
 	 * 			| setSpecialName(specialName)
 	 */
-	public AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
+	private AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
 		setIngredientTypeList(ingredientTypeList);
 		setState(state);
 		setQuantity(quantity);
@@ -101,7 +101,7 @@ public class AlchemicIngredient {
 	 *			| this(quantity,unit,ingredientTypeList, hotness, coldness, state ,null)
 
 	 */
-	public AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList,long hotness, long coldness, String state) {
+	private AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList,long hotness, long coldness, String state) {
 		this(quantity,unit,ingredientTypeList, hotness, coldness, state ,null); 
 	}
 	
@@ -124,7 +124,7 @@ public class AlchemicIngredient {
 	 *			| this(quantity,"spoon",ingredientTypeList, hotness, coldness, state ,null)
 
 	 */
-	public AlchemicIngredient(int quantity, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
+	private AlchemicIngredient(int quantity, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
 		this(quantity, "spoon", ingredientTypeList, hotness, coldness, state, specialName);
 	}
 	
@@ -149,9 +149,9 @@ public class AlchemicIngredient {
 	
 	
 	
-	
-	
-	
+	/*
+	private static final IngredientType water = new IngredientType()
+	*/
 	
 	
 	
@@ -221,14 +221,19 @@ public class AlchemicIngredient {
 	public int getQuantityInSpoons() {
 		int result = getQuantity();
 		if (getState()=="Liquid") {
-			
+			for (Map.Entry<String,Integer> entry: liquidLibrary.entrySet()) {
+				if (entry.getKey() == this.unit) {
+					result = result * entry.getValue();
+				}
+			}
 		}
 		else {
-			
-			
+			for(Map.Entry<String, Integer> entry: powderLibrary.entrySet()) {
+				if (entry.getKey() == this.unit) {
+					result = result * entry.getValue();
+				}
+			}
 		}
-		return result;
-		
 	}
 	
 	private static Map<String,Integer> liquidLibrary = new HashMap<String,Integer>(){
@@ -236,6 +241,7 @@ public class AlchemicIngredient {
 			put("drop",1/8);
 			put("vial",5);
 			put("bottle",15);
+			put("spoon",1);
 			put("jug",105);
 			put("barrel",1260);
 			put("storeroom",6300);
@@ -250,6 +256,7 @@ public class AlchemicIngredient {
 			put("sack",126);
 			put("chest",1260);
 			put("storeroom",6300);
+			put("spoon",1);
 		}
 	};
 	
