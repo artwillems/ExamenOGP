@@ -200,7 +200,6 @@ public class Transmogrifier extends Device{
 		return transmogrified; 
 	}
 	
-	private final Laboratory lab; 
 	
 	/**
 	 * THIS METHOD WILL HAVE TO REQUIRE AN ALCHEMIC INGREDIENT. 
