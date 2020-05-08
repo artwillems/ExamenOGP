@@ -18,15 +18,15 @@ public class CoolingBox extends Device {
 	/**
 	 * Initialize a new cooling box with given laboratory, that owns this cooling box, and given temperature setting.
 	 * 
-	 * @param  laboratory
-	 *         The laboratory that owns this new cooling box.
+	 * @param  	laboratory
+	 *         	The laboratory that owns this new cooling box.
 	 * @param	presetColdness
 	 * 			The preset coldness of the new cooling box.
 	 * @param	presetHotness
 	 * 			The preset hotness of the new cooling box.
 	 * 
-	 * @effect The new cooling box is a device with given laboratory, preset coldness and preset hotness.
-	 *         | super(laboratory)
+	 * @effect 	The new cooling box is a device with given laboratory, preset coldness and preset hotness.
+	 *         	| super(laboratory)
 	 * @effect  The preset temperature of the cooling box is set to the given preset temperature.
 	 *          | setPresetTemperature(presetTemperature) 
 	 * 

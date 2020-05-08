@@ -95,7 +95,7 @@ public class Device {
 	 * @return	
 	 */
 	public boolean canBeTerminated(){
-		return (!isTerminated() DINGEN TOEVOEGEN );
+		return (!isTerminated() && ingredientList.isEmpty());
 	}
 	
 	/**
@@ -184,7 +184,7 @@ public class Device {
 	}
 	
 	/**********************************************************
-     * methodes
+     * Methods
      **********************************************************/
 	
 	/**

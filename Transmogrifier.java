@@ -24,7 +24,9 @@ public class Transmogrifier extends Device{
 	 * AlchemicIngredient. 
 	 *
 	 * @param	labo
-	 * 			the laboratory in which the transmogrifier is set. 
+	 * 			The laboratory that has this transmogrifier. 
+	 * @post	The new transmogrifier is a device with a given laboratory.
+	 * 			| super(labo)
 	 */
 	
 	public Transmogrifier(Laboratory labo) {
@@ -36,7 +38,7 @@ public class Transmogrifier extends Device{
 	 *********************/
 	
 	/**
-	 * Changes the state of the AlchemicIngredient
+	 * Change the state of the AlchemicIngredient
 	 * 
 	 * @param	ingredient
 	 * 			The ingredient of which the state has to be changed.
