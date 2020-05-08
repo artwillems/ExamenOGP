@@ -46,7 +46,7 @@ public class Oven extends Device {
 	 * Heat the ingredient. 
 	 */
     @Override
-    public void executeAlchemicOperation() NoIngredientInDeviceException{
+    public void executeAlchemicOperation() throws NoIngredientInDeviceException{
 		if (this.countIngredients() < 1) {
 			throw new NoIngredientInDeviceException("There is no ingredient in this oven");
 		}

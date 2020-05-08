@@ -37,6 +37,12 @@ public class Device {
 		moveTo(laboratory);
 	}
 	
+	
+	/**********************************************************
+     * Alchemic Ingredient
+     **********************************************************/
+	
+	
 	/**
 	 * Variable referencing a list collecting all alchemic ingredients that are in this device.
 	 * 

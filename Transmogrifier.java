@@ -34,8 +34,8 @@ public class Transmogrifier extends Device{
 	}
 	
 	/*******************************
-	 * Methods
-	 *********************/
+	 * State
+	 ************************************/
 	
 	/**
 	 * Change the state of the AlchemicIngredient
@@ -54,6 +54,10 @@ public class Transmogrifier extends Device{
 		
 	}
 	
+	
+	/**********************************************************
+     * unit (conversion)
+     **********************************************************/
 	/**
 	 * Creates a map with liquid units as keys and their corresponding powder units as values. 
 	 * 
@@ -174,12 +178,14 @@ public class Transmogrifier extends Device{
 				
 			}
 		}
-		Map<String, Integer> powderConversion = powderConversion();
-		for(Map.Entry<String, Integer> entry : powderConversion.entrySet()) {
-			if(ingredient.getUnit() == entry.getKey()) {
-				newQuantity = quantityBfrTransmog * entry.getValue(); 
+		else {
+			Map<String, Integer> powderConversion = powderConversion();
+			for(Map.Entry<String, Integer> entry : powderConversion.entrySet()) {
+				if(ingredient.getUnit() == entry.getKey()) {
+					newQuantity = quantityBfrTransmog * entry.getValue(); 
+					}
+				}
 			}
-		}
 		return newQuantity; 
 	}
 	

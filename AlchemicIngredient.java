@@ -149,14 +149,6 @@ public class AlchemicIngredient {
 	
 	
 	
-	/*
-	private static final IngredientType water = new IngredientType()
-	*/
-	
-	
-	
-	
-	
 	
 	/**********************************************************
      * Quantity
@@ -419,6 +411,8 @@ public class AlchemicIngredient {
 	/**********************************************************
      * IngredientType
      **********************************************************/
+	
+	private static final IngredientType water = new IngredientType("Water","Liquid",0,20);
 	
 	/**
 	 * Variable referencing the ingredientType of this ingredient.
