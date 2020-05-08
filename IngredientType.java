@@ -96,13 +96,14 @@ public class IngredientType {
      *			The name to be checked
      * @return	True if 
      * (name.charAt(0)).matches("[A-Z^()]+")
+     * String.valueOf(name.charAt(0))
      */
     public static boolean isValidName(String name) {
     	String[] splitName = name.split(" ");
     	boolean result = true;
     	if (splitName.length > 1) {
     		for (int i = 0; i < splitName.length ; i++) {
-    			  if  ((splitName[i] == null) || (splitName[i].length() < 2) || (name.matches("[a-zA-Z^()]+") == false)) {
+    			  if  ((splitName[i] == null) || (splitName[i].length() < 2) || (String.valueOf(splitName[i].charAt(0)).matches("[A-Z^()]+")) == false || (splitName[i].substring(1).matches("[a-z]+") == false)) {
     				  result = false;
     				  break;
     			  }
@@ -110,7 +111,7 @@ public class IngredientType {
     		return result;
     	}
     	else {
-    		return (name != null && name.matches("[a-zA-Z^()]+") && (name.length() >= 3)  );
+    		return (name != null && String.valueOf(name.charAt(0)).matches("[A-Z^()]+") && name.substring(1).matches("[a-z]+") && (name.length() >= 3)  );
     	}
     }
     
@@ -209,7 +210,7 @@ public class IngredientType {
      */
     @Model
     private static String getDefaultState() {
-        return "new_state";
+        return "Liquid";
     }
     
 	/**********************************************************
