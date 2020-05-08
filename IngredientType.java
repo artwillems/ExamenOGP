@@ -269,9 +269,6 @@ public class IngredientType {
         if ((standardColdness != 0)  && (standardHotness != 0)) {
         	return false;
         }
-        else if ((standardColdness == 0)  && (standardHotness == 0)){
-        	return false;
-        }
         else {
         	return true;
         }
