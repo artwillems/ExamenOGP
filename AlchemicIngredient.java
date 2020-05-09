@@ -253,8 +253,63 @@ public class AlchemicIngredient {
 	};
 	
 	
+	/**********************************************************
+     * In use
+     **********************************************************/
+	 
+	
+	private boolean inUse = false;
+	
+	private void setInUse(boolean inUse) {
+		this.inUse = inUse;
+	}
+	
+	public boolean getInUsed() {
+		return inUse;
+	}
+	
+	protected void useIngredient() throws AlreadyInUseException {
+		if (getInUsed()==false) {
+			setInUse(true);
+		}
+		else {
+			throw new AlreadyInUseException();
+		}
+	}
 	
 	
+	
+	/**********************************************************
+     * Terminated
+     **********************************************************/
+	
+	private boolean terminated = false;
+	
+	private void setTerminated() throws FileAlreadyTerminatedException {
+		if (isValidTermination()) {
+			this.terminated = true;
+		}
+		else {
+			throw new FileAlreadyTerminatedException();
+		}
+	}
+	
+	public boolean isValidTermination() {
+		if (this.terminated == true) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public boolean isTerminated() {
+		return terminated;
+	}
+	
+	protected void terminate() {
+		setTerminated();
+	}
 	
 	/**********************************************************
      * Unit
@@ -336,7 +391,16 @@ public class AlchemicIngredient {
 	}
 	
 	
-	
+	protected void changeUnit(String unit) throws FileAlreadyTerminatedException {
+		if(!isTerminated()) {
+			if (isValidUnit(unit)) {
+				setUnit(unit);
+			}
+		}
+		else {
+			throw new FileAlreadyTerminatedException();
+		}
+	}
 	
 	
 	
@@ -404,7 +468,19 @@ public class AlchemicIngredient {
 	
 	
 	
-	
+	protected void changeState() throws FileAlreadyTerminatedException {
+		if (!isTerminated()) {
+			if (getState()=="Liquid") {
+				setState("Powder");
+			}
+			else {
+				setState("Liquid");
+			}
+		}
+		else {
+			throw new FileAlreadyTerminatedException();
+		}
+	}
 	
 	
 	
@@ -718,7 +794,11 @@ public class AlchemicIngredient {
 	}
 	
 	
+
 	
+	
+	
+
 	
 
 }
