@@ -5,3 +5,7 @@
 /Transmogrifier.class
 /CoolingBox.class
 /Oven.class
+/NotInLaboratoryException.class
+/IllegalIngredientException.class
+/IllegalIngredientAdditionException.class
+/NoIngredientInDeviceException.class
