@@ -9,3 +9,4 @@
 /IllegalIngredientException.class
 /IllegalIngredientAdditionException.class
 /NoIngredientInDeviceException.class
+/Temperature.class

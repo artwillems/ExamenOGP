@@ -231,11 +231,13 @@ public class Laboratory{
 		return newContainer; 
 	}
 	
+	
 	/**
+	 * Store a new amount of AlchemicIngredient in the laboratory from the container it came in.
 	 * 
-	 * @param fromContainer
-	 * 		  The IngredientContainer out of which we take the AlchemicIngredient to be stored
-	 * 		  in this laboratory. 
+	 * @param	fromContainer
+	 * 			The container the AlchemicIngredient arrived in			
+	 * @return	the total amount of the specific AlchemicIngredient
 	 */
 	
 	private int storeNewAmountIngredient(IngredientContainer fromContainer) {
@@ -244,40 +246,28 @@ public class Laboratory{
 		/*When adding a new amount of ingredient to the laboratory, check if that ingredient was present before,
 		 * by checking the current catalogue.*/
 		
-		IngredientType newIngredientType = fromContainer.getAlchemicIngredient().getIngredientType(); 
-		Map<IngredientType, Integer> currentCatalogue = getCatalog(); 
-		for(Map.Entry<IngredientType, Integer> entry : currentCatalogue.entrySet()) {
-			if(newIngredientType == entry.getKey()) {
+		String newIngredientName = fromContainer.getAlchemicIngredient().getCompleteName(); 
+		Map<String, Integer> currentCatalogue = getCatalog(); 
+		for(Map.Entry<String, Integer> entry : currentCatalogue.entrySet()) {
+			if(newIngredientName == entry.getKey()) {
 				newAmount = entry.getValue() + fromContainer.getContainerContents();
 				
 			}
-			
-			newAmount = fromContainer.getContainerContents(); 
+			else {
+				newAmount = fromContainer.getContainerContents();
+			} 
 		}
 		/*once the ingredient is taken out of its container, destroy the container*/
 		
 		fromContainer.setDelete(true);
 		return newAmount; 
 	}
-	
-	/**
-	 * Takes the ingredient out of its container to be stored in the laboratory and destroys the
-	 * container
-	 * 
-	 * @param container
-	 * 		  The IngredientContainer in which the ingredient arrives in the laboratory
-	 */
-	
-	public void storeIngredient(IngredientContainer container) {
-		int newAmount = storeNewAmountIngredient(container);
 		
-	}
-	
 	/**
 	 * Variable referencing the catalog of the laboratory
 	 */
 	
-	private Map<IngredientType, Integer> catalog = new HashMap<IngredientType, Integer>(); 
+	private Map<String, Integer> catalog = new HashMap<String, Integer>(); 
 	
 	/**
 	 * Make and get a catalogue of all the ingredients present in this laboratory
@@ -286,11 +276,11 @@ public class Laboratory{
 	 * @return The catalogue for this laboratory. 
 	 */
 	
-	public Map<IngredientType, Integer> getCatalog(){
+	public Map<String, Integer> getCatalog(){
 		for(AlchemicIngredient ingredient : getIngredients()) {
-			IngredientType typeOfIngredient = ingredient.getIngredientType(); 
-			int amount = getFullAmountFromLabo(ingredient); 
-			catalog.put(typeOfIngredient, amount); 
+			String nameOfIngredient = ingredient.getCompleteName(); 
+			int amount = getFullAmountFromLabo(ingredient.getCompleteName()); 
+			catalog.put(nameOfIngredient, amount); 
 		}
 		return catalog; 
 	}
@@ -301,20 +291,54 @@ public class Laboratory{
 	 * appropriate container
 	 * 
 	 * @param 	ingr
-	 * 		  	The AlchemicIngredient to be taken from this laboratory
+	 * 		  	The complete name of the AlchemicIngredient to be taken from this laboratory
 	 * @param 	amount
 	 * 		  	The amount of AlchemicIngredient to be taken from this laboratory
 	 * @return 	a new IngredientContainer with the requested ingredient in its appropriate container
 	 */
 		
-	public IngredientContainer getAmountFromLabo(AlchemicIngredient ingr, int amount) {
-		if(amount <= getFullAmountFromLabo(ingr)) {
-			IngredientContainer aContainer = new IngredientContainer(ingr, amount); 
+	public IngredientContainer getAmountFromLabo(String ingr, int amount) { 
+		if(isValidAmount(ingr, amount)) {
+			AlchemicIngredient fullIngredient = getIngredientFromName(ingr); 
+			IngredientContainer aContainer = new IngredientContainer(fullIngredient, amount); 
 			return aContainer; 
 		}
 		/* exception zal hiervoor in de plaats komen*/
 		return null; 
 		
+	}
+	
+	/**
+	 * Search for the object AlchemicIngredient based on its complete name. 
+	 * 
+	 * @param	ingredientCompleteName
+	 * 			The complete name of the alchemic ingredient			
+	 * @return	The AlchemicIngredient that has ingredientCompleteName as its complete name. 
+	 */
+	
+	private AlchemicIngredient getIngredientFromName(String ingredientCompleteName) {
+		AlchemicIngredient correspondingIngredient = null; 
+		for(AlchemicIngredient ingredient : getIngredients()) {
+			if(ingredientCompleteName.equals(ingredient.getCompleteName())) {
+				correspondingIngredient = ingredient; 
+			}
+		}
+		return correspondingIngredient; 
+	}
+	
+	/**
+	 * Checks whether the amount of ingredient that is retrieved is valid. 
+	 * 
+	 * @param	ingredient
+	 * 			The ingredient of which an amount is taken from the laboratory
+	 * @param	amount
+	 * 			An amount of ingredient that is taken from the storage of the ingredient
+	 * @return	True if the amount is a positive number and if it doesn't exceed the stock amount of ingredient.
+	 * 			| ((amount >= 0) && (amount <= getFullAmountFromLabo(AlchemicIngredient ingredient)))
+	 */
+	
+	private boolean isValidAmount(String ingredientCompleteName, int amount) {
+		return ((amount >= 0) && (amount <= getFullAmountFromLabo(ingredientCompleteName))); 
 	}
 	
 
@@ -327,8 +351,9 @@ public class Laboratory{
 	 * @return 	The full amount of the given ingredient within this laboratory
 	 */
 	
-	public int getFullAmountFromLabo(AlchemicIngredient ingredient) {
-		if(getIngredients().contains(ingredient)) {
+	public int getFullAmountFromLabo(String ingredientsCompleteName) {
+		AlchemicIngredient ingredient = getIngredientFromName(ingredientsCompleteName); 
+		if(isIngredientPresentInLab(ingredient)) {
 			for(int i=0; i<getIngredients().size(); i++) {
 				if(ingredient.equals(getIngredients().get(i))) {
 					return getIngredients().get(i).getQuantityInSpoons(); 
@@ -336,6 +361,19 @@ public class Laboratory{
 			}
 		}
 		return 0; 
+	}
+	
+	/**
+	 * Checks whether an alchemic ingredient is present in this laboratory. 
+	 * 
+	 * @param	ingredient
+	 * 			The alchemic ingredient for which the presence in the laboratory needs to be checked. 		
+	 * @return	True if the alchemic ingredient is present in this laboratory
+	 * 			| getIngredients().contains(AlchemicIngredient ingredient)
+	 */
+	
+	private boolean isIngredientPresentInLab(AlchemicIngredient ingredient) {
+		return getIngredients().contains(ingredient); 
 	}
 	
 
