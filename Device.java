@@ -34,7 +34,7 @@ public class Device {
 	 */
 	@Model @Raw
 	protected Device(Laboratory laboratory) {
-		moveTo(laboratory);
+		setLaboratory(laboratory);
 	}
 	
 	
@@ -168,6 +168,11 @@ public class Device {
 		return (canHaveAsLaboratory(getLaboratory()) NOG DINGEN TOEVOEGEN);
 	}
 	
+	@Raw
+	private void setLaboratory(Laboratory laboratory) {
+		this.laboratory = laboratory;
+	}
+	
 	/**
 	 * Move this device into the given laboratory.
 	 *
@@ -184,14 +189,14 @@ public class Device {
 	 * 
 	 */
 	@Raw @Model
-	private void moveTo(Laboratory laboratory)
+	public void moveTo(Laboratory laboratory)
 			throws IllegalLaboratoryException, IllegalStateException {
 		if (isTerminated()) 
 			throw new IllegalStateException("Device is terminated!");
 		if (!canHaveAsLaboratory(laboratory)) {
 			throw new IllegalLaboratoryException("Inappropriate laboratorium!");
 		}
-		this.laboratory  = laboratory;
+		setLaboratory(laboratory);
 	}
 	
 	/**********************************************************
