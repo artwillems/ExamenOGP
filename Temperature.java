@@ -157,11 +157,10 @@ public class Temperature {
 	     *			The coldness to be checked
 	     * @param  	hotness
 	     *			The hotness to be checked
-	     * @return	True if the given coldness and hotness are strictly higher 0, and 
-	     * 			the given coldness and hotness are not both different from 0, and the given coldness and hotness are between 0 and 10000. 
+	     * @return	True if the given coldness and hotness are not both different from 0, and the given coldness and hotness are between 0 and 10000. 
 	     */
 	    public static boolean isValidTemperature(long coldness,long hotness) {
-	        if (((coldness != 0)  && (hotness != 0)) || ((coldness == 0)  && (hotness == 0)) || !(isValidValue(coldness)) || !(isValidValue(hotness)))  {
+	        if (((coldness != 0)  && (hotness != 0)) || !(isValidValue(coldness)) || !(isValidValue(hotness)))  {
 	        	return false;
 	        }
 

@@ -19,42 +19,41 @@ public class NoIngredientInDeviceException extends RuntimeException{
 	private static final long serialVersionUID = 2L; 
 	
 	/**
-	 * Variable referencing the oven which was intended to use without any substance. 
+	 * Variable referencing the device which was intended to use without any substance. 
 	 */
 	
-	private final Oven oven; 
+	private final Device device; 
 	
 	/**
-	 * Initializes the oven involved in the new no ingredient in device 
-	 * exception
+	 * Initializes the device involved in the new no ingredient in device exception
 	 * 
 	 * @param	message
 	 * 			The message that is returned to the user, containing
 	 * 			information about the illegal action		
-	 * @param	oven
-	 * 			The oven regarding the new no ingredient in device exception
+	 * @param	device
+	 * 			The device regarding the new no ingredient in device exception
 	 * @post	The message involving the new no ingredient in device exception
-	 * 			is set to the message as stated in Oven
+	 * 			is set to the message as stated in device
 	 * 			|super(message)
-	 * @post	The oven for the new no ingredient in device exception is set
-	 * 			to the given oven.
-	 * 			|new.getOven() == oven
+	 * @post	The device for the new no ingredient in device exception is set
+	 * 			to the given device.
+	 * 			|new.getDevice() == device
 	 */
 	
-	public NoIngredientInDeviceException(String message, Oven oven) {
+	public NoIngredientInDeviceException(String message, Device device) {
 		super(message); 
-		this.oven = oven; 
+		this.device = device; 
 	}
 	
 	/**
-	 * Get the oven involved in the new no ingredient in device exception
+	 * Get the device involved in the new no ingredient in device exception
 	 * 
-	 * @return	oven
-	 * 			The oven involved in the new exception. 
+	 * @return	device
+	 * 			The device involved in the new exception. 
 	 */
 	@Basic @Immutable
-	public Oven getOven() {
-		return this.oven; 
+	public Device getDevice() {
+		return this.device; 
 	}
 	
 	

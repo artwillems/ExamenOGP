@@ -19,40 +19,39 @@ public class IllegalIngredientAdditionException extends RuntimeException{
 	private static final long serialVersionUID= 1L; 
 	
 	/**
-	 * Variable referencing the oven for which the illegal action was taken. 
+	 * Variable referencing the device for which the illegal action was taken. 
 	 */
 	
-	private final Oven oven; 
+	private final Device device; 
 	
 	/**
-	 * Initialize a new illegal ingredient addition exception for the container for which the 
-	 * exception is thrown. 
+	 * Initializes the device involved in the new illegal ingredient addition exception.
 	 * 
 	 * @param 	message
 	 * 			A message that informs to user of his illegal action
-	 * @param 	oven
-	 * 			The oven involved in the new illegal ingredient addition exception
+	 * @param 	device
+	 * 			The device involved in the new illegal ingredient addition exception
 	 * @post	A message containing information about the illegal action is given to the user.
 	 * 			|super(message) 
-	 * @post	The oven for which the new illegal ingredient addition exception is raised,
-	 * 			is set to this oven
-	 * 			|new.getOven() == oven
+	 * @post	The device for which the new illegal ingredient addition exception is raised,
+	 * 			is set to this device
+	 * 			|new.getDevice() == device
 	 */
 	
-	public IllegalIngredientAdditionException(String message, Oven oven) {
+	public IllegalIngredientAdditionException(String message, Device device) {
 		super(message); 
-		this.oven = oven; 
+		this.device = device; 
 	}
 	
 	/**
-	 * Return the oven involved in the new illegal ingredient addition exception
+	 * Return the device involved in the new illegal ingredient addition exception
 	 *
-	 * @return	oven
-	 * 			The oven involved in the new illegal ingredient addition exception
+	 * @return	device
+	 * 			The device involved in the new illegal ingredient addition exception
 	 */
 	@Basic @Immutable
-	public Oven getOven() {
-		return oven; 
+	public Device getDevice() {
+		return device; 
 	}
 	
 

@@ -51,7 +51,9 @@ public class Device {
 	 */	
 	private final List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
 	
-	
+	public boolean isValidIngredientList(List<AlchemicIngredient> IngredientList) {
+		return (IngredientList.size() <= 1);
+	}
 	
 	/**
 	 * Return the number of ingredients in this device.
@@ -194,7 +196,7 @@ public class Device {
 		if (isTerminated()) 
 			throw new IllegalStateException("Device is terminated!");
 		if (!canHaveAsLaboratory(laboratory)) {
-			throw new IllegalLaboratoryException("Inappropriate laboratorium!");
+			throw new IllegalLaboratoryException("This device cannot be placed in the given laboratory!");
 		}
 		setLaboratory(laboratory);
 	}
@@ -206,10 +208,16 @@ public class Device {
 	/**
 	 * Add an ingredient into this device.
 	 */
-	public void addIngredientFrom(IngredientContainer container) {
-		ingredientList.add(container.getAlchemicIngredient());
-		quantityList.add(container.getContainerContents());
-		container.setDelete(true);
+	public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException{
+		if (this.countIngredients() > 1) {
+    		throw new IllegalIngredientAdditionException("The device allows only one alchemic ingredient");
+    	}
+		else {
+			ingredientList.add(container.getAlchemicIngredient());
+			quantityList.add(container.getContainerContents());
+			container.setDelete(true);
+		}
+
 	}
 	
 	/*NOG KIJKEN WAT IK BIJ newAlchemicIngredient zet, want dit moet resultaat zijn van de hele ingredientList*/
@@ -231,98 +239,15 @@ public class Device {
 	}
 
 	/*HEEFT HET NUT DEZE IN SUPERCLASS TE ZETTEN? WANT BIJ IEDERE SUBCLASS ANDERS, EN HIER GEVEN WE NIKS VAN CODE IN*/
-	public void executeAlchemicOperation() {
+	public void executeAlchemicOperation() throws NoIngredientInDeviceException {
+		if (this.countIngredients() < 1) {
+			throw new NoIngredientInDeviceException("There is no ingredient in this device");
+		}
 		
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	 * PROBEERSEL JEROME
-	 */
-	
-	/**********************************************************
-     * Constructors
-     **********************************************************/
-	/**
-	 * Initialize a new device with given laboratory that owns this device.
-	 * @param 	laboratory
-	 * 			The laboratory that owns this new device.
-	 * @effect  This new device is moved to the given laboratory. 
-	 * 			If the given laboratory is not valid, a default laboratory is set.
-	 *          | moveTo(laboratory)    
-	 * @post    The new device is not terminated.
-	 *          | !new.isTerminated()      
-	 */
-	@Model @Raw
-	protected Device(Laboratory laboratory) {
-		setLaboratory(laboratory);
-	}
-	
-	
-	
-	/**********************************************************
-     * Ingredient
-     **********************************************************/
-	
-	private List<AlchemicIngredient> IngredientList = new ArrayList<AlchemicIngredient>();
-	
-	public boolean isValidIngredientList(List<AlchemicIngredient> IngredientList) {
-		return (IngredientList.size() <= 1);
-	}
-	
-	public List<AlchemicIngredient> getIngredientList(){
-		return IngredientList;
-	}
-	
-	
-	
-	
-	
-	/**********************************************************
-     * Laboratory
-     **********************************************************/
-	
-	private Laboratory laboratory = null;
-	
-	private void setLaboratory(Laboratory laboratory) throws InvalidLaboratoryException{
-		if () {
-			this.laboratory = laboratory;
-		}
-		else {
-			throw new InvalidLaboratoryException("This device cannot be placed in this laboratory");
-		}
-	}
-	
-	
-	public Laboratory getLaboratory() {
-		return laboratory;
-	}
-	
-	
-	public boolean isValidLaboratory(Laboratory laboratory) {
-		return ((laboratory != null) && 
-	}
-	
-	
+
 	
 	
 	

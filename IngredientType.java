@@ -13,7 +13,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar	Each ingredientType must have a valid state.
  * 			| isValidState(getState())
  * @invar	Each ingredientType must have a valid standard temperature.
- * 			| isValidStandardTemperature(getStandardTemperature())
+ * 			| isValidStandardTemp(getStandardTemp())
  * 
 * @author Jérôme D'hulst, Marie Levrau, Art Willems
 */
@@ -41,12 +41,12 @@ public class IngredientType {
 	 *          | setState(state) 
 	 * @effect  The standard temperature of the ingredient type is set to the given standard temperature.
 	 * 			If the given standard temperature is not valid, a default standard temperature is set.
-	 *          | setStandardTemperature(standardTemp) 	 
+	 *          | setStandardTemp(standardTemp) 	 
 	 */
 	public IngredientType(String name, String state, Temperature standardTemp) {
 		setName(name);
 		setState(state);
-		setStandardTemperature(standardTemp);
+		setStandardTemp(standardTemp);
 	}
 	
 	/**
@@ -222,37 +222,47 @@ public class IngredientType {
     public Temperature getStandardTemp() {
         return standardTemp;
     }
-
-    /*NOG AANPASSEN*/
-    /**
-     * Return the standard temperature of this ingredientType.
+    
+	 /**
+     * Set the standard temperature of this ingredientType to the given standard temperature.
+     * 
+     * @param standardTemp
+     * 		  The new standard temperature for this ingredientType
      */
     @Raw @Basic 
-    public List<Long> getStandardTemperature() {
-    	List<Long> standardTemperature = new ArrayList<Long>();
-    	standardTemperature.add(standardColdness);
-    	standardTemperature.add(standardHotness);
-        return standardTemperature;
+    public Temperature setStandardTemp(Temperature standardTemp) {
+    	if (isValidStandardTemp(standardTemp)) {
+    		this.standardTemp = standardTemp;
+    	}
+    	else {
+    		this.standardTemp = this.getDefaultStandardTemp();
+    	}
     }
     
-
     /**
-	 * Variable referencing the standard temperature of this ingredientType.
-	 */
+     * Check whether the given standard temperature is legal for this ingredientType.
+     * 
+     * @param  	standardTemp
+     *			The standard temperature to be checked
+     * @return	True if the given standard temperature is strictly higher than [0,0].
+     */
+    public static boolean isValidStandardTemp(Temperature standardTemp) {
+        if ((standardTemp.getTemperature().get(0) == 0)  && (standardTemp.getTemperature().get(1) == 0)){
+        	return false;
+        }
 
-    @Raw @Model 
-    private void setStandardTemperature(long standardColdness,long standardHotness) {
-        if (isValidStandardTemperature(standardColdness,standardHotness)) {
-        		this.standardColdness = standardColdness;
-        		this.standardHotness = standardHotness;
-        } else {
-        		this.standardColdness = this.getDefaultStandardTemperature().get(0);
-        		this.standardHotness = this.getDefaultStandardTemperature().get(1);
+        else {
+        	return true;
         }
     }
+
+    private static final Temperature defaultStandardTemp = new Temperature(0,20);
     
 
-    
+    @Model
+    private static Temperature getDefaultStandardTemp() {
+    	return defaultStandardTemp;
+    }
 
     
     
