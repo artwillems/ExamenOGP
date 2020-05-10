@@ -30,10 +30,8 @@ public class IngredientType {
 	 * 			The name of the new ingredientType.
 	 * @param 	state
 	 * 			The state of the new ingredientType.
-	 * @param	standardColdness
-	 * 			The standard coldness of the new ingredientType.
-	 * @param	standardHotness
-	 * 			The standard hotness of the new ingredientType.
+	 * @param	standardTemp
+	 * 			The standard temperature of the new ingredientType.
 	 * 
 	 * @effect  The name of the ingredient type is set to the given name.
 	 * 			If the given name is not valid, a default name is set.
@@ -43,33 +41,26 @@ public class IngredientType {
 	 *          | setState(state) 
 	 * @effect  The standard temperature of the ingredient type is set to the given standard temperature.
 	 * 			If the given standard temperature is not valid, a default standard temperature is set.
-	 *          | setStandardTemperature(standardTemperature) 	 
+	 *          | setStandardTemperature(standardTemp) 	 
 	 */
-	public IngredientType(String name, String state, int standardColdness,int standardHotness) {
+	public IngredientType(String name, String state, Temperature standardTemp) {
 		setName(name);
 		setState(state);
-		setStandardTemperature(standardColdness,standardHotness);
+		setStandardTemperature(standardTemp);
 	}
 	
 	/**
 	 * Initialize a new ingredientType with given name and standard temperature.
 	 * @param 	name
 	 * 			The name of the new ingredientType.
-	 * @param	standardColdness
-	 * 			The standard coldness of the new ingredientType.
-	 * @param	standardHotness
-	 * 			The standard hotness of the new ingredientType.
-	 * 
-	 * @effect  The name of the ingredient type is set to the given name.
-	 * 			If the given name is not valid, a default name is set.
-	 *          | setName(name) 
-	 * @effect  The standard temperature of the ingredient type is set to the given standard temperature.
-	 * 			If the given standard temperature is not valid, a default standard temperature is set.
-	 *          | setStandardTemperature(standardTemperature) 	 
+	 * @param	standardTemp
+	 * 			The standard temperature of the new ingredientType.
+	 * @effect	The new ingredient type is initialized with the given name, state and standard temperature.
+	 * 			| this(name,null,standardTemp)
+	 *  
 	 */
-	public IngredientType(String name, int standardColdness,int standardHotness) {
-		setName(name);
-		setStandardTemperature(standardColdness,standardHotness);
+	public IngredientType(String name, Temperature standardTemp) {
+		this(name,null,standardTemp);
 	}
 	
 	/**********************************************************
@@ -217,19 +208,22 @@ public class IngredientType {
      * standardTemperature
      **********************************************************/
     
-    /**
-	 * Variable referencing the standard hotness of this ingredientType.
+	/**
+	 * Variable referencing the standard temperature of this ingredientType.
 	 */
-	private long standardHotness = 0;
-	
-    /**
-	 * Variable referencing the standard coldness of this ingredientType.
-	 */
-	private long standardColdness = 0;
+	private Temperature standardTemp = null;
 	
 	
+	
+	 /**
+     * Return the standard temperature of this ingredientType.
+     */
+    @Raw @Basic 
+    public Temperature getStandardTemp() {
+        return standardTemp;
+    }
 
-	
+    /*NOG AANPASSEN*/
     /**
      * Return the standard temperature of this ingredientType.
      */
@@ -257,37 +251,9 @@ public class IngredientType {
         }
     }
     
-    /**
-     * Check whether the given standard temperature is a legal standard temperature for a ingredientType.
-     * 
-     * @param  	standardTemperature
-     *			The standard temperature to be checked
-     * @return	True if the given standard temperature is strictly higher than [0,0] and 
-     * 			the coldness and hotness are not both different from 0. 
-     */
-    public static boolean isValidStandardTemperature(long standardColdness,long standardHotness) {
-        if ((standardColdness != 0)  && (standardHotness != 0)) {
-        	return false;
-        }
-        else {
-        	return true;
-        }
-    }
+
     
-    /**
-     * Return the standard temperature for a new ingredientType which is to be used when the
-     * given standard temperature is not valid.
-     *
-     * @return   A valid standard temperature.
-     *         | isValidStandardTemperature(result)
-     */
-    @Model
-    private static List<Integer> getDefaultStandardTemperature() {
-    	List<Integer> defaultStandardTemperature = new ArrayList<Integer>();
-    	defaultStandardTemperature.add(0);
-    	defaultStandardTemperature.add(20);
-        return defaultStandardTemperature;
-    }
+
     
     
 }
