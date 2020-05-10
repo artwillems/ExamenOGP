@@ -112,47 +112,53 @@ public class Laboratory{
 	 */
 	
 	private void setIngredients(ArrayList<AlchemicIngredient> listOfIngredients) {
-		if(!areThereDoubleIngredients(listOfIngredients)) {
-			this.listOfIngredients = listOfIngredients; 
-		}
-		this.listOfIngredients = null; 
+		this.listOfIngredients = listOfIngredients; 	 
 	}
 	
 	/**
 	 * Checks if the different ingredient types in the laboratory are unique, meaning there is not two times
-	 * the same AlchemicIngredient
+	 * the same AlchemicIngredient.getCompleteName(). 
 	 * 
-	 * @param	theIngredients
+	 * @param	list
 	 * 		  	The list of all the ingredients that are put into this laboratory
-	 * @return 	True if some ingredientType does not appear more than once in the list of ingredients, false if otherwise.
+	 * @return 	True if some ingredient's complete name does not appear more than once in the list of ingredients, 
+	 * 			false if otherwise.
+	 * 			| (uniqueIngredients.size() == fullNamesOfIngredients.size()) 
 	 */
 	
-	private boolean areThereDoubleIngredients(ArrayList<AlchemicIngredient> theIngredients) {
-		List<IngredientType> typesOfIngredients = new ArrayList<IngredientType>(); 
-		for(AlchemicIngredient ingredient : theIngredients) {
-			IngredientType typeOfIngredient = ingredient.getIngredientType();
-			typesOfIngredients.add(typeOfIngredient); 
+	private boolean areThereNoDoubleIngredients(List<AlchemicIngredient> list) {
+		List<String> fullNamesOfIngredients = new ArrayList<String>(); 
+		for(AlchemicIngredient ingredient : list) {
+			String fullNameOfIngredient = ingredient.getCompleteName();
+			fullNamesOfIngredients.add(fullNameOfIngredient); 
 		}
-		Set<IngredientType> uniqueIngredients = new HashSet<IngredientType>(typesOfIngredients); 
-		return (uniqueIngredients.size() == typesOfIngredients.size()); 
+		Set<String> uniqueIngredients = new HashSet<String>(fullNamesOfIngredients); 
+		return (uniqueIngredients.size() == fullNamesOfIngredients.size()); 
 	}
 	
-	private void combineDoubles(List<AlchemicIngredient> listOfIngredients) {
-		
-		/*find the double IngredientType in the list*/
-		/*this implementation is largely incorrect, what with triples, quadruples?*/
-		
-		for(int currentIngredient=0; currentIngredient<listOfIngredients.size(); currentIngredient++) {
-			for(int nextIngredient=currentIngredient + 1; nextIngredient<listOfIngredients.size(); nextIngredient++) {
-				if(listOfIngredients.get(currentIngredient).equals(listOfIngredients.get(nextIngredient))) {
-					int firstAmount = listOfIngredients.get(currentIngredient).getQuantityInSpoons(); 
-					int secondAmount = listOfIngredients.get(nextIngredient).getQuantityInSpoons(); 
-					int combinedAmount = firstAmount + secondAmount; 
-				}
+	/**
+	 * Combine all the amounts of a certain AlchemicIngredient in this laboratory into one single amount
+	 * expressed in spoons. 
+	 * 
+	 * @param	ingredient
+	 * 			The AlchemicIngredient for which all its amounts are combined into one.			
+	 * @return	The total amount of that certain ingredient present in the laboratory.
+	 */
+	
+	private int combineAmounts(AlchemicIngredient ingredient) {
+		int oldAmount = 0; 
+		for(AlchemicIngredient otherIngredients : getIngredients()) {
+			if(ingredient.getCompleteName() == otherIngredients.getCompleteName()) {
+				oldAmount += otherIngredients.getQuantityInSpoons(); 
+			}
+			else {
+				oldAmount = ingredient.getQuantityInSpoons(); 
 			}
 		}
-	}
+		return oldAmount; 
 	
+	}
+		
 	/**
 	 * Give a list of all ingredients present at the laboratory. 
 	 * 
@@ -270,21 +276,36 @@ public class Laboratory{
 	private Map<String, Integer> catalog = new HashMap<String, Integer>(); 
 	
 	/**
-	 * Make and get a catalogue of all the ingredients present in this laboratory
+	 * Make and get a catalog of all the ingredients present in this laboratory
 	 * together with their total amounts
 	 * 
-	 * @return The catalogue for this laboratory. 
+	 * @return The catalog for this laboratory. 
 	 */
 	
 	public Map<String, Integer> getCatalog(){
-		for(AlchemicIngredient ingredient : getIngredients()) {
-			String nameOfIngredient = ingredient.getCompleteName(); 
-			int amount = getFullAmountFromLabo(ingredient.getCompleteName()); 
-			catalog.put(nameOfIngredient, amount); 
+		/**
+		 * If a certain AlchemicIngredient.getCompleteName() does not appear more than once in the laboratory
+		 * we can safely put them in the catalog map. Otherwise we need to take the full amount of a certain ingredient.
+		 * A map does not accept two identical keys, so when a duplicate key is added, the first one will be dropped, but
+		 * this is of no matter, since we work with getFullAmount for the values.  
+		 */
+		
+		if(areThereNoDoubleIngredients(getIngredients())){
+			for(AlchemicIngredient ingredient : getIngredients()) {
+				String name = ingredient.getCompleteName(); 
+				int quantity = ingredient.getQuantityInSpoons(); 
+				catalog.put(name, quantity); 
+			}
+		}
+		else {
+			for(AlchemicIngredient ingredient : getIngredients()) {
+				String nameOfIngredient = ingredient.getCompleteName(); 
+				int amount = getFullAmountFromLabo(ingredient.getCompleteName()); 
+				catalog.put(nameOfIngredient, amount); 
+			}	
 		}
 		return catalog; 
 	}
-	
 	
 	/**
 	 * Get a certain amount of AlchemicIngredient from this laboratory and put it in its
@@ -299,6 +320,7 @@ public class Laboratory{
 		
 	public IngredientContainer getAmountFromLabo(String ingr, int amount) { 
 		if(isValidAmount(ingr, amount)) {
+			/* call corresponding AlchemicIngredient from String ingredient*/
 			AlchemicIngredient fullIngredient = getIngredientFromName(ingr); 
 			IngredientContainer aContainer = new IngredientContainer(fullIngredient, amount); 
 			return aContainer; 
@@ -311,19 +333,23 @@ public class Laboratory{
 	/**
 	 * Search for the object AlchemicIngredient based on its complete name. 
 	 * 
+	 * 
 	 * @param	ingredientCompleteName
 	 * 			The complete name of the alchemic ingredient			
 	 * @return	The AlchemicIngredient that has ingredientCompleteName as its complete name. 
 	 */
 	
-	private AlchemicIngredient getIngredientFromName(String ingredientCompleteName) {
-		AlchemicIngredient correspondingIngredient = null; 
-		for(AlchemicIngredient ingredient : getIngredients()) {
-			if(ingredientCompleteName.equals(ingredient.getCompleteName())) {
-				correspondingIngredient = ingredient; 
+	private AlchemicIngredient getIngredientFromName(String ingredientCompleteName) throws IngredientNotPresentInLabException {
+		AlchemicIngredient correspondingIngredient = null;
+		if(isIngredientPresentInLab(ingredientCompleteName)) {
+			for(AlchemicIngredient ingredient : getIngredients()) {
+				if(ingredientCompleteName.equals(ingredient.getCompleteName())) {
+					correspondingIngredient = ingredient; 
+				}
 			}
+			return correspondingIngredient; 
 		}
-		return correspondingIngredient; 
+		throw new IngredientNotPresentInLabException("Ingredient cannot be retrieved from name, because it is not present", this); 
 	}
 	
 	/**
@@ -344,37 +370,45 @@ public class Laboratory{
 
 	/**
 	 * Get the full amount of a specific ingredient stored in various places and containers within this laboratory
-	 * NOTE: deze getter moet nog throwen, exception nog niet geschreven
 	 * 
 	 * @param	ingredient
 	 * 		  	The AlchemicIngredient of which the full amount must be known
-	 * @return 	The full amount of the given ingredient within this laboratory
+	 * @return 	The full amount of the given ingredient within this laboratory expressed in spoons. 
 	 */
 	
-	public int getFullAmountFromLabo(String ingredientsCompleteName) {
-		AlchemicIngredient ingredient = getIngredientFromName(ingredientsCompleteName); 
-		if(isIngredientPresentInLab(ingredient)) {
+	public int getFullAmountFromLabo(String ingredientsCompleteName) throws IngredientNotPresentInLabException{
+		int full = 0; 
+		if(isIngredientPresentInLab(ingredientsCompleteName)) {
+			AlchemicIngredient ingredient = getIngredientFromName(ingredientsCompleteName); 
 			for(int i=0; i<getIngredients().size(); i++) {
 				if(ingredient.equals(getIngredients().get(i))) {
-					return getIngredients().get(i).getQuantityInSpoons(); 
+					full = combineAmounts(ingredient); 
 				}
 			}
 		}
-		return 0; 
+		else {
+			throw new IngredientNotPresentInLabException("The ingredient you tried to get the full amount of, is not present", this); 
+		} 
+		return full; 
 	}
 	
 	/**
 	 * Checks whether an alchemic ingredient is present in this laboratory. 
 	 * 
-	 * @param	ingredient
-	 * 			The alchemic ingredient for which the presence in the laboratory needs to be checked. 		
+	 * @param	ingredientName
+	 * 			The alchemic ingredient's complete name of which the presence in the laboratory needs to be checked. 		
 	 * @return	True if the alchemic ingredient is present in this laboratory
 	 * 			| getIngredients().contains(AlchemicIngredient ingredient)
 	 */
 	
-	private boolean isIngredientPresentInLab(AlchemicIngredient ingredient) {
-		return getIngredients().contains(ingredient); 
+	private boolean isIngredientPresentInLab(String ingredientName) {
+		boolean flag = false; 
+		for(int i= 0; i<getIngredients().size(); i++) {
+			if(ingredientName.equals(getIngredients().get(i).getCompleteName())) {
+				flag = true; 
+			}
+		}
+		return flag; 
 	}
 	
-
 }

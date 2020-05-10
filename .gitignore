@@ -10,3 +10,4 @@
 /IllegalIngredientAdditionException.class
 /NoIngredientInDeviceException.class
 /Temperature.class
+/IngredientNotPresentInLabException.class
