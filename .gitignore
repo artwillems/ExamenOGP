@@ -11,3 +11,4 @@
 /NoIngredientInDeviceException.class
 /Temperature.class
 /IngredientNotPresentInLabException.class
+/InvalidLaboratoryAmountException.class
