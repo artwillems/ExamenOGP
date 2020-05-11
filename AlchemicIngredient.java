@@ -56,6 +56,7 @@ public class AlchemicIngredient {
 	}
 	
 	
+	
 	/**
 	 * Initialize a new ingredient with a quantity, unit and ingredientType list, 
 	 * 
