@@ -250,6 +250,33 @@ public class Laboratory{
 		int quant = ingredient.getQuantity();
 		return((quant >= 0) && (quant <= getCapacity()));
 	}
+	
+	private AlchemicIngredient ingredientBroughtToStandardTemp(AlchemicIngredient ingredient) {	
+		Temperature standardTemperature = ingredient.getIngredientType().getStandardTemp();
+		if(ingredient.getTemperature() == standardTemperature) {
+			return ingredient; 
+		}
+		else {
+			/*retrieve arguments that do not change in this operation*/
+			int amount = ingredient.getQuantityInSpoons(); 
+			String unit = ingredient.getUnit(); 
+			String state = ingredient.getState(); 
+			String specialName = ingredient.getSpecialName(); 
+			List<IngredientType> typeList = ingredient.getIngredientTypeList();
+			long newHotness = 0; 
+			long newColdness = 0; 
+			
+			/*bring the ingredient back to its standard temperature using an oven or coolingbox*/
+			
+			if(ingredient.getTemperature().get(1) > standardTemperature.getHotness()) {
+					
+			}
+			else {
+				
+			}
+			return null; 
+		}
+	}
 
 	/**
 	 * Store a new AlchemicIngredient in this laboratory.
