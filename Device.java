@@ -51,9 +51,27 @@ public class Device {
 	 */	
 	private final List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
 	
+	/**
+	 * Checks whether the ingredientList is a valid list.
+	 * @param 	IngredientList
+	 * 			The list to be checked.
+	 * @return	True if and only if the ingredient list contains maximum one ingredient.
+	 * 			| result ==
+	 * 			|	IngredientList.size() <=1
+	 */
 	public boolean isValidIngredientList(List<AlchemicIngredient> IngredientList) {
 		return (IngredientList.size() <= 1);
 	}
+	
+	/**
+	 * Return the list of Alchemic Ingredients of this device.
+	 */
+	public List<AlchemicIngredient> getIngredientList(){
+		return ingredientList;
+	}
+	
+	
+	
 	
 	/**
 	 * Return the number of ingredients in this device.
@@ -62,6 +80,7 @@ public class Device {
 	public int countIngredients() {
 		return ingredientList.size();
 	}
+	
 	
 	
 	/**

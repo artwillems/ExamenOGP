@@ -48,7 +48,7 @@ public class AlchemicIngredient {
 		setState(state);
 		setQuantity(quantity);
 		setUnit(unit);
-		setTemperature(hotness,coldness);
+		setTemperature(coldness,hotness);
 		setSpecialName(specialName);
 		
 		
@@ -141,8 +141,8 @@ public class AlchemicIngredient {
 	 * 			| setTemperature(water.getTemperature().get(1), water.getTemperature().get(0))
 	 */
 	public AlchemicIgredient(int quantity) {
-		this(quantity, "spoon", water, 0, 0, "Liquid",null);
-		setTemperature(water.getTemperature().get(1), water.getTemperature().get(0));
+		this(quantity, "spoon", 0, 0, "Liquid",null);
+		setTemperature(water.getTemperature().get(0), water.getTemperature().get(1));
 	} 
 	
 	
@@ -573,15 +573,31 @@ public class AlchemicIngredient {
 	
 	
 	
-    /**
-     * Check whether the given name is a legal name for an ingredient.
+	/**
+     * Check whether the given name is a legal name for an ingredientType.
      * 
      * @param  	name
      *			The name to be checked
      * @return	True if 
+     * (name.charAt(0)).matches("[A-Z^()]+")
+     * String.valueOf(name.charAt(0))
      */
-    public static boolean isValidName(String name) {
-        return (name != null && name.matches("[a-zA-Z^()]+") && (name.length() >= 2) );
+	public static boolean isValidName(String name) {
+    	String[] splitName = name.split(" ");
+    	boolean result = true;
+    	if (splitName.length > 1) {
+    		for (int i = 0; i < splitName.length ; i++) {
+    			  if  ((splitName[i] == null) || (splitName[i].length() < 2) || (String.valueOf(splitName[i].charAt(0)).matches("[A-Z^()]+")) == false || (splitName[i].substring(1).matches("[a-z]+") == false)) {
+    				  result = false;
+    				  break;
+    			  }
+    			}
+    		return result;
+    	}
+    	else {
+    		return (name != null && String.valueOf(name.charAt(0)).matches("[A-Z^()]+") && name.substring(1).matches("[a-z]+") && (name.length() >= 3)  );
+    	}
+    }
     
         
 	/**
@@ -645,7 +661,7 @@ public class AlchemicIngredient {
 	 * 			|		then new.getSpecialName().equals(name)
 	 */
 	private void setSpecialName(String specialName) {
-		if (isValidSpecialName(specialName)) {
+		if (isValidName(specialName)) {
 			this.specialName = specialName;
 		}
 	}
@@ -658,8 +674,6 @@ public class AlchemicIngredient {
 	}
 	
 	
-	public static boolean isValidSpecialName(String name) {
-        return (name.matches("[a-zA-Z^()]+") && (name.length() >= 2) );
     
 	
 	
@@ -758,7 +772,7 @@ public class AlchemicIngredient {
 	 * @param 	coldness
 	 * 			The new coldness for this ingredient.
 	 */
-	private void setTemperature(long hotness, long coldness) {
+	private void setTemperature(long coldness, long hotness) {
 		if (isValidTempCombination(hotness,coldness)) {
 			setHotness(hotness);
 			setColdness(coldness);
@@ -794,7 +808,12 @@ public class AlchemicIngredient {
 	}
 	
 	
-
+	protected void changeTemp(long coldness, long hotness) {
+		setTemperature(coldness,hotness);
+		
+	}
+	
+	
 	
 	
 	

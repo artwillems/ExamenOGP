@@ -34,75 +34,115 @@ public class CoolingBox extends Device {
 	
 	
 	@Raw
-	public CoolingBox(Laboratory laboratory, int presetColdness,int presetHotness) {
+	public CoolingBox(Laboratory laboratory, List<Long> temperatureSetting) {
 		super(laboratory);
-		setPresetTemperature(presetColdness, presetHotness);
+		setTemperature(temperatureSetting.get(0), temperatureSetting.get(1));
 	}
 	
+	
 	/**********************************************************
-	 * presetTemperature
+	 * Temperature
 	 **********************************************************/
-	   /**
-		 * Variable referencing the preset hotness of this cooling box.
-		 */
-		private int presetHotness = 0;
-		
-	    /**
-		 * Variable referencing the preset coldness of this cooling box.
-		 */
-		private int presetColdness = 0;
-		
-		
-
-		
-	    /**
-	     * Return the preset temperature of this cooling box.
-	     */
-	    @Raw @Basic 
-	    public List<Integer> getPresetTemperature() {
-	    	List<Integer> presetTemperature = new ArrayList<Integer>();
-	    	presetTemperature.add(presetColdness);
-	    	presetTemperature.add(presetHotness);
-	        return presetTemperature;
-	    }
-	    
-
-	    /**
-		 * Variable referencing the preset temperature of this cooling box.
-		 */
-
-	    @Raw @Model 
-	    private void setPresetTemperature(int presetColdness,int presetHotness) {
-	        		this.presetColdness = presetColdness;
-	        		this.presetHotness = presetHotness;   
-	    }
-	    
-		/**********************************************************
-		 * methodes
-		 **********************************************************/
-	    
-	    /**
-		 * Add an ingredient into this cooling box.
-		 */
-	    @Override
-		public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException {
-	    	if (this.countIngredients() > 1) {
-	    		throw new IllegalIngredientAdditionException("The cooling box allows only one alchemic ingredient");
-	    	}
+	
+	
+	/**
+	 * Variable referencing the max temperature of hotness and coldness of the oven.
+	 */
+	private long maxTemp = 10000;
+	
+	
+	/**
+	 * Variable referencing the hotness of the oven.
+	 */
+	private long boxHotness = 0;
+	
+	/**
+	 * Variable referencing the coldness of the oven.
+	 */
+	private long boxColdness = 0;
+	
+	private void setHotness(long hotness) {
+		this.boxHotness = hotness;
+	}
+	
+	private void setColdness(long coldness) {
+			this.boxColdness = coldness;
+	}
+	
+	private void setTemperature(long coldness, long hotness) {
+		if (isValidTempCombination(coldness,hotness)){
+			setColdness(coldness);
+			setHotness(hotness);
 		}
+	}
 	
-	    /**
-		 * Cool the ingredient. 
-		 */
-	    @Override
-	    public void executeAlchemicOperation() NoIngredientInDeviceException{
-			if (this.countIngredients() < 1) {
-				throw new NoIngredientInDeviceException("There is no ingredient in this cooling box");
-			}
-			else {
-				/*VERLAGEN NAAR INGESTELDE TEMPERATUUR*/
-			}
-		}
+	public boolean isValidTempCombination(long coldness, long hotness) {
+		return (((coldness == 0) || (hotness == 0)) && ((hotness >= 0) && (hotness<= getMaxTemp()) && (coldness >= 0 && coldness <= getMaxTemp())));
+		
+	}
+	
+	public long getMaxTemp() {
+		return maxTemp;
+	}
+	
+	public long getBoxHotness() {
+		return this.boxHotness;
+	}
+	
+	public long getBoxColdness() {
+		return this.boxColdness;
+	}
+	
+	public List<Long> getOvenTemperature(){
+		List<Long> boxTemperature = new ArrayList<Long>();
+		boxTemperature.add(this.getBoxColdness());
+		boxTemperature.add(this.getBoxHotness());
+		return boxTemperature;
+	}
 	
 	
+	
+	
+	/**********************************************************
+	 * methodes
+	 **********************************************************/
+	
+	 /**
+	 * Add an ingredient into this oven.
+	 */
+    @Override
+	public void addIngredientFrom(IngredientContainer container)  {
+    	
+	}
+
+    /**
+	 * Heat the ingredient. 
+	 */
+    @Override
+    public void executeAlchemicOperation() {
+    	if (this.countIngredients() < 1) {
+    		throw new NoIngredientInDeviceException("There is no ingredient in this device");
+    	}
+    	else {
+    		AlchemicIngredient ingredient = this.getIngredientList().get(0);
+    		if (getBoxColdness() == 0) {
+    			long newHotness = getBoxHotness(); 
+    			if (ingredient.getHotness() > newHotness) {
+    				ingredient.changeTemp(0, newHotness);
+    			}
+    		}
+    		else {
+    			long newColdness = getBoxColdness(); 
+    			if (ingredient.getColdness() < newColdness) {
+    				ingredient.changeTemp(newColdness,0);
+    			}
+    		}
+    		this.getIngredientList().clear();
+    		this.getIngredientList().add(ingredient);
+    	}
+		
+	}
+    
+    
 }
+	
