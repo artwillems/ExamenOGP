@@ -219,7 +219,34 @@ public class Laboratory{
 		int listLength = listWithDevices.size();
 		return (listLength == setLength);
 	}
-
+	
+	/**
+	 * Seek an oven in this laboratory
+	 * 
+	 * NOTE: Er moet nog nagedacht worden hoe we dit zullen doen.
+	 * de instanceof methode werkt niet, omdat Oven een subclasse is. We zullen dus een soort
+	 * getDeviceType moeten voorzien die strings teruggeeft voor elk device met "kettle", "oven", etc. 
+	 * 
+	 * NOTE: Voorlopig is het Immutable, kan nog veranderen naargelang implementatie
+	 * 
+	 * @return	the first oven that is present in this laboratory
+	 */
+	@Immutable
+	public Oven seekOven() {
+		Oven foundOven = null; 
+		return foundOven; 
+	}
+	
+	/**
+	 * Seek a Coolingbox in this laboratory
+	 * NOTE: zelfde opmerkingen als bij seekOven. 
+	 * @return
+	 */
+	@Immutable
+	public CoolingBox seekCoolingBox() {
+		CoolingBox foundFridge = null;
+		return foundFridge; 
+	}
 	/********************************************
 	 * storing and adding ingredients
 	 ***************/
@@ -251,30 +278,64 @@ public class Laboratory{
 		return((quant >= 0) && (quant <= getCapacity()));
 	}
 	
-	private AlchemicIngredient ingredientBroughtToStandardTemp(AlchemicIngredient ingredient) {	
+	/**
+	 * Checks whether the ingredient is at its ingredient type's standard temperature
+	 * 
+	 * @param	ingredient
+	 * 			The AlchemicIngredient that is checked on temperature
+	 * @return	true if the ingredient is at its standard temperature, false otherwise
+	 * 			| ingredient.getTemperature() == ingredient.getIngredientType().getStandardTemp()
+	 */
+	
+	private boolean hasStandardTemperature(AlchemicIngredient ingredient) {
 		Temperature standardTemperature = ingredient.getIngredientType().getStandardTemp();
-		if(ingredient.getTemperature() == standardTemperature) {
+		return ingredient.getTemperature() == standardTemperature;
+	}
+	
+	/**
+	 * Get the standard hotness out of a certain ingredient type's standard temperature. 
+	 * 
+	 * @param	ingredient
+	 * 			The ingredient we need to get the standard hotness of		 
+	 * @return	the standard hotness
+	 */
+	
+	private long getStandardHotness(AlchemicIngredient ingredient) {
+		return ingredient.getIngredientType().getStandardTemp().getHotness(); 
+	}
+	
+	private AlchemicIngredient ingredientBroughtToStandardTemp(AlchemicIngredient ingredient) {	
+		if(hasStandardTemperature(ingredient)) {
 			return ingredient; 
 		}
 		else {
-			/*retrieve arguments that do not change in this operation*/
-			int amount = ingredient.getQuantityInSpoons(); 
-			String unit = ingredient.getUnit(); 
-			String state = ingredient.getState(); 
-			String specialName = ingredient.getSpecialName(); 
-			List<IngredientType> typeList = ingredient.getIngredientTypeList();
-			long newHotness = 0; 
-			long newColdness = 0; 
 			
 			/*bring the ingredient back to its standard temperature using an oven or coolingbox*/
-			
-			if(ingredient.getTemperature().get(1) > standardTemperature.getHotness()) {
-					
+			AlchemicIngredient adaptedIngredient = null; 
+			if(ingredient.getTemperature().get(1) < getStandardHotness(ingredient)) {
+				/**
+				 * Deze functies hieronder zal ik echt nog moeten nakijken, naargelang Oven en CoolingBox evolueren. 
+				 * Als ze correct zijn, dan worden ze in deelfuncties geplaatst voor de leesbaarheid uiteraard. 
+				 * getIngredientList() zal waarschijnlijk nog vervangen worden addIngredients, dat is beter. 
+				 */
+				List<Long> temperatures = new ArrayList<Long>(); 
+				temperatures.add(getStandardHotness(ingredient)); 
+				long coldness = 0; 
+				temperatures.add(coldness); 
+				Oven thisOven = new Oven(this, temperatures); 
+				thisOven.getIngredientList().add(ingredient); 
+				thisOven.executeAlchemicOperation();
+				List<AlchemicIngredient> ingredientList = thisOven.getIngredientList(); 
+				for(AlchemicIngredient viewed : ingredientList) {
+					if(ingredient.getCompleteName().equals(viewed.getCompleteName())){
+						return adaptedIngredient = viewed; 
+					}
+				}
 			}
 			else {
 				
 			}
-			return null; 
+			return adaptedIngredient; 
 		}
 	}
 
