@@ -227,16 +227,25 @@ public class Device {
 	/**
 	 * Add an ingredient into this device.
 	 */
-	public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException{
+	public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException, DifferentLaboratoryException{
 		if (this.countIngredients() > 1) {
     		throw new IllegalIngredientAdditionException("The device allows only one alchemic ingredient");
     	}
 		else {
-			ingredientList.add(container.getAlchemicIngredient());
-			quantityList.add(container.getContainerContents());
-			container.setDelete(true);
+			if (haveSameLaboratory(container.getAlchemicIngredient())) {
+				ingredientList.add(container.getAlchemicIngredient());
+				quantityList.add(container.getContainerContents());
+				container.setDelete(true);
+			}
+			else {
+				throw new DifferentLaboratoryException(this);
+			}
 		}
 
+	}
+	
+	public boolean haveSameLaboratory(AlchemicIngredient ingredient) {
+		return (getLaboratory() == ingredient.getLaboratory());
 	}
 	
 	/*NOG KIJKEN WAT IK BIJ newAlchemicIngredient zet, want dit moet resultaat zijn van de hele ingredientList*/

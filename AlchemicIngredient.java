@@ -254,29 +254,6 @@ public class AlchemicIngredient {
 	};
 	
 	
-	/**********************************************************
-     * In use
-     **********************************************************/
-	 
-	
-	private boolean inUse = false;
-	
-	private void setInUse(boolean inUse) {
-		this.inUse = inUse;
-	}
-	
-	public boolean getInUsed() {
-		return inUse;
-	}
-	
-	protected void useIngredient() throws AlreadyInUseException {
-		if (getInUsed()==false) {
-			setInUse(true);
-		}
-		else {
-			throw new AlreadyInUseException();
-		}
-	}
 	
 	
 	
@@ -613,39 +590,31 @@ public class AlchemicIngredient {
 		return AlphabeticNameList;
 	}
 
-	/**
-	 * Return the simple name/ simple names of the ingredientType/Types of this ingredient. 
-	 */
-	public List<String> getSimpleName(){
-		List<String> SimpleNameList = getAlphabeticNameList();
-		for (int i = 0; i < getIngredientTypeList().size();i++) {
-			SimpleNameList.add(getIngredientTypeList().get(i).getName());
-		}
-		return SimpleNameList;
-	}
 	
 	 /**
-	  * Return the complete name of this ingredient.
+	  * Return the simple name of this ingredient.
 	  */
-	public String getCompleteName() {
+	public String getSimpleName() {
 		List<String> AlphabeticNameList = getAlphabeticNameList();
-		String CompleteName = null;
-		if (/*Standaardtemperatuur afkomstig van welk ingredientType*/)
-		CompleteName = AlphabeticNameList.get(0) + " mixed with";
+		String SimpleName = null;
+		SimpleName = AlphabeticNameList.get(0) + " mixed with";
 		for (int i=1; i<AlphabeticNameList.size();i++) {
 			if (i==AlphabeticNameList.size() - 1) {
-				CompleteName = CompleteName + " and" + AlphabeticNameList.get(i);
+				SimpleName = SimpleName + " and" + AlphabeticNameList.get(i);
 			}
 			else if (i == AlphabeticNameList.size() -2) {
-				CompleteName = CompleteName + AlphabeticNameList.get(i);
+				SimpleName = SimpleName + AlphabeticNameList.get(i);
 			}
 			else {
-				CompleteName = CompleteName + AlphabeticNameList.get(i) +", ";
+				SimpleName = SimpleName + AlphabeticNameList.get(i) +", ";
 			}
 		}
-		return CompleteName;
+		return SimpleName;
 	}
 	
+	public String getCompleteName() {
+		
+	}
 	/**
 	 * Variable referencing the specialName of this ingredient.
 	 */
@@ -816,9 +785,45 @@ public class AlchemicIngredient {
 	
 	
 	
+	/**********************************************************
+     * Laboratory
+     **********************************************************/
+	
+	private Laboratory laboratory = null;
+	
+	public void moveToLaboratory(Laboratory laboratory) {
+		setLaboratory(laboratory);
+		
+	}
+	
+	private void setLaboratory(Laboratory laboratory) throws InvalidLaboratoryException {
+		if (isValidLaboratory(laboratory)) {
+			if (getLaboratory() == null) {
+				laboratory.addIngredient(this);
+				this.laboratory = laboratory;
+			}
+			else {
+				getLaboratory().removeIngredient(this);
+				laboratory.addIngredient(this);
+				this.laboratory = laboratory;
+			}
+		}	
+		else {
+			throw new InvalidLaboratoryException(this);
+		}
+	}
+	
+	public boolean isValidLaboratory(Laboratory laboratory) {
+		return (laboratory != null);
+	}
 	
 	
-
+	public Laboratory getLaboratory() {
+		return laboratory;
+	}
 	
-
+	
+	
+	
+	
 }
