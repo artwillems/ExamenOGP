@@ -100,7 +100,9 @@ public class CoolingBox extends Device {
 		return boxTemperature;
 	}
 	
-	
+	public void changeCoolingBoxTemperature(long coldness,long hotness) {
+		setTemperature(coldness, hotness);
+	}
 	
 	
 	/**********************************************************

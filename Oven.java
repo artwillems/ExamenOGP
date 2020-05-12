@@ -99,6 +99,10 @@ public class Oven extends Device {
 	}
 	
 	
+	public void changeOvenTemperature(long coldness, long hotness) {
+		setTemperature(coldness,hotness);
+	}
+	
 	
 	
 	/**********************************************************
