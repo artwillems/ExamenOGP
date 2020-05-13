@@ -6,5 +6,25 @@
 */
 public class Recipe {
 	
-	public Recipe(List<> listOfOperations, List<> listOfIngredients);
+	public Recipe(List<> listOfOperations, List<> listOfIngredients) {
+		
+	}
+	
+	public add() {
+		
+	}
+	
+	public heat() {
+		
+	}
+	
+	public cool() {
+		
+	}
+	
+	public mix() {
+		
+	}
+	
+	
 }
