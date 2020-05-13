@@ -29,7 +29,8 @@ public class CoolingBox extends Device {
 	 *         	| super(laboratory)
 	 * @effect  The preset temperature of the cooling box is set to the given preset temperature.
 	 *          | setPresetTemperature(presetTemperature) 
-	 * 
+	 * @effect	The type is set to coolingBox
+	 * 			| setType("CoolingBox")
 	 */
 	
 	
@@ -37,6 +38,7 @@ public class CoolingBox extends Device {
 	public CoolingBox(Laboratory laboratory, List<Long> temperatureSetting) {
 		super(laboratory);
 		setTemperature(temperatureSetting.get(0), temperatureSetting.get(1));
+		setType("CoolingBox");
 	}
 	
 	

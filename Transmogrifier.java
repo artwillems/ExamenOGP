@@ -25,12 +25,15 @@ public class Transmogrifier extends Device{
 	 *
 	 * @param	labo
 	 * 			The laboratory that has this transmogrifier. 
-	 * @post	The new transmogrifier is a device with a given laboratory.
+	 * @effect	The new transmogrifier is a device with a given laboratory.
 	 * 			| super(labo)
+	 * @effect	The type is set to transmogrifier
+	 * 			| setType("Transmogrifier")
 	 */
 	
 	public Transmogrifier(Laboratory labo) {
 		super(labo); 
+		setType("Transmogrifier");
 	}
 	
 	/*******************************

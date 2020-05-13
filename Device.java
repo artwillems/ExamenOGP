@@ -39,6 +39,34 @@ public class Device {
 	
 	
 	/**********************************************************
+     * Type
+     **********************************************************/
+	
+	/**
+	 * Variable referencing the type of a device.
+	 */
+	private String type = null;
+	
+	/**
+	 * Set the type of this device to the given type
+	 * 
+	 * @param 	type
+	 * 			The new type for this device
+	 * @post	The given type is registered as the type of this device
+	 * 			| new.getType() == type
+	 */
+	protected void setType(String type) {
+		this.type = type;
+	}
+	
+	/**
+	 * Return the type of this device.
+	 */
+	protected String getType() {
+		return type;
+	}
+	
+	/**********************************************************
      * Alchemic Ingredient
      **********************************************************/
 	
@@ -238,7 +266,7 @@ public class Device {
 				container.setDelete(true);
 			}
 			else {
-				throw new DifferentLaboratoryException(this);
+				throw new DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory.",this);
 			}
 		}
 
@@ -269,7 +297,7 @@ public class Device {
 	/*HEEFT HET NUT DEZE IN SUPERCLASS TE ZETTEN? WANT BIJ IEDERE SUBCLASS ANDERS, EN HIER GEVEN WE NIKS VAN CODE IN*/
 	public void executeAlchemicOperation() throws NoIngredientInDeviceException {
 		if (this.countIngredients() < 1) {
-			throw new NoIngredientInDeviceException("There is no ingredient in this device");
+			throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
 		}
 		
 	}

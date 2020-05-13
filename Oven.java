@@ -21,12 +21,14 @@ public class Oven extends Device {
 	/**
 	 * Initialize a new oven with given laboratory, that owns this oven, and given temperature setting.
 	 * 
-	 * @param  laboratory
-	 *         The laboratory that owns this new oven.
-	 * @param  temperatureSetting
-	 *         The temperature setting of the new oven.
-	 * @effect The new oven is a device with given laboratory and temperature setting.
-	 *         | super(laboratory)
+	 * @param  	laboratory
+	 *         	The laboratory that owns this new oven.
+	 * @param  	temperatureSetting
+	 *         	The temperature setting of the new oven.
+	 * @effect 	The new oven is a device with given laboratory and temperature setting.
+	 *         	| super(laboratory)
+	 * @effect	The type is set to Oven
+	 * 			| setType("Oven")
 	 * 
 	 */
 	
@@ -35,6 +37,7 @@ public class Oven extends Device {
 	public Oven(Laboratory laboratory, List<Long> temperatureSetting) {
 		super(laboratory);
 		setTemperature(temperatureSetting.get(0), temperatureSetting.get(1));
+		setType("Oven");
 	}
 	
 	
