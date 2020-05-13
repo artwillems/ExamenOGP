@@ -281,36 +281,84 @@ public class Laboratory{
 		return ingredient.getIngredientType().getStandardTemp().getHotness(); 
 	}
 	
+	/**
+	 * Use the oven to bring a new AlchemicIngredient to its standardTemperature.
+	 * 
+	 * @param	oven
+	 * 			The Oven used for heating the AlchemicIngredient		
+	 * @param	ingredient
+	 * 			The AlchemicIngredient that needs to be cooled
+	 */
+	
+	private void useOven(Oven oven, AlchemicIngredient ingredient) {
+		List<Long> temperatures = new ArrayList<Long>(); 
+		temperatures.add(getStandardHotness(ingredient)); 
+		long coldness = 0; 
+		temperatures.add(coldness); 
+		oven.getIngredientList().add(ingredient); 
+		oven.executeAlchemicOperation();	
+	}
+	
+	/**
+	 * Use the coolingbox to bring the new AlchemicIngredient for the laboratory to its standardTemperature
+	 * 
+	 * @param	fridge
+	 * 			The fridge used for Cooling the AlchemicIngredient		
+	 * @param	ingredient
+	 * 			The AlchemicIngredient that needs to be cooled. 
+	 */
+	
+	private void useCoolingBox(CoolingBox fridge, AlchemicIngredient ingredient) {
+		long theHotness = 0; 
+		List<Long> fridgeTemperatures = new ArrayList<Long>(); 
+		long theColdness = ingredient.getIngredientType().getStandardTemp().getColdness(); 
+		fridgeTemperatures.add(theColdness); 
+		fridgeTemperatures.add(theHotness); 
+		/*some functionality for calling the coolingbox*/
+		fridge.getIngredientList().add(ingredient); 
+		fridge.executeAlchemicOperation();
+	}
+	
+	/**
+	 * Brings a new AlchemicIngredient that needs to be introduced to the laboratory to its standardTemperature by
+	 * the means of an Oven or a CoolingBox.
+	 * 
+	 * @param	ingredient
+	 * 			The new AlchemicIngredient that needs to be brought back to its standardTemperatures. 
+	 * @return	The AlchemicIngredient brought to its standardTemperature. 
+	 */
+
 	private AlchemicIngredient ingredientBroughtToStandardTemp(AlchemicIngredient ingredient) {	
 		if(hasStandardTemperature(ingredient)) {
 			return ingredient; 
 		}
 		else {
 			
-			/*bring the ingredient back to its standard temperature using an oven or coolingbox*/
+			/*bring the ingredient back to its standard temperature using an oven or cooling box*/
 			AlchemicIngredient adaptedIngredient = null; 
 			if(ingredient.getTemperature().get(1) < getStandardHotness(ingredient)) {
-				/**
-				 * Deze functies hieronder zal ik echt nog moeten nakijken, naargelang Oven en CoolingBox evolueren. 
-				 * Als ze correct zijn, dan worden ze in deelfuncties geplaatst voor de leesbaarheid uiteraard. 
-				 * getIngredientList() zal waarschijnlijk nog vervangen worden addIngredients, dat is beter. 
-				 */
-				List<Long> temperatures = new ArrayList<Long>(); 
-				temperatures.add(getStandardHotness(ingredient)); 
-				long coldness = 0; 
-				temperatures.add(coldness); 
-				Oven thisOven = new Oven(this, temperatures); 
-				thisOven.getIngredientList().add(ingredient); 
-				thisOven.executeAlchemicOperation();
-				List<AlchemicIngredient> ingredientList = thisOven.getIngredientList(); 
-				for(AlchemicIngredient viewed : ingredientList) {
+		
+				Oven thisOven = seekOven(); 
+				useOven(thisOven, ingredient); 
+				List<AlchemicIngredient> ingredientsInOven = thisOven.getIngredientList();
+				
+				for(AlchemicIngredient viewed : ingredientsInOven) {
+					
 					if(ingredient.getCompleteName().equals(viewed.getCompleteName())){
 						return adaptedIngredient = viewed; 
 					}
 				}
 			}
 			else {
-				
+				CoolingBox thisFridge = seekCoolingBox(); 
+				useCoolingBox(thisFridge, ingredient); 
+				List<AlchemicIngredient> ingredientsInFridge = thisFridge.getIngredientList(); 
+				for(AlchemicIngredient viewed : ingredientsInFridge) {
+					
+					if(ingredient.getCompleteName().equals(viewed.getCompleteName())){
+						return adaptedIngredient = viewed; 
+					}
+				}
 			}
 			return adaptedIngredient; 
 		}
@@ -318,14 +366,13 @@ public class Laboratory{
 
 	/**
 	 * Store a new AlchemicIngredient in this laboratory.
-	 * NOTE: nog functionaliteit schrijven die ervoor zorgt dat ingredient op standaardtemperatuur staat.
 	 *
 	 * @param	fromContainer
 	 * 			The IngredientContainer in which the AlchemicIngredient arrived.
 	 */
 	@Raw
 	public void storeNewIngredient(IngredientContainer fromContainer) {
-		AlchemicIngredient ingredientToBeAdded = fromContainer.getAlchemicIngredient();
+		AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer.getAlchemicIngredient());
 		if(isValidNewAmount(ingredientToBeAdded)) {
 			getIngredients().add(ingredientToBeAdded);
 			int indexOfNew = getIngredients().indexOf(ingredientToBeAdded);
@@ -345,29 +392,23 @@ public class Laboratory{
 	}
 	
 	/**
-	 * Add a new specified ingredient to this laboratory. 
+	 * Remove an AlchemicIngredient from this Laboratory. 
 	 * 
 	 * @param	ingredient
-	 * 			The ingredient that needs to be added to the laboratory. 
+	 * 			The ingredient to be removed from this laboratory. 		
+	 * @throws	IngredientNotPresentInLabException
+	 * 			If the ingredient was not present in the lab before the calling of this method, a new
+	 * 			ingredient not present in lab exception will be thrown. 
+	 * 			| throw new IngredientNotPresentInLabException("message", this)	
 	 */
-	
-	protected void addIngredient(AlchemicIngredient ingredient) {
-		if((isValidAmount(ingredient.getCompleteName(), ingredient.getQuantity()) && (isValidNewAmount(ingredient)))) {
-			getIngredients().add(ingredient); 
-		}
-	}
 
-	/**
-	 * Removes the specified ingredient from this laboratory.
-	 * 
-	 * @param	ingredient
-	 * 			The ingredient that needs to be removed from this laboratory. 		
-	 */
-	
-	protected void removeIngredient(AlchemicIngredient ingredient) {
+	protected void removeIngredient(AlchemicIngredient ingredient) throws IngredientNotPresentInLabException {
 		if(isIngredientPresentInLab(ingredient.getCompleteName())) {
 			int indexOfIngredient = getIngredients().indexOf(ingredient); 
 			getIngredients().remove(indexOfIngredient); 
+		}
+		else {
+			throw new IngredientNotPresentInLabException("The ingredient cannot be removed, because it isn't in this lab", this); 
 		}
 	}
 	
@@ -437,7 +478,6 @@ public class Laboratory{
 
 	/**
 	 * Search for the object AlchemicIngredient based on its complete name.
-	 * NOTE: will have to change getIngredients to catalog, because ingredientNames are not unique in getIngredients!!! 
 	 *
 	 * @param	ingredientCompleteName
 	 * 			The complete name of the alchemic ingredient
