@@ -67,10 +67,15 @@ public class Oven extends Device {
 			this.ovenColdness = coldness;
 	}
 	
-	private void setTemperature(long coldness, long hotness) {
+	private void setTemperature(long coldness, long hotness) throws InvalidIngredientListException {
 		if (isValidTempCombination(coldness,hotness)){
-			setColdness(coldness);
-			setHotness(hotness);
+			if (getIngredientList().size()==0) {
+				setColdness(coldness);
+				setHotness(hotness);
+			}
+			else { 
+				throw new InvalidIngredientListException("The device can not hold any ingredients when changing its temperature",this);
+			}
 		}
 	}
 	
@@ -123,7 +128,7 @@ public class Oven extends Device {
     @Override
     public void executeAlchemicOperation() {
     	if (this.countIngredients() < 1) {
-    		throw new NoIngredientInDeviceException("There is no ingredient in this device");
+    		throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
     	}
     	else {
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);

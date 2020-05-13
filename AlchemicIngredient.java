@@ -263,12 +263,12 @@ public class AlchemicIngredient {
 	
 	private boolean terminated = false;
 	
-	private void setTerminated() throws FileAlreadyTerminatedException {
+	private void setTerminated() throws IngredientAlreadyTerminatedException {
 		if (isValidTermination()) {
 			this.terminated = true;
 		}
 		else {
-			throw new FileAlreadyTerminatedException();
+			throw new IngredientAlreadyTerminatedException("This ingredient has already been terminated",this);
 		}
 	}
 	
@@ -369,14 +369,14 @@ public class AlchemicIngredient {
 	}
 	
 	
-	protected void changeUnit(String unit) throws FileAlreadyTerminatedException {
+	protected void changeUnit(String unit) throws IngredientAlreadyTerminatedException {
 		if(!isTerminated()) {
 			if (isValidUnit(unit)) {
 				setUnit(unit);
 			}
 		}
 		else {
-			throw new FileAlreadyTerminatedException();
+			throw new IngredientAlreadyTerminatedException("This ingredient has already been terminated",this);
 		}
 	}
 	
@@ -446,7 +446,7 @@ public class AlchemicIngredient {
 	
 	
 	
-	protected void changeState() throws FileAlreadyTerminatedException {
+	protected void changeState() throws IngredientAlreadyTerminatedException {
 		if (!isTerminated()) {
 			if (getState()=="Liquid") {
 				setState("Powder");
@@ -456,7 +456,7 @@ public class AlchemicIngredient {
 			}
 		}
 		else {
-			throw new FileAlreadyTerminatedException();
+			throw new IngredientAlreadyTerminatedException("This ingredient has already been terminated",this);
 		}
 	}
 	
@@ -499,49 +499,6 @@ public class AlchemicIngredient {
 	public boolean isValidIngredientTypeList(List<IngredientType> ingredientTypeList) {
 		return (!(ingredientTypeList.contains(null)) && !(ingredientTypeList.isEmpty()));
 	}
-	
-	/* volgende functies zijn wrs overbodig*/
-	/**
-	 * Set the ingredientType of this ingredient to the given ingredientType.
-	 * 
-	 * @param 	ingredientType
-	 * 			The new ingredientType of this ingredient.
-	 * @post	If the given ingredientType is valid, the ingredientType of this ingredient
-	 * 			is set to the given ingredientType otherwise an exception is thrown.
-	 * @throws 	InvalidIngredientTypeException
-	 */
-	private void setIngredientType(IngredientType ingredientType) {
-		if (isValidIngredientType(ingredientType)) {
-			this.ingredientType = ingredientType;
-		}
-		else {
-			
-		}
-	}
-	
-	/**
-	 * Check whether the given ingredientType is a legal ingredientType.
-	 * 
-	 * @param 	ingredientType
-	 * 			The ingredientType to be checked.
-	 * @return	True if the given ingredientType is not null
-	 * 			| result == 
-	 * 			|	(ingredientType != null)
-	 */
-	public boolean isValidIngredientType(IngredientType ingredientType) {
-		return (ingredientType != null);
-	}
-	
-	/**
-	 * Return the ingredientType of this ingredient.
-	 */
-	public IngredientType getIngredientType() {
-		return this.ingredientType;
-	}
-	
-	
-	
-	
 	
 	/**********************************************************
      * Name
@@ -799,7 +756,8 @@ public class AlchemicIngredient {
 	private void setLaboratory(Laboratory laboratory) throws InvalidLaboratoryException {
 		if (isValidLaboratory(laboratory)) {
 			if (getLaboratory() == null) {
-				laboratory.addIngredient(this);
+				/*Nieuwe container maken met ingredient in*/
+				laboratory.storeNewIngredient(fromContainer);;
 				this.laboratory = laboratory;
 			}
 			else {
@@ -809,7 +767,7 @@ public class AlchemicIngredient {
 			}
 		}	
 		else {
-			throw new InvalidLaboratoryException(this);
+			throw new InvalidLaboratoryException("The given laboratory does not exist.",this);
 		}
 	}
 	

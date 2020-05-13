@@ -71,8 +71,13 @@ public class CoolingBox extends Device {
 	
 	private void setTemperature(long coldness, long hotness) {
 		if (isValidTempCombination(coldness,hotness)){
-			setColdness(coldness);
-			setHotness(hotness);
+			if (getIngredientList().size() == 0) {
+				setColdness(coldness);
+				setHotness(hotness);
+			}
+			else {
+				throw new InvalidIngredientListException(this);
+			}
 		}
 	}
 	

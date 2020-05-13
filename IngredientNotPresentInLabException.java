@@ -34,9 +34,9 @@ public class IngredientNotPresentInLabException extends RuntimeException{
 	 * 			The laboratory for which the new ingredient not present exception is thrown.
 	 * @post	The message for the new ingredient not present exception is set to the message in
 	 * 			laboratory
-	 * 			|super(message)
+	 * 			| super(message)
 	 * @post	The new laboratory is set to the laboratory for which the new exception is thrown. 
-	 * 			|new.getLab() == lab
+	 * 			| new.getLab() == lab
 	 */
 	public IngredientNotPresentInLabException(String message, Laboratory lab) {
 		super(message); 

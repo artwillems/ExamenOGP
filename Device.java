@@ -215,7 +215,7 @@ public class Device {
 		if (isTerminated()) 
 			throw new IllegalStateException("Device is terminated!");
 		if (!canHaveAsLaboratory(laboratory)) {
-			throw new IllegalLaboratoryException("This device cannot be placed in the given laboratory!");
+			throw new IllegalLaboratoryException("This device cannot be placed in the given laboratory!",this);
 		}
 		setLaboratory(laboratory);
 	}
@@ -229,7 +229,7 @@ public class Device {
 	 */
 	public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException, DifferentLaboratoryException{
 		if (this.countIngredients() > 1) {
-    		throw new IllegalIngredientAdditionException("The device allows only one alchemic ingredient");
+    		throw new IllegalIngredientAdditionException("The device allows only one alchemic ingredient",this);
     	}
 		else {
 			if (haveSameLaboratory(container.getAlchemicIngredient())) {

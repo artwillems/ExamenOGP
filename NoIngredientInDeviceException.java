@@ -12,7 +12,7 @@ import be.kuleuven.cs.som.annotate.Immutable;
 public class NoIngredientInDeviceException extends RuntimeException{
 	
 	/**
-	 * Variable refencing the version number of the serial class it is invoked upon. 
+	 * Variable referencing the version number of the serial class it is invoked upon. 
 	 * 
 	 */
 	
