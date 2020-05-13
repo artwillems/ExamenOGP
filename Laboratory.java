@@ -137,29 +137,6 @@ public class Laboratory{
 	}
 
 	/**
-	 * Combine all the amounts of a certain AlchemicIngredient in this laboratory into one single amount
-	 * expressed in spoons.
-	 *
-	 * @param	ingredient
-	 * 			The AlchemicIngredient for which all its amounts are combined into one.
-	 * @return	The total amount of that certain ingredient present in the laboratory.
-	 */
-
-	private int combineAmounts(AlchemicIngredient ingredient) {
-		int oldAmount = 0;
-		for(AlchemicIngredient otherIngredients : getIngredients()) {
-			if(ingredient.getCompleteName() == otherIngredients.getCompleteName()) {
-				oldAmount += otherIngredients.getQuantityInSpoons();
-			}
-			else {
-				oldAmount = ingredient.getQuantityInSpoons();
-			}
-		}
-		return oldAmount;
-
-	}
-
-	/**
 	 * Give a list of all ingredients present at the laboratory.
 	 *
 	 * @return	the list of ingredients
@@ -366,7 +343,34 @@ public class Laboratory{
 			}
 		}
 	}
+	
+	/**
+	 * Add a new specified ingredient to this laboratory. 
+	 * 
+	 * @param	ingredient
+	 * 			The ingredient that needs to be added to the laboratory. 
+	 */
+	
+	protected void addIngredient(AlchemicIngredient ingredient) {
+		if((isValidAmount(ingredient.getCompleteName(), ingredient.getQuantity()) && (isValidNewAmount(ingredient)))) {
+			getIngredients().add(ingredient); 
+		}
+	}
 
+	/**
+	 * Removes the specified ingredient from this laboratory.
+	 * 
+	 * @param	ingredient
+	 * 			The ingredient that needs to be removed from this laboratory. 		
+	 */
+	
+	protected void removeIngredient(AlchemicIngredient ingredient) {
+		if(isIngredientPresentInLab(ingredient.getCompleteName())) {
+			int indexOfIngredient = getIngredients().indexOf(ingredient); 
+			getIngredients().remove(indexOfIngredient); 
+		}
+	}
+	
 	/**
 	 * Variable referencing the catalog of the laboratory
 	 */
@@ -433,7 +437,7 @@ public class Laboratory{
 
 	/**
 	 * Search for the object AlchemicIngredient based on its complete name.
-	 *
+	 * NOTE: will have to change getIngredients to catalog, because ingredientNames are not unique in getIngredients!!! 
 	 *
 	 * @param	ingredientCompleteName
 	 * 			The complete name of the alchemic ingredient
@@ -472,16 +476,34 @@ public class Laboratory{
 		return ((amount >= 0) && (amount <= getFullAmountFromLabo(ingredientCompleteName)));
 	}
 
+	/**
+	 * Combine all the amounts of a certain AlchemicIngredient in this laboratory into one single amount
+	 * expressed in spoons.
+	 *
+	 * @param	ingredient
+	 * 			The AlchemicIngredient for which all its amounts are combined into one.
+	 * @return	The total amount of that certain ingredient present in the laboratory.
+	 */
+
+	private int combineAmounts(AlchemicIngredient ingredient) {
+		int oldAmount = 0;
+		for(AlchemicIngredient otherIngredients : getIngredients()) {
+			if(ingredient.getCompleteName() == otherIngredients.getCompleteName()) {
+				oldAmount += otherIngredients.getQuantityInSpoons();
+			}
+			else {
+				oldAmount = ingredient.getQuantityInSpoons();
+			}
+		}
+		return oldAmount;
+
+	}
 
 	/**
 	 * Get the full amount of a specific ingredient stored in various places and containers within this laboratory
 	 *
 	 * @param	ingredient
 	 * 		  	The AlchemicIngredient of which the full amount must be known.
-	 * @throws	IngredientNotPresentInLabException
-	 * 			If the ingredient belonging to the complete name is not present in this lab, a new ingredient not present
-	 * 			in lab exception is thrown.
-	 * 			| throw new IngredientNotPresenInLabException(message, this)
 	 * @return 	The full amount of the given ingredient within this laboratory expressed in spoons.
 	 */
 
@@ -494,9 +516,6 @@ public class Laboratory{
 					full = combineAmounts(ingredient);
 				}
 			}
-		}
-		else {
-			throw new IngredientNotPresentInLabException("The ingredient you tried to get the full amount of, is not present", this);
 		}
 		return full;
 	}
