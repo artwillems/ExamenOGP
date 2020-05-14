@@ -199,29 +199,34 @@ public class Laboratory{
 	
 	/**
 	 * Seek an oven in this laboratory
-	 * 
-	 * NOTE: Er moet nog nagedacht worden hoe we dit zullen doen.
-	 * de instanceof methode werkt niet, omdat Oven een subclasse is. We zullen dus een soort
-	 * getDeviceType moeten voorzien die strings teruggeeft voor elk device met "kettle", "oven", etc. 
-	 * 
 	 * NOTE: Voorlopig is het Immutable, kan nog veranderen naargelang implementatie
-	 * 
+	 * 		
 	 * @return	the first oven that is present in this laboratory
 	 */
 	@Immutable
-	public Oven seekOven() {
+	private Oven seekOven() {
 		Oven foundOven = null; 
+		for(Device someDevice : getDevices()) {
+			if(someDevice.getType().equals("Oven")) {
+				foundOven = ((Oven) someDevice); 
+			}
+		}
 		return foundOven; 
 	}
 	
 	/**
 	 * Seek a Coolingbox in this laboratory
-	 * NOTE: zelfde opmerkingen als bij seekOven. 
-	 * @return
+	 * 
+	 * @return	The first CoolingBox that is found in this laboratory. 
 	 */
 	@Immutable
 	public CoolingBox seekCoolingBox() {
 		CoolingBox foundFridge = null;
+		for(Device aDevice : getDevices()) {
+			if(aDevice.getType().equals("CoolingBox")) {
+				foundFridge = (CoolingBox) aDevice; 
+			}
+		}
 		return foundFridge; 
 	}
 	/********************************************
@@ -265,7 +270,7 @@ public class Laboratory{
 	 */
 	
 	private boolean hasStandardTemperature(AlchemicIngredient ingredient) {
-		Temperature standardTemperature = ingredient.getIngredientType().getStandardTemp();
+		Temperature standardTemperature = ingredient.getIngredientTypeList().get(0).getStandardTemp();
 		return ingredient.getTemperature() == standardTemperature;
 	}
 	
@@ -278,7 +283,7 @@ public class Laboratory{
 	 */
 	
 	private long getStandardHotness(AlchemicIngredient ingredient) {
-		return ingredient.getIngredientType().getStandardTemp().getHotness(); 
+		return ingredient.getIngredientTypeList().get(0).getStandardTemp().getHotness();  
 	}
 	
 	/**
@@ -311,7 +316,7 @@ public class Laboratory{
 	private void useCoolingBox(CoolingBox fridge, AlchemicIngredient ingredient) {
 		long theHotness = 0; 
 		List<Long> fridgeTemperatures = new ArrayList<Long>(); 
-		long theColdness = ingredient.getIngredientType().getStandardTemp().getColdness(); 
+		long theColdness = ingredient.getIngredientTypeList().get(0).getStandardTemp().getColdness(); 
 		fridgeTemperatures.add(theColdness); 
 		fridgeTemperatures.add(theHotness); 
 		/*some functionality for calling the coolingbox*/
@@ -389,6 +394,16 @@ public class Laboratory{
 				/*throw an exception telling the user such an amount cannot be stored.*/
 			}
 		}
+	}
+	
+	/**
+	 * Add a new ingredient to the list of ingredients that already exists for this laboratory
+	 * 
+	 * @param	ingredient
+	 * 			The ingredient that needs to be added to the laboratory.
+	 */
+	protected void addIngredient(AlchemicIngredient ingredient) {
+		getIngredients().add(ingredient); 
 	}
 	
 	/**
