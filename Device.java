@@ -4,7 +4,7 @@ import java.util.List;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
-import filesystem.DiskItem;
+
 
 
 /**
@@ -77,7 +77,7 @@ public class Device {
 	 * @invar ingredientList references an effective list. 
 	 *        | alchemicIngredients != null
 	 */	
-	private final List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
+	protected List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
 	
 	/**
 	 * Checks whether the ingredientList is a valid list.

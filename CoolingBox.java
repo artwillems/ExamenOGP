@@ -130,7 +130,7 @@ public class CoolingBox extends Device {
     @Override
     public void executeAlchemicOperation() {
     	if (this.countIngredients() < 1) {
-    		throw new NoIngredientInDeviceException("There is no ingredient in this device");
+    		throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
     	}
     	else {
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);

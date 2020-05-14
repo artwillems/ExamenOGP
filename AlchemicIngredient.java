@@ -138,7 +138,7 @@ public class AlchemicIngredient {
 	 * 			The quantity of the new ingredient.
 	 * @effect	This new ingredient is initialized with a given quantity, a spoon unit,
 	 * 			the ingredientType water, standard temperature, Liquid state and without a special name (null)
-	 * @effect	The temperature is set to the standard temperaturen of water
+	 * @effect	The temperature is set to the standard temperature of water
 	 * 			| setTemperature(water.getTemperature().get(1), water.getTemperature().get(0))
 	 */
 	public AlchemicIgredient(int quantity) {
