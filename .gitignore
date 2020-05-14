@@ -12,3 +12,6 @@
 /Temperature.class
 /IngredientNotPresentInLabException.class
 /InvalidLaboratoryAmountException.class
+/RecipeBook.class
+/RecipeAlreadyInBookException.class
+/NoSuchRecipeException.class
