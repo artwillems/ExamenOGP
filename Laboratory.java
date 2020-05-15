@@ -1,8 +1,4 @@
-/**
- * A class laboratory for doing Alchemic procedures on AlchemicIngredients with a certain Device
- */
 import be.kuleuven.cs.som.annotate.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +8,8 @@ import java.util.Set;
 
 
 /**
+ * A class laboratory for doing Alchemic procedures on AlchemicIngredients with a certain Device.
+ * 
  * @author willemsart, Jérôme D'hulst en Marie Levrau
  *
  */
@@ -204,7 +202,7 @@ public class Laboratory{
 	 * @return	the first oven that is present in this laboratory
 	 */
 	@Immutable
-	private Oven seekOven() {
+	protected Oven seekOven() {
 		Oven foundOven = null; 
 		for(Device someDevice : getDevices()) {
 			if(someDevice.getType().equals("Oven")) {
@@ -220,7 +218,7 @@ public class Laboratory{
 	 * @return	The first CoolingBox that is found in this laboratory. 
 	 */
 	@Immutable
-	public CoolingBox seekCoolingBox() {
+	protected CoolingBox seekCoolingBox() {
 		CoolingBox foundFridge = null;
 		for(Device aDevice : getDevices()) {
 			if(aDevice.getType().equals("CoolingBox")) {
@@ -229,6 +227,35 @@ public class Laboratory{
 		}
 		return foundFridge; 
 	}
+	
+	/**
+	protected Kettle seekKettle() {
+		Kettle foundKettle = null; 
+		for(Device aDevice : getDevices()) {
+			if(aDevice.getType().equals("Kettle")) {
+				foundKettle = (Kettle) aDevice; 
+			}
+		}
+		return foundKettle; 
+	}
+	*/
+	
+	/**
+	 * Seek a transmogrifier in this laboratory
+	 * 
+	 * @return The first tranmogrifier that is found in the laboratory
+	 */
+	
+	protected Transmogrifier seekTransmogrifier() {
+		Transmogrifier foundTransmogrifier = null; 
+		for(Device aDevice : getDevices()) {
+			if(aDevice.getType().equals("Transmogrifier")) {
+				foundTransmogrifier = (Transmogrifier) aDevice; 
+			}
+		}
+		return foundTransmogrifier; 
+	}
+	
 	/********************************************
 	 * storing and adding ingredients
 	 ***************/
@@ -295,17 +322,17 @@ public class Laboratory{
 	 * 			The AlchemicIngredient that needs to be cooled
 	 */
 	
-	private void useOven(Oven oven, AlchemicIngredient ingredient) {
-		List<Long> temperatures = new ArrayList<Long>(); 
-		temperatures.add(getStandardHotness(ingredient)); 
-		long coldness = 0; 
-		temperatures.add(coldness); 
-		oven.getIngredientList().add(ingredient); 
-		oven.executeAlchemicOperation();	
+	private void useOven(Oven oven, IngredientContainer container) {
+		AlchemicIngredient ingredient = container.getAlchemicIngredient();
+		long newColdness = 0;
+		long newHotness = ingredient.getIngredientTypeList().get(0).getStandardTemp().getHotness();
+		oven.changeOvenTemperature(newColdness, newHotness);
+		oven.addIngredientFrom(container);
+		oven.executeAlchemicOperation();
 	}
 	
 	/**
-	 * Use the coolingbox to bring the new AlchemicIngredient for the laboratory to its standardTemperature
+	 * Use the cooling box to bring the new AlchemicIngredient for the laboratory to its standardTemperature
 	 * 
 	 * @param	fridge
 	 * 			The fridge used for Cooling the AlchemicIngredient		
@@ -313,14 +340,12 @@ public class Laboratory{
 	 * 			The AlchemicIngredient that needs to be cooled. 
 	 */
 	
-	private void useCoolingBox(CoolingBox fridge, AlchemicIngredient ingredient) {
+	private void useCoolingBox(CoolingBox fridge, IngredientContainer container) {
+		AlchemicIngredient ingredient = container.getAlchemicIngredient(); 
 		long theHotness = 0; 
-		List<Long> fridgeTemperatures = new ArrayList<Long>(); 
 		long theColdness = ingredient.getIngredientTypeList().get(0).getStandardTemp().getColdness(); 
-		fridgeTemperatures.add(theColdness); 
-		fridgeTemperatures.add(theHotness); 
-		/*some functionality for calling the coolingbox*/
-		fridge.getIngredientList().add(ingredient); 
+		fridge.changeCoolingBoxTemperature(theColdness, theHotness);
+		fridge.addIngredientFrom(container);
 		fridge.executeAlchemicOperation();
 	}
 	
@@ -333,7 +358,8 @@ public class Laboratory{
 	 * @return	The AlchemicIngredient brought to its standardTemperature. 
 	 */
 
-	private AlchemicIngredient ingredientBroughtToStandardTemp(AlchemicIngredient ingredient) {	
+	private AlchemicIngredient ingredientBroughtToStandardTemp(IngredientContainer fromContainer) {	
+		AlchemicIngredient ingredient = fromContainer.getAlchemicIngredient(); 
 		if(hasStandardTemperature(ingredient)) {
 			return ingredient; 
 		}
@@ -344,7 +370,7 @@ public class Laboratory{
 			if(ingredient.getTemperature().get(1) < getStandardHotness(ingredient)) {
 		
 				Oven thisOven = seekOven(); 
-				useOven(thisOven, ingredient); 
+				useOven(thisOven, fromContainer); 
 				List<AlchemicIngredient> ingredientsInOven = thisOven.getIngredientList();
 				
 				for(AlchemicIngredient viewed : ingredientsInOven) {
@@ -356,7 +382,7 @@ public class Laboratory{
 			}
 			else {
 				CoolingBox thisFridge = seekCoolingBox(); 
-				useCoolingBox(thisFridge, ingredient); 
+				useCoolingBox(thisFridge, fromContainer); 
 				List<AlchemicIngredient> ingredientsInFridge = thisFridge.getIngredientList(); 
 				for(AlchemicIngredient viewed : ingredientsInFridge) {
 					
@@ -375,9 +401,10 @@ public class Laboratory{
 	 * @param	fromContainer
 	 * 			The IngredientContainer in which the AlchemicIngredient arrived.
 	 */
+	
 	@Raw
 	public void storeNewIngredient(IngredientContainer fromContainer) {
-		AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer.getAlchemicIngredient());
+		AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer);
 		if(isValidNewAmount(ingredientToBeAdded)) {
 			getIngredients().add(ingredientToBeAdded);
 			int indexOfNew = getIngredients().indexOf(ingredientToBeAdded);
@@ -402,6 +429,7 @@ public class Laboratory{
 	 * @param	ingredient
 	 * 			The ingredient that needs to be added to the laboratory.
 	 */
+	
 	protected void addIngredient(AlchemicIngredient ingredient) {
 		getIngredients().add(ingredient); 
 	}

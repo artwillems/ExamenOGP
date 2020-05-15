@@ -1,11 +1,11 @@
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
+
+ 
 /**
  * A class for signaling the illegal action of writing down a recipe in a recipe book which already exists
- */
-
-/**
+ * 
  * @author Jérôme D'hulst, Marie Levrau, Art Willems 
  * @version 1.8
  *
