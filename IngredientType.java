@@ -43,7 +43,7 @@ public class IngredientType {
 	 * 			If the given standard temperature is not valid, a default standard temperature is set.
 	 *          | setStandardTemp(standardTemp) 	 
 	 */
-	public IngredientType(String name, String state, Temperature standardTemp) {
+	public IngredientType(String name, String state, long standardHotness, long standardColdness) {
 		setName(name);
 		setState(state);
 		setStandardTemp(standardTemp);
@@ -59,8 +59,8 @@ public class IngredientType {
 	 * 			| this(name,null,standardTemp)
 	 *  
 	 */
-	public IngredientType(String name, Temperature standardTemp) {
-		this(name,null,standardTemp);
+	public IngredientType(String name, long standardHotness, long standardColdness) {
+		this(name,null,standardHotness,standardColdness);
 	}
 	
 	/**********************************************************
@@ -209,45 +209,131 @@ public class IngredientType {
      **********************************************************/
     
 	/**
-	 * Variable referencing the standard temperature of this ingredientType.
+	 * Variable referencing the standard coldness of this temperature.
 	 */
-	private Temperature standardTemp = null;
+	private long standardColdness = 0;
 	
+    /**
+	 * Variable referencing the standardHotness of this temperature.
+	 */
+	private long standardHotness = 0;
 	
+	/**
+	 * Variable referencing the maximum possible value.
+	 */
+	public static long maxValue = 10000;
 	
-	 /**
-     * Return the standard temperature of this ingredientType.
-     */
-    @Raw @Basic 
-    public Temperature getStandardTemp() {
-        return standardTemp;
-    }
+	/**
+	 * Return the maximum possible value.
+	 */
+	@Raw @Basic 
+	public static long getMaxValue() {
+		return maxValue;
+	}
+	
+	/**
+	 * Set the maximum value to the given value.
+	 * 
+	 * @param	maxValue
+	 * 			The new maximum value
+	 * @post    The maximum value is set to the given maximum value.
+	 */
+	private void setMaxValue(long maxValue) {
+		this.maxValue = maxValue;
+	}
+	
+	/**
+	 * Return the standard coldness of this temperature.
+	 */
+	@Raw @Basic 
+	public long getColdness() {
+		return standardColdness;
+	}
+	
+	/**
+	 * Return the standardHotness of this temperature.
+	 */
+	@Raw @Basic 
+	public long getHotness() {
+		return standardHotness;
+	}
+	
+	/**
+	 * Set the standard coldness of this temperature to the given standard coldness.
+	 * 
+	 * @param 	standardColdness
+	 * 			The new standardColdness for this temperature.
+	 * @post    If the given standardColdness is valid, the standardColdness of this temperature is set to the given standardColdness,
+	 *          otherwise the standardColdness of this temperature is set to a valid standardColdness (the default).
+	 *          | if (isValidValue(standardColdness))
+	 *          |      then new.getStandardColdness().equals(standardStandardColdness)
+	 *          |      else new.getStandardColdness().equals(getDefaultStandardColdness())
+	 */
+	private void setStandardColdness(long standardColdness) {
+		if(isValidValue(standardColdness)) {
+			this.standardColdness = standardColdness;
+		}
+		else {
+			this.standardColdness = this.getDefaultStandardColdness();
+		}		
+	}
     
-	 /**
-     * Set the standard temperature of this ingredientType to the given standard temperature.
-     * 
-     * @param standardTemp
-     * 		  The new standard temperature for this ingredientType
+	/**
+	 * Set the hotness of this temperature to the given hotness.
+	 * 
+	 * @param 	standardHotness
+	 * 			The new standardHotness for this temperature.
+	 * @post    If the given standardHotness is valid, the standardHotness of this temperature is set to the given standardHotness,
+	 *          otherwise the standardHotness of this temperature is set to a valid standardHotness (the default).
+	 *          | if (isValidValue(standardHotness))
+	 *          |      then new.getStandardHotness().equals(standardHotness)
+	 *          |      else new.getStandardHotness().equals(getDefaultStandardHotness())
+	 */
+	private void setStandardHotness(long standardHotness) {
+		if(isValidValue(standardHotness)) {
+			this.standardHotness = standardHotness;
+		}
+		else {
+			this.standardHotness = this.getDefaultStandardHotness();
+		}
+		
+	}
+
+    /**
+     * Return the temperature.
      */
     @Raw @Basic 
-    public Temperature setStandardTemp(Temperature standardTemp) {
-    	if (isValidStandardTemp(standardTemp)) {
-    		this.standardTemp = standardTemp;
-    	}
-    	else {
-    		this.standardTemp = this.getDefaultStandardTemp();
-    	}
+    public List<Long> getTemperature() {
+    	List<Long> temperature = new ArrayList<Long>();
+    	temperature.add(standardColdness);
+    	temperature.add(standardHotness);
+        return temperature;
     }
     
     /**
-     * Check whether the given standard temperature is legal for this ingredientType.
+     * Check whether the given value is a valid value.
      * 
-     * @param  	standardTemp
-     *			The standard temperature to be checked
-     * @return	True if the given standard temperature is strictly higher than [0,0].
+     * @param	value
+     * 			The value to be checked
+     * 
+     * @return	True if the given value is greater than or equal to 0 and less than or equal to the maximum value.
+     * 			|result == (value >= 0 || value <= getMaxValue())
      */
-    public static boolean isValidStandardTemp(Temperature standardTemp) {
-        if ((standardTemp.getTemperature().get(0) == 0)  && (standardTemp.getTemperature().get(1) == 0)){
+    public static boolean isValidValue(long value) {
+    	return (value >= 0 || value <= getMaxValue());
+    }
+    
+    /**
+     * Check whether the given coldness and hotness are legal for a temperature.
+     * 
+     * @param  	standardColdness
+     *			The standardColdness to be checked
+     * @param  	standardHotness
+     *			The standardHotness to be checked
+     * @return	True if the given standardColdness and standardHotness are not both different from 0, and the given standardColdness and standardHotness are between 0 and 10000. 
+     */
+    public static boolean isValidTemperature(long standardColdness,long standardHotness) {
+        if (((standardColdness != 0)  && (standardHotness != 0)) || !(isValidValue(standardColdness)) || !(isValidValue(standardHotness)))  {
         	return false;
         }
 
@@ -255,14 +341,83 @@ public class IngredientType {
         	return true;
         }
     }
-
-    private static final Temperature defaultStandardTemp = new Temperature(0,20);
     
 
+    /**
+     * Return the standard coldness which is to be used when the given standard coldness is not valid.
+     *
+     * @return   A valid standard coldness.
+     *         	| isValidValue(result)
+     */
     @Model
-    private static Temperature getDefaultStandardTemp() {
-    	return defaultStandardTemp;
+    private static long getDefaultStandardColdness() {
+    	return 0;
     }
+    
+    /**
+     * Return the standard hotness which is to be used when the given standard hotness is not valid.
+     *
+     * @return   A valid standard hotness.
+     *         	| isValidValue(result)
+     */
+    @Model
+    private static long getDefaultStandardHotness() {
+    	return 20;
+    }
+
+    
+    /**
+	 * Set the temperature to the given temperature (hotness and coldness)
+	 * 
+	 * @param 	standardColdness
+	 * 			The new standardColdness for this temperature.
+	 * @param 	standardHotness
+	 * 			The new standardHotness for this temperature.
+	 * @post    If the given standardColdness and standardHotness are valid, the standardColdness and standardHotness of this temperature is set to the given standardColdness and standardHotness,
+	 *          otherwise the standardColdness and standardHotness of this temperature is set to a valid standardColdness and standardHotness (the default).
+	 *          | if (isValidTemperature(coldness,standardHotness))
+	 *          |      then new.getStandardColdness().equals(standardColdness)
+	 *          			new.getStandardHotness().equals(standardHotness)
+	 *          |      else new.getStandardColdness().equals(getDefaultStandardColdness())
+	 *          			new.getStandardHotness().equals(getDefaultStandardHotness())
+	 */
+    @Raw @Model 
+    private void setTemperature(long standardColdness,long standardHotness) {
+        if (isValidTemperature(standardColdness,standardHotness)) {
+        		this.standardColdness = standardColdness;
+        		this.standardHotness = standardHotness;
+        } else {
+        		this.standardColdness = this.getDefaultStandardColdness();
+        		this.standardHotness = this.getDefaultStandardHotness();
+        }
+    }
+    
+	/**
+	 * Set the standard hotness of this temperature to the given standard hotness.
+	 * 
+	 * @param 	standardHotness
+	 * 			The new standardHotness for this temperature.
+	 * @effect  The standardHotness of this temperature is set to the given standardHotness.
+	 *          | setStandardHotness(standardHotness)
+	 */
+    public void heat(long standardHotness) {
+    	setStandardHotness(standardHotness);
+    	
+    }
+    
+	/**
+	 * Set the standardColdness of this temperature to the given standardColdness.
+	 * 
+	 * @param 	standardColdness
+	 * 			The new standardColdness for this temperature.
+	 * @effect  The standardColdness of this temperature is set to the given standardColdness.
+	 *          | setStandardColdness(standardColdness)
+	 */
+    public void cool(long standardColdness) {
+    	setStandardColdness(standardColdness);
+    }
+
+    
 
     
     
