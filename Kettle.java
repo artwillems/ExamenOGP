@@ -3,17 +3,14 @@ import java.util.List;
 import java.lang.Math;
 
 
-public class Kettle extends Device {
+public class Kettle extends Device{
 	
 	public Kettle(Laboratory laboratory) {
 		super(laboratory);
 		setType("Kettle");
 	}
 	
-	
-	
-	@Override 
-	public void addIngredientFrom(IngredientContainer container) {
+	public void addIngredientFrom(IngredientContainer container) throws DifferentLaboratoryException{
 		if (haveSameLaboratory(container.getAlchemicIngredient())) {
 			this.ingredientList.add(container.getAlchemicIngredient());
 		}
@@ -22,17 +19,18 @@ public class Kettle extends Device {
 		}
 	}
 	
+	
 	/**********************************************************
-     * Alchemic Ingredient
+     * AlchemicIngredient
      **********************************************************/
 	
-	public List<AlchemicIngredient> getReferenceIngredient() {
+	public List<AlchemicIngredient> getPotentialIngredientList(){
 		List<AlchemicIngredient> ingredientList = getIngredientList();
 		List<Long> temperatureList = new ArrayList<Long>();
 		long minimum = Long.MAX_VALUE;
-		for (int i=0; i<= ingredientList.size();i++) {
-			long coldness = ingredientList.get(i).getColdness();
-			long hotness = ingredientList.get(i).getHotness();
+		for(int i = 0; i <= ingredientList.size();i++) {
+			long coldness = ingredientList.get(i).getStandardTemperature().get(0);
+			long hotness = ingredientList.get(i).getStandardTemperature().get(1);
 			long difference = Math.abs(20 - (hotness - coldness));
 			temperatureList.add(i, difference);
 			if (difference < minimum) {
@@ -40,34 +38,72 @@ public class Kettle extends Device {
 			}
 		}
 		List<AlchemicIngredient> potentialIngredients = new ArrayList<AlchemicIngredient>();
-		for (int i = 0; i <= ingredientList.size();i++ ) {
+		for (int i = 0; i<= ingredientList.size();i++) {
 			if (temperatureList.get(i) == minimum) {
 				potentialIngredients.add(ingredientList.get(i));
 			}
 		}
 		return potentialIngredients;
-		
 	}
-	
 	
 	public String getState(List<AlchemicIngredient> potentialIngredients) {
 		String state = "Powder";
-		for (int i = 0; i <= potentialIngredients.size();i++) {
-			if (potentialIngredients.get(i).getState() == "Liquid") {
+		for (int i = 0; i<=potentialIngredients.size();i++) {
+			if (potentialIngredients.get(i).getState()== "Liquid") {
 				state = "Liquid";
 			}
 		}
 		return state;
 	}
 	
+	
 	public int getQuantity() {
 		int quantity = 0;
-		for (int i = 0; i <= getIngredientList().size(); i++) {
+		for (int i = 0; i <= getIngredientList().size();i++) {
 			quantity = quantity + getIngredientList().get(i).getQuantityInSpoons();
 		}
 		return quantity;
 	}
 	
-	public 
-
+	public List<Long> getStandardTemperature(List<AlchemicIngredient> potentialIngredients){
+		AlchemicIngredient ingredient = potentialIngredients.get(0);
+		return ingredient.getStandardTemperature();
+		
+	}
+	
+	
+	
+	
+	public void executeAlchemicOperation() throws NoIngredientInDeviceException{
+		if (this.countIngredients()<1) {
+			throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
+		}
+		else {
+			List<AlchemicIngredient> potentialIngredients = getPotentialIngredientList();
+			String state = getState(potentialIngredients);
+			int quantity = getQuantity();
+			List<Long> standardTemperature = getStandardTemperature(potentialIngredients);
+			this.ingredientList.clear();
+			/*nieuw ingredient toevoegen*/
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

@@ -500,6 +500,37 @@ public class AlchemicIngredient {
 		return (!(ingredientTypeList.contains(null)) && !(ingredientTypeList.isEmpty()));
 	}
 	
+	
+	
+	private IngredientType getReferenceIngredientType(){
+		List<IngredientType> ingredientList = getIngredientTypeList();
+		List<Long> temperatureList = new ArrayList<Long>();
+		long minimum = Long.MAX_VALUE;
+		for (int i = 0; i <= ingredientList.size();i++) {
+			long coldness = ingredientList.get(i).getColdness();
+			long hotness  = ingredientList.get(i).getHotness();
+			long difference = Math.abs(20 - (hotness - coldness));
+			temperatureList.add(i,difference);
+			if (difference < minimum) {
+				minimum = difference;
+			}
+		}	
+		List<IngredientType> potentialIngredients = new ArrayList<IngredientType>();
+		for (int i = 0; i<= ingredientList.size();i++) {
+			if (temperatureList.get(i)==minimum) {
+				potentialIngredients.add(ingredientList.get(i));
+			}
+		}
+		IngredientType type = potentialIngredients.get(0);
+		for (int i = 0; i<= potentialIngredients.size();i++) {
+			if (potentialIngredients.get(i).getState() == "Liquid") {
+				type = potentialIngredients.get(i);
+				break;
+			}
+		}
+		return type;
+	}
+	
 	/**********************************************************
      * Name
      **********************************************************/
@@ -705,10 +736,12 @@ public class AlchemicIngredient {
 			setColdness(coldness);
 		}
 		else {
-			setHotness(ingredientType.getStandardHotness());
-			setColdness(ingredientType.getStandardColdness());
+			setHotness(getReferenceIngredientType().getStandardHotness());
+			setColdness(getReferenceIngredientType().getStandardColdness());
 		}
 	}
+	
+	
 	
 	/**
 	 * Check whether the given combination of hotness and coldness is a legal combination.
@@ -740,6 +773,11 @@ public class AlchemicIngredient {
 		
 	}
 	
+	
+	public List<Long> getStandardTemperature(){
+		IngredientType type = getReferenceIngredientType();
+		return type.getStandardTemp();
+	}
 	
 	
 	/**********************************************************
