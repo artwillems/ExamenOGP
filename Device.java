@@ -277,13 +277,18 @@ public class Device {
 	}
 	
 	/*NOG KIJKEN WAT IK BIJ newAlchemicIngredient zet, want dit moet resultaat zijn van de hele ingredientList*/
-	public IngredientContainer removeAlchemicResult() {
-		AlchemicIngredient newAlchemicIngredient = ;
-		int newQuantity = this.sumOfQuantities();
-		IngredientContainer newContainer = new IngredientContainer(newAlchemicIngredient,newQuantity);
-		ingredientList.clear();
-		quantityList.clear();
-		return newContainer;
+	public IngredientContainer removeAlchemicResult() throws IllegalResultException {
+		if (ingredientList.size()>1) {
+			throw new IllegalResultException("There can only be returned one total result from the device");
+		}
+		else {
+			
+			int newQuantity = this.sumOfQuantities();
+			IngredientContainer newContainer = new IngredientContainer(ingredientList.get(0),newQuantity);
+			ingredientList.clear();
+			quantityList.clear();
+			return newContainer;
+		}
 	}
 	
 	public int sumOfQuantities() {
