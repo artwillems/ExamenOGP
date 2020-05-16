@@ -9,7 +9,7 @@ import java.util.Set;
 
 /**
  * A class laboratory for doing Alchemic procedures on AlchemicIngredients with a certain Device.
- * 
+ *
  * @author willemsart, Jérôme D'hulst en Marie Levrau
  *
  */
@@ -72,7 +72,7 @@ public class Laboratory{
 	 *
 	 * @return	the capacity of this laboratory in storerooms
 	 */
-
+	@Basic
 	public long getCapacity() {
 		return this.capacity;
 	}
@@ -139,7 +139,7 @@ public class Laboratory{
 	 *
 	 * @return	the list of ingredients
 	 */
-
+	@Basic
 	protected List<AlchemicIngredient> getIngredients(){
 		return this.listOfIngredients;
 	}
@@ -174,7 +174,7 @@ public class Laboratory{
 	 *
 	 * @return	The list of devices in the laboratory. All the devices for this laboratory are unique.
 	 */
-
+	@Basic
 	protected List<Device> getDevices(){
 		return this.listOfDevices;
 	}
@@ -194,68 +194,109 @@ public class Laboratory{
 		int listLength = listWithDevices.size();
 		return (listLength == setLength);
 	}
-	
+
+	/**
+	 * Variable referencing the Oven in this lab.
+	 */
+
+	private Oven ovenInLab = null;
+
+
+	private void setOven(Oven ovenInLab) {
+		this.ovenInLab = ovenInLab;
+	}
+
+	/**
+	 * Variable referencing the Transmogrifier in this laboratory
+	 */
+
+	private Transmogrifier transmogrifierInLab = null;
+
+	private void setTransmogrifier(Transmogrifier transmogrifierInLab) {
+		this.transmogrifierInLab = transmogrifierInLab;
+	}
+
+	/**
+	 * Variable referencing the CoolingBox in this lab
+	 */
+
+	private CoolingBox coolingBoxInLab = null;
+
+	private void setCoolingBox(CoolingBox coolingBoxInLab) {
+		this.coolingBoxInLab = coolingBoxInLab;
+	}
+
+	/**
+	private Kettle kettleInLab = null;
+
+	private void setKettle(Kettle kettleInLab) {
+		this.kettleInLab = kettleInLab;
+	}
+	*/
+
+
 	/**
 	 * Seek an oven in this laboratory
 	 * NOTE: Voorlopig is het Immutable, kan nog veranderen naargelang implementatie
-	 * 		
+	 *
 	 * @return	the first oven that is present in this laboratory
 	 */
 	@Immutable
 	protected Oven seekOven() {
-		Oven foundOven = null; 
+		Oven foundOven = null;
 		for(Device someDevice : getDevices()) {
 			if(someDevice.getType().equals("Oven")) {
-				foundOven = ((Oven) someDevice); 
+				foundOven = ((Oven) someDevice);
 			}
 		}
-		return foundOven; 
+		return foundOven;
 	}
-	
+
 	/**
 	 * Seek a Coolingbox in this laboratory
-	 * 
-	 * @return	The first CoolingBox that is found in this laboratory. 
+	 *
+	 * @return	The first CoolingBox that is found in this laboratory.
 	 */
 	@Immutable
 	protected CoolingBox seekCoolingBox() {
 		CoolingBox foundFridge = null;
 		for(Device aDevice : getDevices()) {
 			if(aDevice.getType().equals("CoolingBox")) {
-				foundFridge = (CoolingBox) aDevice; 
+				foundFridge = (CoolingBox) aDevice;
 			}
 		}
-		return foundFridge; 
+		return foundFridge;
 	}
-	
+
 	/**
+	@Immutable
 	protected Kettle seekKettle() {
-		Kettle foundKettle = null; 
+		Kettle foundKettle = null;
 		for(Device aDevice : getDevices()) {
 			if(aDevice.getType().equals("Kettle")) {
-				foundKettle = (Kettle) aDevice; 
+				foundKettle = (Kettle) aDevice;
 			}
 		}
-		return foundKettle; 
+		return foundKettle;
 	}
 	*/
-	
+
 	/**
 	 * Seek a transmogrifier in this laboratory
-	 * 
+	 *
 	 * @return The first tranmogrifier that is found in the laboratory
 	 */
-	
+	@Immutable
 	protected Transmogrifier seekTransmogrifier() {
-		Transmogrifier foundTransmogrifier = null; 
+		Transmogrifier foundTransmogrifier = null;
 		for(Device aDevice : getDevices()) {
 			if(aDevice.getType().equals("Transmogrifier")) {
-				foundTransmogrifier = (Transmogrifier) aDevice; 
+				foundTransmogrifier = (Transmogrifier) aDevice;
 			}
 		}
-		return foundTransmogrifier; 
+		return foundTransmogrifier;
 	}
-	
+
 	/********************************************
 	 * storing and adding ingredients
 	 ***************/
@@ -286,112 +327,100 @@ public class Laboratory{
 		int quant = ingredient.getQuantity();
 		return((quant >= 0) && (quant <= getCapacity()));
 	}
-	
+
 	/**
 	 * Checks whether the ingredient is at its ingredient type's standard temperature
-	 * 
+	 *
 	 * @param	ingredient
 	 * 			The AlchemicIngredient that is checked on temperature
 	 * @return	true if the ingredient is at its standard temperature, false otherwise
 	 * 			| ingredient.getTemperature() == ingredient.getIngredientType().getStandardTemp()
 	 */
-	
+
 	private boolean hasStandardTemperature(AlchemicIngredient ingredient) {
-		Temperature standardTemperature = ingredient.getIngredientTypeList().get(0).getStandardTemp();
+		List<Long> standardTemperature = ingredient.getStandardTemperature();
 		return ingredient.getTemperature() == standardTemperature;
 	}
-	
-	/**
-	 * Get the standard hotness out of a certain ingredient type's standard temperature. 
-	 * 
-	 * @param	ingredient
-	 * 			The ingredient we need to get the standard hotness of		 
-	 * @return	the standard hotness
-	 */
-	
-	private long getStandardHotness(AlchemicIngredient ingredient) {
-		return ingredient.getIngredientTypeList().get(0).getStandardTemp().getHotness();  
-	}
-	
+
 	/**
 	 * Use the oven to bring a new AlchemicIngredient to its standardTemperature.
-	 * 
+	 *
 	 * @param	oven
-	 * 			The Oven used for heating the AlchemicIngredient		
+	 * 			The Oven used for heating the AlchemicIngredient
 	 * @param	ingredient
 	 * 			The AlchemicIngredient that needs to be cooled
 	 */
-	
+
 	private void useOven(Oven oven, IngredientContainer container) {
 		AlchemicIngredient ingredient = container.getAlchemicIngredient();
 		long newColdness = 0;
-		long newHotness = ingredient.getIngredientTypeList().get(0).getStandardTemp().getHotness();
+		long newHotness = ingredient.getHotness();
 		oven.changeOvenTemperature(newColdness, newHotness);
 		oven.addIngredientFrom(container);
 		oven.executeAlchemicOperation();
 	}
-	
+
 	/**
 	 * Use the cooling box to bring the new AlchemicIngredient for the laboratory to its standardTemperature
-	 * 
+	 *
 	 * @param	fridge
-	 * 			The fridge used for Cooling the AlchemicIngredient		
+	 * 			The fridge used for Cooling the AlchemicIngredient
 	 * @param	ingredient
-	 * 			The AlchemicIngredient that needs to be cooled. 
+	 * 			The AlchemicIngredient that needs to be cooled.
 	 */
-	
+
 	private void useCoolingBox(CoolingBox fridge, IngredientContainer container) {
-		AlchemicIngredient ingredient = container.getAlchemicIngredient(); 
-		long theHotness = 0; 
-		long theColdness = ingredient.getIngredientTypeList().get(0).getStandardTemp().getColdness(); 
+		AlchemicIngredient ingredient = container.getAlchemicIngredient();
+		long theHotness = 0;
+		long theColdness = ingredient.getStandardTemperature().get(0);
 		fridge.changeCoolingBoxTemperature(theColdness, theHotness);
 		fridge.addIngredientFrom(container);
 		fridge.executeAlchemicOperation();
 	}
-	
+
 	/**
 	 * Brings a new AlchemicIngredient that needs to be introduced to the laboratory to its standardTemperature by
 	 * the means of an Oven or a CoolingBox.
-	 * 
+	 *
 	 * @param	ingredient
-	 * 			The new AlchemicIngredient that needs to be brought back to its standardTemperatures. 
-	 * @return	The AlchemicIngredient brought to its standardTemperature. 
+	 * 			The new AlchemicIngredient that needs to be brought back to its standardTemperatures.
+	 * @return	The AlchemicIngredient brought to its standardTemperature.
 	 */
 
-	private AlchemicIngredient ingredientBroughtToStandardTemp(IngredientContainer fromContainer) {	
-		AlchemicIngredient ingredient = fromContainer.getAlchemicIngredient(); 
+	private AlchemicIngredient ingredientBroughtToStandardTemp(IngredientContainer fromContainer) {
+		AlchemicIngredient ingredient = fromContainer.getAlchemicIngredient();
 		if(hasStandardTemperature(ingredient)) {
-			return ingredient; 
+			return ingredient;
 		}
 		else {
-			
+
 			/*bring the ingredient back to its standard temperature using an oven or cooling box*/
-			AlchemicIngredient adaptedIngredient = null; 
-			if(ingredient.getTemperature().get(1) < getStandardHotness(ingredient)) {
-		
-				Oven thisOven = seekOven(); 
-				useOven(thisOven, fromContainer); 
+			AlchemicIngredient adaptedIngredient = null;
+			if(ingredient.getTemperature().get(1) < ingredient.getStandardTemperature().get(1)) {
+
+				Oven thisOven = seekOven();
+				useOven(thisOven, fromContainer);
 				List<AlchemicIngredient> ingredientsInOven = thisOven.getIngredientList();
-				
+
 				for(AlchemicIngredient viewed : ingredientsInOven) {
-					
+
 					if(ingredient.getCompleteName().equals(viewed.getCompleteName())){
-						return adaptedIngredient = viewed; 
+						return adaptedIngredient = viewed;
 					}
 				}
 			}
 			else {
-				CoolingBox thisFridge = seekCoolingBox(); 
-				useCoolingBox(thisFridge, fromContainer); 
-				List<AlchemicIngredient> ingredientsInFridge = thisFridge.getIngredientList(); 
+				CoolingBox thisFridge = seekCoolingBox();
+				useCoolingBox(thisFridge, fromContainer);
+				List<AlchemicIngredient> ingredientsInFridge = thisFridge.getIngredientList();
 				for(AlchemicIngredient viewed : ingredientsInFridge) {
-					
+
 					if(ingredient.getCompleteName().equals(viewed.getCompleteName())){
-						return adaptedIngredient = viewed; 
+						return adaptedIngredient = viewed;
 					}
 				}
 			}
-			return adaptedIngredient; 
+			return adaptedIngredient;
 		}
 	}
 
@@ -400,10 +429,13 @@ public class Laboratory{
 	 *
 	 * @param	fromContainer
 	 * 			The IngredientContainer in which the AlchemicIngredient arrived.
+	 * @throws	InvalidLaboratoryAmountException
+	 * 			If the combined amount of the ingredient to be added to this laboratory exceeds the capacity of the laboratory
+	 * 			a new invalid laboratory amount exception is thrown.
+	 * 			| throw new InvalidLaboratoryAmountException
 	 */
-	
-	@Raw
-	public void storeNewIngredient(IngredientContainer fromContainer) {
+
+	public void storeNewIngredient(IngredientContainer fromContainer) throws InvalidLaboratoryAmountException{
 		AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer);
 		if(isValidNewAmount(ingredientToBeAdded)) {
 			getIngredients().add(ingredientToBeAdded);
@@ -419,42 +451,43 @@ public class Laboratory{
 			else {
 				getIngredients().remove(indexOfNew);
 				/*throw an exception telling the user such an amount cannot be stored.*/
+				throw new InvalidLaboratoryAmountException("The amount of ingredient you want to add, exceeds the laboratory capacity", this);
 			}
 		}
 	}
-	
+
 	/**
 	 * Add a new ingredient to the list of ingredients that already exists for this laboratory
-	 * 
+	 *
 	 * @param	ingredient
 	 * 			The ingredient that needs to be added to the laboratory.
 	 */
-	
+
 	protected void addIngredient(AlchemicIngredient ingredient) {
-		getIngredients().add(ingredient); 
+		getIngredients().add(ingredient);
 	}
-	
+
 	/**
-	 * Remove an AlchemicIngredient from this Laboratory. 
-	 * 
+	 * Remove an AlchemicIngredient from this Laboratory.
+	 *
 	 * @param	ingredient
-	 * 			The ingredient to be removed from this laboratory. 		
+	 * 			The ingredient to be removed from this laboratory.
 	 * @throws	IngredientNotPresentInLabException
 	 * 			If the ingredient was not present in the lab before the calling of this method, a new
-	 * 			ingredient not present in lab exception will be thrown. 
-	 * 			| throw new IngredientNotPresentInLabException("message", this)	
+	 * 			ingredient not present in lab exception will be thrown.
+	 * 			| throw new IngredientNotPresentInLabException("message", this)
 	 */
 
 	protected void removeIngredient(AlchemicIngredient ingredient) throws IngredientNotPresentInLabException {
 		if(isIngredientPresentInLab(ingredient.getCompleteName())) {
-			int indexOfIngredient = getIngredients().indexOf(ingredient); 
-			getIngredients().remove(indexOfIngredient); 
+			int indexOfIngredient = getIngredients().indexOf(ingredient);
+			getIngredients().remove(indexOfIngredient);
 		}
 		else {
-			throw new IngredientNotPresentInLabException("The ingredient cannot be removed, because it isn't in this lab", this); 
+			throw new IngredientNotPresentInLabException("The ingredient cannot be removed, because it isn't in this lab", this);
 		}
 	}
-	
+
 	/**
 	 * Variable referencing the catalog of the laboratory
 	 */
@@ -467,13 +500,14 @@ public class Laboratory{
 	 *
 	 * @return The catalog for this laboratory.
 	 */
-
+	@Basic
 	public Map<String, Integer> getCatalog(){
 		/**
 		 * If a certain AlchemicIngredient.getCompleteName() does not appear more than once in the laboratory
 		 * we can safely put them in the catalog map. Otherwise we need to take the full amount of a certain ingredient.
-		 * A map does not accept two identical keys, so when a duplicate key is added, the first one will be dropped, but
-		 * this is of no matter, since we work with getFullAmount for the values.
+		 * A map does not accept two identical keys, so when a duplicate key is added, the first one will be dropped and its
+		 * corresponding value, the full amount, but this is of no concern, since we work with getFullAmount, which will
+		 * calculate the combined amount time and again.
 		 */
 
 		if(areThereNoDoubleIngredients(getIngredients())){
@@ -567,7 +601,7 @@ public class Laboratory{
 	 * 			The AlchemicIngredient for which all its amounts are combined into one.
 	 * @return	The total amount of that certain ingredient present in the laboratory.
 	 */
-
+	@Model
 	private int combineAmounts(AlchemicIngredient ingredient) {
 		int oldAmount = 0;
 		for(AlchemicIngredient otherIngredients : getIngredients()) {
