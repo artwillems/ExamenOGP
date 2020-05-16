@@ -230,9 +230,9 @@ public class IngredientType {
      * 		  The new standard temperature for this ingredientType
      */
     @Raw @Basic 
-    public Temperature setStandardTemp(Temperature standardTemp) {
+    public void setStandardTemp(Temperature standardTemp) {
     	if (isValidStandardTemp(standardTemp)) {
-    		this.standardTemp = new Temperature(standardTemp.getColdnes(),standardTemp.getHotness());
+    		this.standardTemp = new Temperature(standardTemp.getColdness(),standardTemp.getHotness());
     	}
     	else {
     		this.standardTemp = this.getDefaultStandardTemp();
