@@ -46,69 +46,18 @@ public class CoolingBox extends Device {
 	 * Temperature
 	 **********************************************************/
 	
-	
-	/**
-	 * Variable referencing the max temperature of hotness and coldness of the oven.
-	 */
-	private long maxTemp = 10000;
-	
-	
-	/**
-	 * Variable referencing the hotness of the oven.
-	 */
-	private long boxHotness = 0;
-	
-	/**
-	 * Variable referencing the coldness of the oven.
-	 */
-	private long boxColdness = 0;
-	
-	private void setHotness(long hotness) {
-		this.boxHotness = hotness;
-	}
-	
-	private void setColdness(long coldness) {
-			this.boxColdness = coldness;
-	}
+	private Temperature temperature = null;
 	
 	private void setTemperature(long coldness, long hotness) {
-		if (isValidTempCombination(coldness,hotness)){
-			if (getIngredientList().size() == 0) {
-				setColdness(coldness);
-				setHotness(hotness);
-			}
-			else {
-				throw new InvalidIngredientListException(this);
-			}
-		}
+		temperature = new Temperature(coldness,hotness);
 	}
 	
-	public boolean isValidTempCombination(long coldness, long hotness) {
-		return (((coldness == 0) || (hotness == 0)) && ((hotness >= 0) && (hotness<= getMaxTemp()) && (coldness >= 0 && coldness <= getMaxTemp())));
-		
+	public Temperature getCoolingBoxTemperature() {
+		return temperature;
 	}
 	
-	public long getMaxTemp() {
-		return maxTemp;
-	}
-	
-	public long getBoxHotness() {
-		return this.boxHotness;
-	}
-	
-	public long getBoxColdness() {
-		return this.boxColdness;
-	}
-	
-	public List<Long> getOvenTemperature(){
-		List<Long> boxTemperature = new ArrayList<Long>();
-		boxTemperature.add(this.getBoxColdness());
-		boxTemperature.add(this.getBoxHotness());
-		return boxTemperature;
-	}
-	
-	public void changeCoolingBoxTemperature(long coldness,long hotness) {
-		setTemperature(coldness, hotness);
+	public void changeCoolingBoxTemperature(long coldness, long hotness) {
+		temperature = new Temperature(coldness,hotness);
 	}
 	
 	
@@ -134,15 +83,15 @@ public class CoolingBox extends Device {
     	}
     	else {
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);
-    		if (getBoxColdness() == 0) {
-    			long newHotness = getBoxHotness(); 
-    			if (ingredient.getHotness() > newHotness) {
+    		if (getCoolingBoxTemperature().getColdness() == 0) {
+    			long newHotness = getCoolingBoxTemperature().getHotness(); 
+    			if (ingredient.getTemperature().getHotness() > newHotness) {
     				ingredient.changeTemp(0, newHotness);
     			}
     		}
     		else {
-    			long newColdness = getBoxColdness(); 
-    			if (ingredient.getColdness() < newColdness) {
+    			long newColdness = getCoolingBoxTemperature().getColdness(); 
+    			if (ingredient.getTemperature().getColdness() < newColdness) {
     				ingredient.changeTemp(newColdness,0);
     			}
     		}
