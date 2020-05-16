@@ -243,12 +243,7 @@ public class Temperature {
 	    public void cool(long coldness) {
 	    	setColdness(coldness);
 	    }
-	    public static void main(String[] args) {
-			System.out.println("Hallo");
-			Temperature temp = new Temperature(0,20);
-			System.out.println(temp.getTemperature());
 
-		}
 
 	    
 }
