@@ -45,70 +45,18 @@ public class Oven extends Device {
 	 * Temperature
 	 **********************************************************/
 	
+	private Temperature temperature = null;
 	
-	/**
-	 * Variable referencing the max temperature of hotness and coldness of the oven.
-	 */
-	private long maxTemp = 10000;
-	
-	
-	/**
-	 * Variable referencing the hotness of the oven.
-	 */
-	private long ovenHotness = 20;
-	
-	/**
-	 * Variable referencing the coldness of the oven.
-	 */
-	private long ovenColdness = 0;
-	
-	private void setHotness(long hotness) {
-		this.ovenHotness = hotness;
+	private void setTemperature(long coldness, long hotness) {
+		temperature = new Temperature(coldness, hotness);
 	}
 	
-	private void setColdness(long coldness) {
-			this.ovenColdness = coldness;
+	public Temperature getOvenTemperature() {
+		return temperature;
 	}
-	
-	private void setTemperature(long coldness, long hotness) throws InvalidIngredientListException {
-		if (isValidTempCombination(coldness,hotness)){
-			if (getIngredientList().size()==0) {
-				setColdness(coldness);
-				setHotness(hotness);
-			}
-			else { 
-				throw new InvalidIngredientListException("The device can not hold any ingredients when changing its temperature",this);
-			}
-		}
-	}
-	
-	public boolean isValidTempCombination(long coldness, long hotness) {
-		return (((coldness == 0) || (hotness == 0)) && ((hotness >= 0) && (hotness<= getMaxTemp()) && (coldness >= 0 && coldness <= getMaxTemp())));
-		
-	}
-	
-	public long getMaxTemp() {
-		return maxTemp;
-	}
-	
-	public long getOvenHotness() {
-		return this.ovenHotness;
-	}
-	
-	public long getOvenColdness() {
-		return this.ovenColdness;
-	}
-	
-	public List<Long> getOvenTemperature(){
-		List<Long> ovenTemperature = new ArrayList<Long>();
-		ovenTemperature.add(this.getOvenColdness());
-		ovenTemperature.add(this.getOvenHotness());
-		return ovenTemperature;
-	}
-	
 	
 	public void changeOvenTemperature(long coldness, long hotness) {
-		setTemperature(coldness,hotness);
+		temperature = new Temperature(coldness,hotness);
 	}
 	
 	
@@ -135,15 +83,15 @@ public class Oven extends Device {
     	}
     	else {
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);
-    		if (getOvenColdness() == 0) {
-    			long newHotness = getOvenHotness(); /*Hier komt nog een term voor de 5 procent*/
-    			if (ingredient.getHotness() < newHotness) {
+    		if (getOvenTemperature().getColdness() == 0) {
+    			long newHotness = getOvenTemperature().getHotness(); /*Hier komt nog een term voor de 5 procent*/
+    			if (ingredient.getTemperature().getHotness() < newHotness) {
     				ingredient.changeTemp(0, newHotness);
     			}
     		}
     		else {
-    			long newColdness = getOvenColdness(); /*Hier komt nog een term voor de 5 procent*/
-    			if (ingredient.getColdness() > newColdness) {
+    			long newColdness = getOvenTemperature().getColdness(); /*Hier komt nog een term voor de 5 procent*/
+    			if (ingredient.getTemperature().getColdness() > newColdness) {
     				ingredient.changeTemp(newColdness,0);
     			}
     		}

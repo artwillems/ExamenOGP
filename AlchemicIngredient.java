@@ -75,10 +75,15 @@ public class AlchemicIngredient {
 	 * 			| setState(ingredientType.getState())
 	 * 
 	 */
-	public AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList) {
-		this(quantity,unit,ingredientTypeList,0,0,"Powder",null);
-		setTemperature(ingredientType.getTemperature().get(1),ingredientType.getTemperature().get(0));
-		setState(ingredientType.getState());
+	public AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList) throws InvalidIngredientTypeListException{
+		if (ingredientTypeList.size()<1) {
+			this(quantity,unit,ingredientTypeList,0,0,"Powder",null);
+			setTemperature(ingredientType.getTemperature().getColdness(),ingredientType.getTemperature().getHotness());
+			setState(ingredientType.getState());
+		}
+		else {
+			throw new InvalidIngredientTypeListException("The ingredient can only have one ingredientType",this);
+		}
 	}
 	
 	/**
@@ -441,6 +446,7 @@ public class AlchemicIngredient {
 	 * 
 	 */
 	private String getDefaultState() {
+		IngredientType ingredientType = getReferenceIngredientType();
 		return ingredientType.getState();
 	}
 	
@@ -507,8 +513,8 @@ public class AlchemicIngredient {
 		List<Long> temperatureList = new ArrayList<Long>();
 		long minimum = Long.MAX_VALUE;
 		for (int i = 0; i <= ingredientList.size();i++) {
-			long coldness = ingredientList.get(i).getColdness();
-			long hotness  = ingredientList.get(i).getHotness();
+			long coldness = ingredientList.get(i).getStandardTemp().getColdness();
+			long hotness  = ingredientList.get(i).getStandardTemp().getHotness();
 			long difference = Math.abs(20 - (hotness - coldness));
 			temperatureList.add(i,difference);
 			if (difference < minimum) {
@@ -644,141 +650,28 @@ public class AlchemicIngredient {
      **********************************************************/
 	
 	/**
-	 * Variable referencing the coldness of this ingredient.
+	 * Variable referencing the temperature of an AlchemicIngredient
 	 */
-	private long coldness = 0;
-	
-	/**
-	 * Variable referencing the hotness of this ingredient.
-	 */
-	private long hotness = 0;
-	
-	/**
-	 * Variable referencing the maximum possible temperature for every ingredient.
-	 */
-	public static long maxTemp = 10000;
-	
-	/**
-	 * Return the maximum possible temperature.
-	 */
-	public static long getMaxTemp() {
-		return maxTemp;
-	}
+	private Temperature temperature = null;
 	
 	
-	/**
-	 * Set the coldness of this ingredient to the given coldness.
-	 * 
-	 * @param 	coldness
-	 * 			The new coldness for this ingredient.
-	 * @pre 	The given coldness must be legal.
-	 * 			| isValidTemperature(coldness)
-	 * @post	The given coldness is registered as the coldness of this ingredient.
-	 * 			| new.getColdness() == coldness
-	 */
-	private void setColdness(long coldness) {
-		this.coldness = coldness;
-	}
-	
-	/**
-	 * Return the coldness of this ingredient.
-	 */
-	public long getColdness() {
-		return coldness;
-	}
-	
-	/**
-	 * Set the hotness of this ingredient to the given hotness.
-	 * 
-	 * @param 	hotness
-	 * 			The new hotness for this ingredient.
-	 * @pre    	The given hotness must be legal.
-	 * 			| isValidTemperature(hotness)
-	 * @post	The given hotness is registered as the hotness of this ingredient.
-	 * 			| new.getHotness() == hotness
-	 */
-	private void setHotness(long hotness) {
-			this.hotness = hotness;
-	}
-	
-	/**
-	 * Return the hotness of this ingredient.
-	 */
-	public long getHotness() {
-		return hotness;
-	}
-	
-	/**
-	 * Check whether the given temperature (hotness or coldness) is a valid temperature
-	 * for an ingredient
-	 *  
-	 * @param 	temperature
-	 * 			The temperature to check
-	 * @return	True if and only if the given temperature is positive and does not
-	 * 			exceed the maximum temperature.
-	 * 			| result == (temperature >= 0 && temperature <= getMaxTemp())
-	 */
-	public boolean isValidTemperature(long temperature) {
-		return (temperature >= 0 && temperature <= getMaxTemp());
-	}
-	
-	/**
-	 * Set the temperature of this ingredient to the given temperature (hotness and coldness)
-	 * 
-	 * @param 	hotness
-	 * 			The new hotness for this ingredient.
-	 * @param 	coldness
-	 * 			The new coldness for this ingredient.
-	 */
 	private void setTemperature(long coldness, long hotness) {
-		if (isValidTempCombination(hotness,coldness)) {
-			setHotness(hotness);
-			setColdness(coldness);
-		}
-		else {
-			setHotness(getReferenceIngredientType().getStandardHotness());
-			setColdness(getReferenceIngredientType().getStandardColdness());
-		}
+		temperature = new Temperature(coldness,hotness);
 	}
 	
 	
-	
-	/**
-	 * Check whether the given combination of hotness and coldness is a legal combination.
-	 * 
-	 * @param 	hotness
-	 * 			The hotness to check.
-	 * @param 	coldness
-	 * 			The coldness to check.
-	 * @return	True if and only if the hotness and the coldness are not greater than zero at the same time.
-	 * 			| result == !(hotness>0 && coldness >0)
-	 */
-	public boolean isValidTempCombination(long hotness, long coldness) {
-		return !(hotness > 0 && coldness > 0);
+	public Temperature getTemperature() {
+		return temperature;
 	}
-	
-	
-	
-	public List<Long> getTemperature(){
-		List<Long> Temperature = new ArrayList<Long>();
-		Temperature.add(getColdness());
-		Temperature.add(getHotness());
-		return Temperature;
-		
-	}
-	
 	
 	protected void changeTemp(long coldness, long hotness) {
-		setTemperature(coldness,hotness);
-		
+		temperature = new Temperature(coldness,hotness);
 	}
 	
-	
-	public List<Long> getStandardTemperature(){
-		IngredientType type = getReferenceIngredientType();
-		return type.getStandardTemp();
+	public Temperature getStandardTemperature() {
+		IngredientType ingredientType = getReferenceIngredientType();
+		return ingredientType.getStandardTemp();
 	}
-	
 	
 	/**********************************************************
      * Laboratory
@@ -795,6 +688,7 @@ public class AlchemicIngredient {
 		if (isValidLaboratory(laboratory)) {
 			if (getLaboratory() == null) {
 				/*Nieuwe container maken met ingredient in*/
+				IngredientContainer container = new IngredientContainer(this);
 				laboratory.storeNewIngredient(fromContainer);;
 				this.laboratory = laboratory;
 			}

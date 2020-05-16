@@ -29,8 +29,8 @@ public class Kettle extends Device{
 		List<Long> temperatureList = new ArrayList<Long>();
 		long minimum = Long.MAX_VALUE;
 		for(int i = 0; i <= ingredientList.size();i++) {
-			long coldness = ingredientList.get(i).getStandardTemperature().get(0);
-			long hotness = ingredientList.get(i).getStandardTemperature().get(1);
+			long coldness = ingredientList.get(i).getStandardTemperature().getColdness();
+			long hotness = ingredientList.get(i).getStandardTemperature().getHotness();
 			long difference = Math.abs(20 - (hotness - coldness));
 			temperatureList.add(i, difference);
 			if (difference < minimum) {
@@ -67,7 +67,7 @@ public class Kettle extends Device{
 	
 	public List<Long> getStandardTemperature(List<AlchemicIngredient> potentialIngredients){
 		AlchemicIngredient ingredient = potentialIngredients.get(0);
-		return ingredient.getStandardTemperature();
+		return ingredient.getStandardTemperature().getTemperature();
 		
 	}
 	
