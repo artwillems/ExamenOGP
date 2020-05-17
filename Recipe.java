@@ -12,13 +12,13 @@ public class Recipe {
      * constructor
      **********************************************************/
 	
-	public Recipe(List<String> operationList, List<String> ingredientList, Laboratory labo) {
+	public Recipe(List<String> operationList, List<String> ingredientList, Laboratory labo, List<RecipeBook> recipeBooks) {
 		setOperationList(operationList);
 		setIngredientList(ingredientList);
 		setLaboratory(labo);
+		setRecipeBook(recipeBooks);
 	}
 	
-	/*we mogen geen unidirectionele relatie vergeten met recipebook!!!*/
 	
 	private List<String> operationList = null;
 	
@@ -163,6 +163,58 @@ public class Recipe {
 			  }
 			}
 		return this.getRecipeList().get(0);
+		
+
+		
 	}
+	
+	/**********************************************************
+     * unidirectionele relatie met recipebooks
+     **********************************************************/
+	
+	
+	/**
+	 * Variable referencing a list of recipebooks where this recipe can be found.
+	 */
+	private List<RecipeBook> recipeBooks = null;
+	
+	/**
+	 * Return the list of recipebooks where this recipe can be found
+	 */
+	public List<RecipeBook> getRecipeBook() {
+		return this.recipeBooks;
+	}
+	
+	/**
+	 * Set the list of recipebooks of this recipe to the given list of recipebooks.
+	 * 
+	 * @param   recipeBooks
+     * 			The new list of recipebooks for this recipe.
+	 */
+	private void setRecipeBook(List<RecipeBook> recipeBooks) throws IllegalRecipeBookException {
+		if (! isValidRecipeBook(recipeBooks)) {
+			throw new IllegalRecipeBookException("This recipe does not belong to a recipeBook");
+		}
+		else {
+			this.recipeBooks = recipeBooks;
+		}
+	}
+	
+	
+	public static boolean isValidRecipeBook(List<RecipeBook> recipeBooks) {
+		return (recipeBooks.size()>=1);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
