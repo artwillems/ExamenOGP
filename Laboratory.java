@@ -26,24 +26,13 @@ public class Laboratory{
 	 *
 	 * @param 	capacity
 	 * 		  	The capacity of the laboratory.
-	 * @param 	listOfIngredients
-	 * 		  	All the ingredients present in the laboratory at time of creation.
-	 * @param 	listOfDevices
-	 * 		  	All the devices present in the laboratory at time of creation.
 	 *
 	 * @effect 	if the capacity is valid, the capacity of this laboratory will be set to this capacity
 	 * 		   	|setLabCapaCity(capacity)
-	 * @effect 	the ingredients present in this laboratory are set to the list of ingredients
-	 * 		   	|setIngredients(listOfIngredients)
-	 * @effect 	the devices present at the laboratory will be set the list of devices
-	 * 		   	|setDevices(listOfDevices)
-	 *
 	 */
 
-	public Laboratory(long capacity, ArrayList<AlchemicIngredient> listOfIngredients, ArrayList<Device> listOfDevices) {
+	public Laboratory(long capacity) {
 		setLabCapacity(capacity);
-		setIngredients(listOfIngredients);
-		setDevices(listOfDevices);
 	}
 
 	/****************************************
@@ -102,18 +91,6 @@ public class Laboratory{
 	private List<AlchemicIngredient> listOfIngredients = null;
 
 	/**
-	 * Set a collection of ingredients for this laboratory
-	 *
-	 * @param	listOfIngredients
-	 *
-	 * @post	the ingredients present at the laboratory become the new list of ingredients
-	 */
-
-	private void setIngredients(ArrayList<AlchemicIngredient> listOfIngredients) {
-		this.listOfIngredients = listOfIngredients;
-	}
-
-	/**
 	 * Checks if the different ingredient types in the laboratory are unique, meaning there is not two times
 	 * the same AlchemicIngredient.getCompleteName().
 	 *
@@ -149,61 +126,43 @@ public class Laboratory{
 	 **************************/
 
 	/**
-	 * Variable referencing the list of devices for this laboratory
-	 */
-
-	private List<Device> listOfDevices = null;
-
-	/**
-	 *
-	 * Set the devices to be used in the laboratory
-	 *
-	 * @param	listOfDevices
-	 * 		 	All the devices that are stored in the laboratory.
-	 */
-
-	private void setDevices(ArrayList<Device> listOfDevices) {
-		if(areThereNoDoubleDevices(listOfDevices)) {
-			this.listOfDevices = listOfDevices;
-		}
-
-	}
-
-	/**
-	 * Get the list of devices present in the laboratory
-	 *
-	 * @return	The list of devices in the laboratory. All the devices for this laboratory are unique.
-	 */
-	@Basic
-	protected List<Device> getDevices(){
-		return this.listOfDevices;
-	}
-
-	/**
-	 *
-	 * Checks whether there are no duplicate devices present at the laboratory
-	 *
-	 * @param 	listWithDevices
-	 *
-	 * @return 	True if there are no double devices present in the laboratory. False if otherwise.
-	 */
-
-	public static boolean areThereNoDoubleDevices(ArrayList<Device> listWithDevices) {
-		Set<Device> setOfDevices = new HashSet<Device>(listWithDevices);
-		int setLength = setOfDevices.size();
-		int listLength = listWithDevices.size();
-		return (listLength == setLength);
-	}
-
-	/**
 	 * Variable referencing the Oven in this lab.
 	 */
 
 	private Oven ovenInLab = null;
 
 
+	/**
+	 * Initialize a new oven for 
+	 * 
+	 * @param ovenInLab
+	 */
+	
 	private void setOven(Oven ovenInLab) {
-		this.ovenInLab = ovenInLab;
+		if(ovenCanBeAdded()) {
+			this.ovenInLab = ovenInLab;
+		}
+		
+	}
+
+	/**
+	 * Checks whether there is already an oven present in this Laboratory.
+	 * 
+	 * @return 	True if there is no oven already present in the lab.
+	 * 			|this.ovenInLab.equals(null);
+	 */
+	
+	private boolean ovenCanBeAdded() {
+		return this.ovenInLab.equals(null); 
+	}
+	
+	/**
+	 * Add a new oven to this laboratory
+	 * 
+	 * @param newOven
+	 */
+	public void addOven(Oven newOven) {
+		setOven(ovenInLab); 
 	}
 
 	/**
@@ -211,19 +170,81 @@ public class Laboratory{
 	 */
 
 	private Transmogrifier transmogrifierInLab = null;
-
-	private void setTransmogrifier(Transmogrifier transmogrifierInLab) {
-		this.transmogrifierInLab = transmogrifierInLab;
+	
+	/**
+	 * Checks if there is already a Transmogrifier present in this Laboratory.
+	 * 
+	 * @return	true if there is no transmogrifier already present in this lab, false otherwise
+	 * 			|this.transmogrifierInLab.equals(null)		
+	 */
+	
+	private boolean transmogCanBeAdded() {
+		return this.transmogrifierInLab.equals(null); 
 	}
 
+	/**
+	 * Initialize a new Transmogrifier for this laboratory
+	 * 
+	 * @param	transmogrifierInLab
+	 * 			the transmogrifier that needs to be added to this laboratory
+	 */
+	
+	private void setTransmogrifier(Transmogrifier transmogrifierInLab) {
+		if(transmogCanBeAdded()) {
+			this.transmogrifierInLab = transmogrifierInLab;
+		}
+	}
+
+	/**
+	 * Add a new Transmogrifier to this Laboratory
+	 * 
+	 * @param	transmo
+	 * 			The transmogrifier that needs to be added to this Laboratory		
+	 */
+	
+	public void addTransmogrifier(Transmogrifier transmo) {
+		setTransmogrifier(transmo); 
+	}
+	
 	/**
 	 * Variable referencing the CoolingBox in this lab
 	 */
 
 	private CoolingBox coolingBoxInLab = null;
+	
+	/**
+	 * Checks whether a CoolingBox can be added to this laboratory
+	 * 
+	 * @return	True if there is not already a CoolingBox present in this laboratory
+	 * 			|this.coolingBoxInLab.equals(null)
+	 */
+	
+	private boolean canCoolingBoxBeAdded() {
+		return this.coolingBoxInLab.equals(null); 
+	}
 
+	/**
+	 * Initialize a new CoolingBox for this Laboratory
+	 * 
+	 * @param	coolingBoxInLab
+	 * 			The CoolingBox that needs to be added to the laboratory. 		
+	 */
+	
 	private void setCoolingBox(CoolingBox coolingBoxInLab) {
-		this.coolingBoxInLab = coolingBoxInLab;
+		if(canCoolingBoxBeAdded()) {
+			this.coolingBoxInLab = coolingBoxInLab;
+		}
+	}
+	
+	/**
+	 * Add a new CoolingBox to this laboratory
+	 * 
+	 * @param	coolingBox
+	 * 			The coolingbox to be added to this Laboratory
+	 */
+	
+	public void addCoolingBox(CoolingBox coolingBox) {
+		setCoolingBox(coolingBox); 
 	}
 
 	/**
@@ -231,9 +252,16 @@ public class Laboratory{
 
 	private void setKettle(Kettle kettleInLab) {
 		this.kettleInLab = kettleInLab;
+		
+		
+	private boolean canKettleBeAdded(){
+		return this.kettleInLab.equals(null); 
+	}
+	
+	public void getKettle(){
+	return this.kettle; 
 	}
 	*/
-
 
 	/**
 	 * Seek an oven in this laboratory
@@ -241,60 +269,29 @@ public class Laboratory{
 	 *
 	 * @return	the first oven that is present in this laboratory
 	 */
-	@Immutable
-	protected Oven seekOven() {
-		Oven foundOven = null;
-		for(Device someDevice : getDevices()) {
-			if(someDevice.getType().equals("Oven")) {
-				foundOven = ((Oven) someDevice);
-			}
-		}
-		return foundOven;
+	@Immutable @Basic
+	protected Oven getOven() {
+		return this.ovenInLab; 
 	}
 
 	/**
-	 * Seek a Coolingbox in this laboratory
+	 * Seek a CoolingBox in this laboratory
 	 *
 	 * @return	The first CoolingBox that is found in this laboratory.
 	 */
-	@Immutable
-	protected CoolingBox seekCoolingBox() {
-		CoolingBox foundFridge = null;
-		for(Device aDevice : getDevices()) {
-			if(aDevice.getType().equals("CoolingBox")) {
-				foundFridge = (CoolingBox) aDevice;
-			}
-		}
-		return foundFridge;
+	@Immutable @Basic
+	protected CoolingBox getCoolingBox() {
+		return this.coolingBoxInLab; 
 	}
-
-	/**
-	@Immutable
-	protected Kettle seekKettle() {
-		Kettle foundKettle = null;
-		for(Device aDevice : getDevices()) {
-			if(aDevice.getType().equals("Kettle")) {
-				foundKettle = (Kettle) aDevice;
-			}
-		}
-		return foundKettle;
-	}
-	*/
 
 	/**
 	 * Seek a transmogrifier in this laboratory
 	 *
 	 * @return The first tranmogrifier that is found in the laboratory
 	 */
-	@Immutable
-	protected Transmogrifier seekTransmogrifier() {
-		Transmogrifier foundTransmogrifier = null;
-		for(Device aDevice : getDevices()) {
-			if(aDevice.getType().equals("Transmogrifier")) {
-				foundTransmogrifier = (Transmogrifier) aDevice;
-			}
-		}
-		return foundTransmogrifier;
+	@Immutable @Basic 
+	protected Transmogrifier getTransmogrifier() {
+		return this.transmogrifierInLab; 
 	}
 
 	/********************************************
@@ -310,7 +307,7 @@ public class Laboratory{
 	 */
 
 	public IngredientContainer createContainer(int amount) {
-		IngredientContainer newContainer = new IngredientContainer(amount);
+		IngredientContainer newContainer = new IngredientContainer(null, amount, null, null);
 		return newContainer;
 	}
 
@@ -338,44 +335,61 @@ public class Laboratory{
 	 */
 
 	private boolean hasStandardTemperature(AlchemicIngredient ingredient) {
-		List<Long> standardTemperature = ingredient.getStandardTemperature();
+		Temperature standardTemperature = ingredient.getStandardTemperature();
 		return ingredient.getTemperature() == standardTemperature;
 	}
 
 	/**
-	 * Use the oven to bring a new AlchemicIngredient to its standardTemperature.
-	 *
-	 * @param	oven
-	 * 			The Oven used for heating the AlchemicIngredient
-	 * @param	ingredient
-	 * 			The AlchemicIngredient that needs to be cooled
+	 * Use an oven to heat up an AlchemicIngredient
+	 * 
+	 * @param	container
+	 * 			The IngredientContainer out of which the AlchemicIngredient to be heated must be taken			
+	 * @throws	NoSuchInLabDeviceException
+	 * 			If there is not yet an Oven present in this Laboratory, 
+	 * 			then a new no such device in lab exception is thrown.
+	 * 			|throw new NoSuchInLabDeviceException("message", this)
 	 */
 
-	private void useOven(Oven oven, IngredientContainer container) {
-		AlchemicIngredient ingredient = container.getAlchemicIngredient();
-		long newColdness = 0;
-		long newHotness = ingredient.getHotness();
-		oven.changeOvenTemperature(newColdness, newHotness);
-		oven.addIngredientFrom(container);
-		oven.executeAlchemicOperation();
+	private void useOven(IngredientContainer container) {
+		Oven oven = getOven(); 
+		if(!oven.equals(null)) {
+			AlchemicIngredient ingredient = container.getAlchemicIngredient();
+			long newColdness = 0;
+			long newHotness = ingredient.getTemperature().getHotness();
+			oven.changeOvenTemperature(newColdness, newHotness);
+			oven.addIngredientFrom(container);
+			oven.executeAlchemicOperation();
+		}
+		else {
+			throw new NoSuchInLabDeviceException("There is no oven present in this laboratory! Please make one", this);
+		}
+		
 	}
 
 	/**
-	 * Use the cooling box to bring the new AlchemicIngredient for the laboratory to its standardTemperature
-	 *
-	 * @param	fridge
-	 * 			The fridge used for Cooling the AlchemicIngredient
-	 * @param	ingredient
-	 * 			The AlchemicIngredient that needs to be cooled.
+	 * Use a coolingbox to cool down an AlchemicIngredient
+	 * 
+	 * @param	container
+	 * 			The IngredientContainer out of which the AlchemicIngredient to be cooled must be taken			
+	 * @throws	NoSuchInLabDeviceException
+	 * 			If there is not yet a CoolingBox present in this Laboratory, 
+	 * 			then a new no such device in lab exception is thrown.
+	 * 			|throw new NoSuchInLabDeviceException("message", this)
 	 */
 
-	private void useCoolingBox(CoolingBox fridge, IngredientContainer container) {
-		AlchemicIngredient ingredient = container.getAlchemicIngredient();
-		long theHotness = 0;
-		long theColdness = ingredient.getStandardTemperature().get(0);
-		fridge.changeCoolingBoxTemperature(theColdness, theHotness);
-		fridge.addIngredientFrom(container);
-		fridge.executeAlchemicOperation();
+	private void useCoolingBox(IngredientContainer container) throws NoSuchInLabDeviceException{
+		CoolingBox fridge = getCoolingBox();
+		if(!fridge.equals(null)) {
+			AlchemicIngredient ingredient = container.getAlchemicIngredient();
+			long theHotness = 0;
+			long theColdness = ingredient.getStandardTemperature().getColdness();
+			fridge.changeCoolingBoxTemperature(theColdness, theHotness);
+			fridge.addIngredientFrom(container);
+			fridge.executeAlchemicOperation();
+		}
+		else {
+			throw new NoSuchInLabDeviceException("There is no coolingbox in this laboratory! Please make one", this); 
+		}
 	}
 
 	/**
@@ -396,10 +410,10 @@ public class Laboratory{
 
 			/*bring the ingredient back to its standard temperature using an oven or cooling box*/
 			AlchemicIngredient adaptedIngredient = null;
-			if(ingredient.getTemperature().get(1) < ingredient.getStandardTemperature().get(1)) {
+			if(ingredient.getTemperature().getHotness() < ingredient.getStandardTemperature().getHotness()) {
 
-				Oven thisOven = seekOven();
-				useOven(thisOven, fromContainer);
+				Oven thisOven = getOven();
+				useOven(fromContainer);
 				List<AlchemicIngredient> ingredientsInOven = thisOven.getIngredientList();
 
 				for(AlchemicIngredient viewed : ingredientsInOven) {
@@ -410,8 +424,8 @@ public class Laboratory{
 				}
 			}
 			else {
-				CoolingBox thisFridge = seekCoolingBox();
-				useCoolingBox(thisFridge, fromContainer);
+				CoolingBox thisFridge = getCoolingBox();
+				useCoolingBox(fromContainer);
 				List<AlchemicIngredient> ingredientsInFridge = thisFridge.getIngredientList();
 				for(AlchemicIngredient viewed : ingredientsInFridge) {
 
@@ -438,7 +452,7 @@ public class Laboratory{
 	public void storeNewIngredient(IngredientContainer fromContainer) throws InvalidLaboratoryAmountException{
 		AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer);
 		if(isValidNewAmount(ingredientToBeAdded)) {
-			getIngredients().add(ingredientToBeAdded);
+			addIngredient(ingredientToBeAdded);
 			int indexOfNew = getIngredients().indexOf(ingredientToBeAdded);
 			/* check that the new amount lies within the capacity of this lab, if not, remove the
 			 * ingredient again, thus restoring the listOfIngredients and throw an exception
@@ -546,7 +560,9 @@ public class Laboratory{
 		if(isValidAmount(ingr, amount)) {
 			/* call corresponding AlchemicIngredient from String ingredient*/
 			AlchemicIngredient fullIngredient = getIngredientFromName(ingr);
-			IngredientContainer aContainer = new IngredientContainer(fullIngredient, amount);
+			String unit = fullIngredient.getUnit(); 
+			String state = fullIngredient.getState();
+			IngredientContainer aContainer = new IngredientContainer(fullIngredient, amount, unit, state);
 			return aContainer;
 		}
 		throw new InvalidLaboratoryAmountException("This amount cannot be returned from lab", this);
@@ -557,7 +573,7 @@ public class Laboratory{
 	 * Search for the object AlchemicIngredient based on its complete name.
 	 *
 	 * @param	ingredientCompleteName
-	 * 			The complete name of the alchemic ingredient
+	 * 			The complete name of the AlchemicIngredient
 	 * @throws	IngredientNotPresentInLabException
 	 * 			If the AlchemicIngredient is not present in the laboratory, a new ingredient not present in lab exception
 	 * 			will be thrown
@@ -626,19 +642,17 @@ public class Laboratory{
 
 	public int getFullAmountFromLabo(String ingredientsCompleteName) throws IngredientNotPresentInLabException{
 		int full = 0;
-		if(isIngredientPresentInLab(ingredientsCompleteName)) {
-			AlchemicIngredient ingredient = getIngredientFromName(ingredientsCompleteName);
-			for(int i=0; i<getIngredients().size(); i++) {
-				if(ingredient.equals(getIngredients().get(i))) {
-					full = combineAmounts(ingredient);
+		AlchemicIngredient ingredient = getIngredientFromName(ingredientsCompleteName);
+		for(int i=0; i<getIngredients().size(); i++) {
+			if(ingredient.equals(getIngredients().get(i))) {
+				full = combineAmounts(ingredient);
 				}
 			}
-		}
 		return full;
 	}
 
 	/**
-	 * Checks whether an alchemic ingredient is present in this laboratory.
+	 * Checks whether an AlchemicIngredient is present in this laboratory.
 	 *
 	 * @param	ingredientName
 	 * 			The alchemic ingredient's complete name of which the presence in the laboratory needs to be checked.
