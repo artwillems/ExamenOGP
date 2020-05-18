@@ -43,10 +43,10 @@ public class IngredientType {
 	 * 			If the given standard temperature is not valid, a default standard temperature is set.
 	 *          | setStandardTemp(standardTemp) 	 
 	 */
-	public IngredientType(String name, String state, Temperature standardTemp) {
+	public IngredientType(String name, String state, long coldness, long hotness) {
 		setName(name);
 		setState(state);
-		setStandardTemp(standardTemp);
+		setStandardTemp(coldness, hotness);
 	}
 	
 	/**
@@ -59,8 +59,8 @@ public class IngredientType {
 	 * 			| this(name,null,standardTemp)
 	 *  
 	 */
-	public IngredientType(String name, Temperature standardTemp) {
-		this(name,null,standardTemp);
+	public IngredientType(String name, long coldness, long hotness) {
+		this(name,null,coldness,hotness);
 	}
 	
 	/**********************************************************
@@ -230,12 +230,13 @@ public class IngredientType {
      * 		  The new standard temperature for this ingredientType
      */
     @Raw @Basic 
-    public void setStandardTemp(Temperature standardTemp) {
-    	if (isValidStandardTemp(standardTemp)) {
-    		this.standardTemp = new Temperature(standardTemp.getColdness(),standardTemp.getHotness());
+    public void setStandardTemp(long coldness, long hotness) {
+    	if (isValidStandardTemp(coldness,hotness)) {
+    		this.standardTemp = new Temperature(coldness,hotness);
     	}
     	else {
-    		this.standardTemp = this.getDefaultStandardTemp();
+    		
+    		this.standardTemp = new Temperature(getDefaultStandardTemp().getColdness(),getDefaultStandardTemp().getHotness());
     	}
     }
     
@@ -246,14 +247,14 @@ public class IngredientType {
      *			The standard temperature to be checked
      * @return	True if the given standard temperature is strictly higher than [0,0].
      */
-    public static boolean isValidStandardTemp(Temperature standardTemp) {
-        if ((standardTemp.getTemperature().get(0) == 0)  && (standardTemp.getTemperature().get(1) == 0)){
-        	return false;
+    public boolean isValidStandardTemp(long coldness, long hotness) {
+        if (((coldness == 0)  && (hotness == 0)) || ((coldness >0) && (hotness > 0)) || (coldness < 0) || (hotness <0)) {
+        		return false;
         }
-
         else {
         	return true;
         }
+    	
     }
 
     private static final Temperature defaultStandardTemp = new Temperature(0,20);

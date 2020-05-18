@@ -43,7 +43,7 @@ public class AlchemicIngredient {
 	 * @effect	The special name is set to the given name (must be valid)
 	 * 			| setSpecialName(specialName)
 	 */
-	private AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
+	protected AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
 		setIngredientTypeList(ingredientTypeList);
 		setState(state);
 		setQuantity(quantity);
@@ -66,25 +66,21 @@ public class AlchemicIngredient {
 	 * 			The unit of the new ingredient in which the quantity is measured.
 	 * @param 	ingredientTypeList
 	 * 			The ingredientType list of the new ingredient.
+	 * @pre		The ingredietTypeList can only consist of one ingredientType;
 	 * @effect	This new ingredient is initialized with a quantity, unit, ingredientTypeList
 	 * 			and without a special name (null)
 	 * 			| this(quantity,unit,ingredientTypeList,0,0,"Powder",null);
 	 * @effect	The temperature is set to the standard temperature of its ingredientType
 	 * 			| setTemperature(ingredientType.getTemperature().get(1),ingredientType.getTemperature().get(0));
 	 * @effect 	The state is set to the standard state of its ingredientType
-	 * 			| setState(ingredientType.getState())
+	 * 			| setState(ingredientTypeList.get(0).getState())
 	 * 
 	 */
-	public AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList) throws InvalidIngredientTypeListException{
-		if (ingredientTypeList.size()<1) {
-			this(quantity,unit,ingredientTypeList,0,0,"Powder",null);
-			setTemperature(ingredientType.getTemperature().getColdness(),ingredientType.getTemperature().getHotness());
-			setState(ingredientType.getState());
+	public AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList,long coldness,long hotness) {
+			this(quantity,unit,ingredientTypeList,coldness,hotness,"Powder");
+			setState(ingredientTypeList.get(0).getState());
 		}
-		else {
-			throw new InvalidIngredientTypeListException("The ingredient can only have one ingredientType",this);
-		}
-	}
+		
 	
 	/**
 	 * Initialize a new ingredient with a quantity, unit, ingredientType list, 
@@ -107,7 +103,7 @@ public class AlchemicIngredient {
 	 *			| this(quantity,unit,ingredientTypeList, hotness, coldness, state ,null)
 
 	 */
-	private AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList,long hotness, long coldness, String state) {
+	protected AlchemicIngredient(int quantity, String unit, List<IngredientType> ingredientTypeList,long hotness, long coldness, String state) {
 		this(quantity,unit,ingredientTypeList, hotness, coldness, state ,null); 
 	}
 	
@@ -130,7 +126,7 @@ public class AlchemicIngredient {
 	 *			| this(quantity,"spoon",ingredientTypeList, hotness, coldness, state ,null)
 
 	 */
-	private AlchemicIngredient(int quantity, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
+	protected AlchemicIngredient(int quantity, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
 		this(quantity, "spoon", ingredientTypeList, hotness, coldness, state, specialName);
 	}
 	
@@ -147,8 +143,8 @@ public class AlchemicIngredient {
 	 * 			| setTemperature(water.getTemperature().get(1), water.getTemperature().get(0))
 	 */
 	public AlchemicIgredient(int quantity) {
-		this(quantity, "spoon", 0, 0, "Liquid",null);
-		setTemperature(water.getTemperature().get(0), water.getTemperature().get(1));
+		this(quantity, "spoon", null, (long) 0, (long) 20, "Liquid",null);
+		
 	} 
 	
 	
@@ -232,6 +228,7 @@ public class AlchemicIngredient {
 				}
 			}
 		}
+		return result;
 	}
 	
 	private static Map<String,Integer> liquidLibrary = new HashMap<String,Integer>(){
@@ -446,8 +443,15 @@ public class AlchemicIngredient {
 	 * 
 	 */
 	private String getDefaultState() {
-		IngredientType ingredientType = getReferenceIngredientType();
-		return ingredientType.getState();
+		List<IngredientType> potentialIngredients = getReferenceIngredientType();
+		IngredientType type = potentialIngredients.get(0);
+		for (int i = 0; i<= potentialIngredients.size();i++) {
+			if (potentialIngredients.get(i).getState() == "Liquid") {
+				type = potentialIngredients.get(i);
+				break;
+			}
+		}
+		return type.getState();
 	}
 	
 	
@@ -508,7 +512,7 @@ public class AlchemicIngredient {
 	
 	
 	
-	private IngredientType getReferenceIngredientType(){
+	private List<IngredientType> getReferenceIngredientType(){
 		List<IngredientType> ingredientList = getIngredientTypeList();
 		List<Long> temperatureList = new ArrayList<Long>();
 		long minimum = Long.MAX_VALUE;
@@ -527,14 +531,8 @@ public class AlchemicIngredient {
 				potentialIngredients.add(ingredientList.get(i));
 			}
 		}
-		IngredientType type = potentialIngredients.get(0);
-		for (int i = 0; i<= potentialIngredients.size();i++) {
-			if (potentialIngredients.get(i).getState() == "Liquid") {
-				type = potentialIngredients.get(i);
-				break;
-			}
-		}
-		return type;
+		
+		return potentialIngredients;
 	}
 	
 	/**********************************************************
@@ -607,7 +605,16 @@ public class AlchemicIngredient {
 	}
 	
 	public String getCompleteName() {
-		
+		String completeName = null;
+		Temperature standardTemp = getStandardTemperature();
+		if (getTemperature().getHotness() > standardTemp.getHotness()) {
+			completeName = "Heated";
+		}
+		else if (getTemperature().getColdness()>standardTemp.getColdness()) {
+			completeName = "Cooled";
+		}
+		completeName = completeName + getSimpleName();
+		return completeName;
 	}
 	/**
 	 * Variable referencing the specialName of this ingredient.
@@ -668,9 +675,17 @@ public class AlchemicIngredient {
 		temperature = new Temperature(coldness,hotness);
 	}
 	
-	public Temperature getStandardTemperature() {
-		IngredientType ingredientType = getReferenceIngredientType();
+	public Temperature getStandardTemperature(){
+		List<IngredientType> potentialIngredients = getReferenceIngredientType();
+		IngredientType ingredientType = potentialIngredients.get(0);
+		for (int i = 0; i<=potentialIngredients.size();i++) {
+			if (potentialIngredients.get(i).getStandardTemp().getHotness()>0) {
+				ingredientType = potentialIngredients.get(i);
+				break;
+			}
+		}
 		return ingredientType.getStandardTemp();
+		
 	}
 	
 	/**********************************************************
@@ -687,9 +702,8 @@ public class AlchemicIngredient {
 	private void setLaboratory(Laboratory laboratory) throws InvalidLaboratoryException {
 		if (isValidLaboratory(laboratory)) {
 			if (getLaboratory() == null) {
-				/*Nieuwe container maken met ingredient in*/
-				IngredientContainer container = new IngredientContainer(this);
-				laboratory.storeNewIngredient(fromContainer);;
+				IngredientContainer container = new IngredientContainer(this,getQuantity(),getUnit(),getState());
+				laboratory.storeNewIngredient(container);
 				this.laboratory = laboratory;
 			}
 			else {

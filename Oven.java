@@ -84,6 +84,7 @@ public class Oven extends Device {
     	else {
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);
     		if (getOvenTemperature().getColdness() == 0) {
+    			
     			long newHotness = getOvenTemperature().getHotness(); /*Hier komt nog een term voor de 5 procent*/
     			if (ingredient.getTemperature().getHotness() < newHotness) {
     				ingredient.changeTemp(0, newHotness);

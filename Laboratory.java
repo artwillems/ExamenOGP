@@ -27,7 +27,7 @@ public class Laboratory{
 	 * @param 	capacity
 	 * 		  	The capacity of the laboratory.
 	 *
-	 * @effect 	if the capacity is valid, the capacity of this laboratory will be set to this capacity
+	 * @effect 	The capacity is set to the given capacity (must be valid)
 	 * 		   	|setLabCapaCity(capacity)
 	 */
 
@@ -77,7 +77,7 @@ public class Laboratory{
 	 */
 
 	private boolean isValidLaboCapacity(long capacity) {
-		return(capacity >= 0);
+		return (capacity > 0);
 	}
 
 	/************************************
@@ -91,7 +91,7 @@ public class Laboratory{
 	private List<AlchemicIngredient> listOfIngredients = null;
 
 	/**
-	 * Checks if the different ingredient types in the laboratory are unique, meaning there is not two times
+	 * Check if the different ingredient types in the laboratory are unique, meaning there is not two times
 	 * the same AlchemicIngredient.getCompleteName().
 	 *
 	 * @param	list
@@ -247,7 +247,7 @@ public class Laboratory{
 		setCoolingBox(coolingBox); 
 	}
 
-	/**
+	
 	private Kettle kettleInLab = null;
 
 	private void setKettle(Kettle kettleInLab) {
@@ -258,10 +258,10 @@ public class Laboratory{
 		return this.kettleInLab.equals(null); 
 	}
 	
-	public void getKettle(){
-	return this.kettle; 
+	public Kettle getKettle(){
+		return this.kettleInLab; 
 	}
-	*/
+	
 
 	/**
 	 * Seek an oven in this laboratory
@@ -270,7 +270,7 @@ public class Laboratory{
 	 * @return	the first oven that is present in this laboratory
 	 */
 	@Immutable @Basic
-	protected Oven getOven() {
+	public Oven getOven() {
 		return this.ovenInLab; 
 	}
 
@@ -280,7 +280,7 @@ public class Laboratory{
 	 * @return	The first CoolingBox that is found in this laboratory.
 	 */
 	@Immutable @Basic
-	protected CoolingBox getCoolingBox() {
+	public CoolingBox getCoolingBox() {
 		return this.coolingBoxInLab; 
 	}
 
@@ -290,7 +290,7 @@ public class Laboratory{
 	 * @return The first tranmogrifier that is found in the laboratory
 	 */
 	@Immutable @Basic 
-	protected Transmogrifier getTransmogrifier() {
+	public Transmogrifier getTransmogrifier() {
 		return this.transmogrifierInLab; 
 	}
 
