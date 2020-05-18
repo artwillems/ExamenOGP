@@ -66,59 +66,39 @@ public class Device {
 		return type;
 	}
 	
+
+	
 	/**********************************************************
-     * Alchemic Ingredient
+     * input in device
      **********************************************************/
 	
-	
-	/**
-	 * Variable referencing a list collecting all alchemic ingredients that are in this device.
-	 * 
-	 * @invar ingredientList references an effective list. 
-	 *        | alchemicIngredients != null
-	 */	
-	protected List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
-	
-	/**
-	 * Checks whether the ingredientList is a valid list.
-	 * @param 	IngredientList
-	 * 			The list to be checked.
-	 * @return	True if and only if the ingredient list contains maximum one ingredient.
-	 * 			| result ==
-	 * 			|	IngredientList.size() <=1
-	 */
-	public boolean isValidIngredientList(List<AlchemicIngredient> IngredientList) {
-		return (IngredientList.size() <= 1);
+
+    private List<IngredientContainer> inputDevice = new ArrayList<IngredientContainer>();
+    
+    public List<IngredientContainer> getInputDevice(){
+		return inputDevice;
 	}
-	
-	/**
-	 * Return the list of Alchemic Ingredients of this device.
-	 */
-	public List<AlchemicIngredient> getIngredientList(){
-		return ingredientList;
-	}
-	
-	
-	
-	
-	/**
-	 * Return the number of ingredients in this device.
+    
+    /**
+	 * Return the number of inputs in this device.
 	 */
 	@Basic @Raw 
-	public int countIngredients() {
-		return ingredientList.size();
+	public int countInputsDevice() {
+		return inputDevice.size();
 	}
 	
-	
-	
-	/**
-	 * Variable referencing a list collecting all quantities of the alchemic ingredients that are in this device.
-	 * 
-	 * @invar quantityList references an effective list. 
-	 *        | quantities != null
-	 */	
-	private final List<Integer> quantityList = new ArrayList<Integer>();
+    private void setContainerList(List<IngredientContainer> inputDevice) {
+    	if (! isValidInput(List<IngredientContainer> inputDevice)) throws InvalidInputDeviceException{
+    		throw new InvalidInputDeviceException("");
+    	}
+    	else {
+    		this.inputDevice = inputDevice;
+    	}
+    }
     
+	public boolean isValidInput(List<IngredientContainer> inputDevice) {
+		return (inputDevice.size() <= 1);
+	}
 	/**********************************************************
      * laboratory
      **********************************************************/
