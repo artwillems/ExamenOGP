@@ -69,35 +69,36 @@ public class Device {
 
 	
 	/**********************************************************
-     * input in device
+     * ingredientList
      **********************************************************/
 	
 
-    private List<IngredientContainer> inputDevice = new ArrayList<IngredientContainer>();
+    private List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
     
-    public List<IngredientContainer> getInputDevice(){
-		return inputDevice;
+    
+    public List<AlchemicIngredient> getIngredientList(){
+		return ingredientList;
 	}
     
     /**
-	 * Return the number of inputs in this device.
+	 * Return the number of ingredients that are put in this device.
 	 */
 	@Basic @Raw 
-	public int countInputsDevice() {
-		return inputDevice.size();
+	public int countIngredients() {
+		return ingredientList.size();
 	}
 	
-    private void setContainerList(List<IngredientContainer> inputDevice) {
-    	if (! isValidInput(List<IngredientContainer> inputDevice)) throws InvalidInputDeviceException{
-    		throw new InvalidInputDeviceException("");
+    private void setContainerList(List<AlchemicIngredient> ingredientList) throws InvalidIngredientListException {
+    	if (!isValidInput(List<AlchemicIngredient> ingredientList)) {
+    		throw new InvalidIngredientListException("There are no ingredients put in this device");
     	}
     	else {
-    		this.inputDevice = inputDevice;
+    		this.ingredientList = ingredientList;
     	}
     }
     
-	public boolean isValidInput(List<IngredientContainer> inputDevice) {
-		return (inputDevice.size() <= 1);
+	public boolean isValidInput(List<AlchemicIngredient> ingredientList) {
+		return (ingredientList.size() <= 1);
 	}
 	/**********************************************************
      * laboratory
@@ -242,7 +243,6 @@ public class Device {
 		else {
 			if (haveSameLaboratory(container.getAlchemicIngredient())) {
 				ingredientList.add(container.getAlchemicIngredient());
-				quantityList.add(container.getContainerContents());
 				container.setDelete(true);
 			}
 			else {
@@ -262,15 +262,13 @@ public class Device {
 			throw new IllegalResultException("There can only be returned one total result from the device");
 		}
 		else {
-			
-			int newQuantity = this.sumOfQuantities();
 			IngredientContainer newContainer = new IngredientContainer(ingredientList.get(0),newQuantity);
 			ingredientList.clear();
-			quantityList.clear();
 			return newContainer;
 		}
 	}
 	
+	/*deze functie moet verwijderd worden*/
 	public int sumOfQuantities() {
 		int sum = 0;
 		for (int i = 0; i < quantityList.size(); i++) {
