@@ -66,12 +66,14 @@ public class AlchemicIngredient {
 	 * 			The unit of the new ingredient in which the quantity is measured.
 	 * @param 	ingredientTypeList
 	 * 			The ingredientType list of the new ingredient.
+	 * @param	coldness
+	 * 			The coldness of the new ingredient.
+	 * @param 	hotness
+	 * 			The hotness of the new ingredient.
 	 * @pre		The ingredietTypeList can only consist of one ingredientType;
-	 * @effect	This new ingredient is initialized with a quantity, unit, ingredientTypeList
+	 * @effect	This new ingredient is initialized with a quantity, unit, ingredientTypeList, coldness, hotness
 	 * 			and without a special name (null)
-	 * 			| this(quantity,unit,ingredientTypeList,0,0,"Powder",null);
-	 * @effect	The temperature is set to the standard temperature of its ingredientType
-	 * 			| setTemperature(ingredientType.getTemperature().get(1),ingredientType.getTemperature().get(0));
+	 * 			| this(quantity,unit,ingredientTypeList,coldness,hotness,"Powder",null);
 	 * @effect 	The state is set to the standard state of its ingredientType
 	 * 			| setState(ingredientTypeList.get(0).getState())
 	 * 
@@ -142,7 +144,7 @@ public class AlchemicIngredient {
 	 * @effect	The temperature is set to the standard temperature of water
 	 * 			| setTemperature(water.getTemperature().get(1), water.getTemperature().get(0))
 	 */
-	public AlchemicIgredient(int quantity) {
+	public AlchemicIngredient(int quantity) {
 		this(quantity, "spoon", null, (long) 0, (long) 20, "Liquid",null);
 		
 	} 
@@ -231,7 +233,11 @@ public class AlchemicIngredient {
 		return result;
 	}
 	
+	
 	private static Map<String,Integer> liquidLibrary = new HashMap<String,Integer>(){
+
+		private static final long serialVersionUID = 1L;
+
 		{
 			put("drop",1/8);
 			put("vial",5);
@@ -244,6 +250,9 @@ public class AlchemicIngredient {
 	};
 	
 	private static Map<String,Integer> powderLibrary = new HashMap<String,Integer>(){
+		
+		private static final long serialVersionUID = 1L;
+
 		{
 			put("pinch",1/6);
 			put("sachet",7);
@@ -263,10 +272,22 @@ public class AlchemicIngredient {
      * Terminated
      **********************************************************/
 	
+	
+	/**
+	 * Variable referencing whether or not an AlchemicIngredient has been termintated. 
+	 */
 	private boolean terminated = false;
 	
+	
+	/**
+	 * Set the termination of this ingredientType.
+	 * 
+	 * @post	If the AlchemicIngredient hasn't already been terminated,
+	 * 			the termination is set to true.
+	 * @throws 	IngredientAlreadyTerminatedException
+	 */
 	private void setTerminated() throws IngredientAlreadyTerminatedException {
-		if (isValidTermination()) {
+		if (!isTerminated()) {
 			this.terminated = true;
 		}
 		else {
@@ -274,19 +295,21 @@ public class AlchemicIngredient {
 		}
 	}
 	
-	public boolean isValidTermination() {
-		if (this.terminated == true) {
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
+
 	
+	
+	/**
+	 * Check whether this AlchemicIngredient has already been terminated.
+	 */
 	public boolean isTerminated() {
 		return terminated;
 	}
 	
+	/**
+	 * Terminate this alchemicIngredient.
+	 * 
+	 * @effect	
+	 */
 	protected void terminate() {
 		setTerminated();
 	}
@@ -371,6 +394,15 @@ public class AlchemicIngredient {
 	}
 	
 	
+	/**
+	 * Change the unit of this AlchemicIngredient to the given unit.
+	 * 
+	 * @param 	unit
+	 * 			The new unit of this alchemicIngredient
+	 * @effect	If the Alchemic hasn't already been terminated the unit 
+	 * 			| setUnit
+	 * @throws IngredientAlreadyTerminatedException
+	 */
 	protected void changeUnit(String unit) throws IngredientAlreadyTerminatedException {
 		if(!isTerminated()) {
 			if (isValidUnit(unit)) {

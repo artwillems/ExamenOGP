@@ -27,7 +27,7 @@ public class Laboratory{
 	 * @param 	capacity
 	 * 		  	The capacity of the laboratory.
 	 *
-	 * @effect 	The capacity is set to the given capacity (must be valid)
+	 * @effect 	The capacity is set to the given capacity in storerooms (must be valid)
 	 * 		   	|setLabCapaCity(capacity)
 	 */
 
@@ -71,13 +71,13 @@ public class Laboratory{
 	 *
 	 * @param	capacity
 	 * 		  	The capacity for this laboratory
-	 * @return 	True if the capacity is larger than or equal to zero.
+	 * @return 	True if the capacity is larger than zero and smaller than or equal to the largest possible number.
 	 * 		   	| if(capacity >= 0)
 	 * 		  	| return true
 	 */
 
 	private boolean isValidLaboCapacity(long capacity) {
-		return (capacity > 0);
+		return (capacity > 0 && capacity <= Long.MAX_VALUE);
 	}
 
 	/************************************
@@ -136,11 +136,15 @@ public class Laboratory{
 	 * Initialize a new oven for 
 	 * 
 	 * @param ovenInLab
+	 * @throws
 	 */
 	
-	private void setOven(Oven ovenInLab) {
+	private void setOven(Oven ovenInLab) throws AlreadyDeviceInLabException {
 		if(isValidOvenAddition()) {
 			this.ovenInLab = ovenInLab;
+		}
+		else {
+			throw new AlreadyDeviceInLabException("This laboratorium already has an oven",this);
 		}
 		
 	}
@@ -149,7 +153,7 @@ public class Laboratory{
 	 * Checks whether there is already an oven present in this Laboratory.
 	 * 
 	 * @return 	True if there is no oven already present in the lab.
-	 * 			|this.ovenInLab.equals(null);
+	 * 			| this.ovenInLab.equals(null);
 	 */
 	
 	private boolean isValidOvenAddition() {
@@ -159,7 +163,10 @@ public class Laboratory{
 	/**
 	 * Add a new oven to this laboratory
 	 * 
-	 * @param newOven
+	 * @param 	newOven
+	 * 			The newOven added in this laboratory.
+	 * @effect	The new oven is set to the given oven.
+	 * 			| setOven(ovenInLab)
 	 */
 	public void addOven(Oven newOven) {
 		setOven(ovenInLab); 
@@ -187,11 +194,15 @@ public class Laboratory{
 	 * 
 	 * @param	transmogrifierInLab
 	 * 			the transmogrifier that needs to be added to this laboratory
+	 * @throws
 	 */
 	
-	private void setTransmogrifier(Transmogrifier transmogrifierInLab) {
+	private void setTransmogrifier(Transmogrifier transmogrifierInLab) throws AlreadyDeviceInLabException {
 		if(transmogCanBeAdded()) {
 			this.transmogrifierInLab = transmogrifierInLab;
+		}
+		else {
+			throw new AlreadyDeviceInLabException("This lab already has a transmogrifier",this);
 		}
 	}
 
@@ -230,9 +241,12 @@ public class Laboratory{
 	 * 			The CoolingBox that needs to be added to the laboratory. 		
 	 */
 	
-	private void setCoolingBox(CoolingBox coolingBoxInLab) {
+	private void setCoolingBox(CoolingBox coolingBoxInLab) throws AlreadyDeviceInLabException{
 		if(isValidCoolingAddition()) {
 			this.coolingBoxInLab = coolingBoxInLab;
+		}
+		else {
+			throw new AlreadyDeviceInLabException("This laboratorium already has a coolingbox",this);
 		}
 	}
 	
@@ -247,11 +261,20 @@ public class Laboratory{
 		setCoolingBox(coolingBox); 
 	}
 
-	/**
+	
 	private Kettle kettleInLab = null;
 
-	private void setKettle(Kettle kettleInLab) {
-		this.kettleInLab = kettleInLab;
+	private void setKettle(Kettle kettleInLab) throws AlreadyDeviceInLabException {
+		if (isValidKettle(kettleInLab)) {
+			this.kettleInLab = kettleInLab;
+		}
+		else {
+			throw new AlreadyDeviceInLabException("This laboratorium already has a kettle",this);
+		}
+	}
+	
+	
+		
 		
 		
 	private boolean canKettleBeAdded(){
@@ -261,7 +284,7 @@ public class Laboratory{
 	public Kettle getKettle(){
 		return this.kettleInLab; 
 	}
-	*/
+	
 
 	/**
 	 * Seek an oven in this laboratory
@@ -350,19 +373,22 @@ public class Laboratory{
 	 * 			|throw new NoSuchInLabDeviceException("message", this)
 	 */
 
-	private void useOven(IngredientContainer container) {
+	private AlchemicIngredient useOven(IngredientContainer container) {
 		Oven oven = getOven(); 
 		if(!isValidOvenAddition()) {
 			AlchemicIngredient ingredient = container.getAlchemicIngredient();
-			long newColdness = 0;
-			long newHotness = ingredient.getTemperature().getHotness();
+			long newColdness = ingredient.getStandardTemperature().getColdness();
+			long newHotness = ingredient.getStandardTemperature().getHotness();
 			oven.changeOvenTemperature(newColdness, newHotness);
 			oven.addIngredientFrom(container);
 			oven.executeAlchemicOperation();
+			AlchemicIngredient result = oven.removeAlchemicResult().getAlchemicIngredient();
+			return result;
 		}
 		else {
 			throw new NoSuchInLabDeviceException("There is no oven present in this laboratory! Please make one", this);
 		}
+	
 		
 	}
 
@@ -377,15 +403,17 @@ public class Laboratory{
 	 * 			|throw new NoSuchInLabDeviceException("message", this)
 	 */
 
-	private void useCoolingBox(IngredientContainer container) throws NoSuchInLabDeviceException{
+	private AlchemicIngredient useCoolingBox(IngredientContainer container) throws NoSuchInLabDeviceException{
 		CoolingBox fridge = getCoolingBox();
 		if(!isValidCoolingAddition()) {
 			AlchemicIngredient ingredient = container.getAlchemicIngredient();
-			long theHotness = 0;
+			long theHotness = ingredient.getStandardTemperature().getHotness();
 			long theColdness = ingredient.getStandardTemperature().getColdness();
 			fridge.changeCoolingBoxTemperature(theColdness, theHotness);
 			fridge.addIngredientFrom(container);
 			fridge.executeAlchemicOperation();
+			AlchemicIngredient result = fridge.removeAlchemicResult().getAlchemicIngredient();
+			return result;
 		}
 		else {
 			throw new NoSuchInLabDeviceException("There is no coolingbox in this laboratory! Please make one", this); 
@@ -413,15 +441,11 @@ public class Laboratory{
 			if(ingredient.getTemperature().getHotness() < ingredient.getStandardTemperature().getHotness()) {
 
 				Oven thisOven = getOven();
-				useOven(fromContainer);
-				IngredientContainer adaptedContainer = thisOven.removeAlchemicResult();
-				adaptedIngredient = adaptedContainer.getAlchemicIngredient(); 
-				
+				adaptedIngredient = useOven(fromContainer);
 			}
 			else {
 				CoolingBox thisFridge = getCoolingBox();
-				useCoolingBox(fromContainer);
-				adaptedIngredient = thisFridge.removeAlchemicResult().getAlchemicIngredient(); 
+				adaptedIngredient = useCoolingBox(fromContainer);
 			}
 		return adaptedIngredient;
 		}
