@@ -139,7 +139,7 @@ public class Laboratory{
 	 */
 	
 	private void setOven(Oven ovenInLab) {
-		if(ovenCanBeAdded()) {
+		if(isValidOvenAddition()) {
 			this.ovenInLab = ovenInLab;
 		}
 		
@@ -152,7 +152,7 @@ public class Laboratory{
 	 * 			|this.ovenInLab.equals(null);
 	 */
 	
-	private boolean ovenCanBeAdded() {
+	private boolean isValidOvenAddition() {
 		return this.ovenInLab.equals(null); 
 	}
 	
@@ -219,7 +219,7 @@ public class Laboratory{
 	 * 			|this.coolingBoxInLab.equals(null)
 	 */
 	
-	private boolean canCoolingBoxBeAdded() {
+	private boolean isValidCoolingAddition() {
 		return this.coolingBoxInLab.equals(null); 
 	}
 
@@ -231,7 +231,7 @@ public class Laboratory{
 	 */
 	
 	private void setCoolingBox(CoolingBox coolingBoxInLab) {
-		if(canCoolingBoxBeAdded()) {
+		if(isValidCoolingAddition()) {
 			this.coolingBoxInLab = coolingBoxInLab;
 		}
 	}
@@ -247,7 +247,7 @@ public class Laboratory{
 		setCoolingBox(coolingBox); 
 	}
 
-	
+	/**
 	private Kettle kettleInLab = null;
 
 	private void setKettle(Kettle kettleInLab) {
@@ -261,7 +261,7 @@ public class Laboratory{
 	public Kettle getKettle(){
 		return this.kettleInLab; 
 	}
-	
+	*/
 
 	/**
 	 * Seek an oven in this laboratory
@@ -352,7 +352,7 @@ public class Laboratory{
 
 	private void useOven(IngredientContainer container) {
 		Oven oven = getOven(); 
-		if(!oven.equals(null)) {
+		if(!isValidOvenAddition()) {
 			AlchemicIngredient ingredient = container.getAlchemicIngredient();
 			long newColdness = 0;
 			long newHotness = ingredient.getTemperature().getHotness();
@@ -379,7 +379,7 @@ public class Laboratory{
 
 	private void useCoolingBox(IngredientContainer container) throws NoSuchInLabDeviceException{
 		CoolingBox fridge = getCoolingBox();
-		if(!fridge.equals(null)) {
+		if(!isValidCoolingAddition()) {
 			AlchemicIngredient ingredient = container.getAlchemicIngredient();
 			long theHotness = 0;
 			long theColdness = ingredient.getStandardTemperature().getColdness();
@@ -414,27 +414,16 @@ public class Laboratory{
 
 				Oven thisOven = getOven();
 				useOven(fromContainer);
-				List<AlchemicIngredient> ingredientsInOven = thisOven.getIngredientList();
-
-				for(AlchemicIngredient viewed : ingredientsInOven) {
-
-					if(ingredient.getCompleteName().equals(viewed.getCompleteName())){
-						return adaptedIngredient = viewed;
-					}
-				}
+				IngredientContainer adaptedContainer = thisOven.removeAlchemicResult();
+				adaptedIngredient = adaptedContainer.getAlchemicIngredient(); 
+				
 			}
 			else {
 				CoolingBox thisFridge = getCoolingBox();
 				useCoolingBox(fromContainer);
-				List<AlchemicIngredient> ingredientsInFridge = thisFridge.getIngredientList();
-				for(AlchemicIngredient viewed : ingredientsInFridge) {
-
-					if(ingredient.getCompleteName().equals(viewed.getCompleteName())){
-						return adaptedIngredient = viewed;
-					}
-				}
+				adaptedIngredient = thisFridge.removeAlchemicResult().getAlchemicIngredient(); 
 			}
-			return adaptedIngredient;
+		return adaptedIngredient;
 		}
 	}
 
@@ -498,7 +487,7 @@ public class Laboratory{
 			getIngredients().remove(indexOfIngredient);
 		}
 		else {
-			throw new IngredientNotPresentInLabException("The ingredient cannot be removed, because it isn't in this lab", this);
+			throw new IngredientNotPresentInLabException("The ingredient cannot be removed, because it isn't in this lab.", this);
 		}
 	}
 
@@ -540,6 +529,30 @@ public class Laboratory{
 		}
 		return catalog;
 	}
+	
+	/**
+	 * After taking some amount of AlchemicIngredient out this Laboratory, change its stock. 
+	 * 
+	 * @param	ingredient
+	 * 			The ingredient that has been previously been modified by taking some amount
+	 * 			out of the Laboratory
+	 * @param 	amount
+	 * 			The amount of the AlchemicIngredient that has been taken out of the laboratory
+	 */
+	
+	private void substractAmountFromCurrentLaboratory(AlchemicIngredient ingredient, int amount) {
+		 int placeOfIngredient = getIngredients().indexOf(ingredient);
+		 String name = ingredient.getCompleteName(); 
+		 int newAmount = ingredient.getQuantity() - amount; 
+		 String unit = ingredient.getUnit(); 
+		 String state = ingredient.getState(); 
+		 List<IngredientType> type = ingredient.getIngredientTypeList(); 
+		 /*ingredient was brought to standard temperature*/
+		 long theHotness = ingredient.getStandardTemperature().getHotness();
+		 long theColdness = ingredient.getStandardTemperature().getColdness();
+		 getIngredients().remove(placeOfIngredient); 
+		 /*replace the removed ingredient with the new quantity ingredient*/
+	}
 
 	/**
 	 * Get a certain amount of AlchemicIngredient from this laboratory and put it in its
@@ -548,7 +561,7 @@ public class Laboratory{
 	 * @param 	ingr
 	 * 		  	The complete name of the AlchemicIngredient to be taken from this laboratory
 	 * @param 	amount
-	 * 		  	The amount of AlchemicIngredient to be taken from this laboratory
+	 * 		  	The amount in spoons of AlchemicIngredient to be taken from this laboratory
 	 * @throws	InvalidLaboratoryAmountException
 	 * 			If the amount is a negative number or greater than this laboratory's capacity, a new
 	 * 			invalid laboratory amount exception is thrown
@@ -563,10 +576,12 @@ public class Laboratory{
 			String unit = fullIngredient.getUnit(); 
 			String state = fullIngredient.getState();
 			IngredientContainer aContainer = new IngredientContainer(fullIngredient, amount, unit, state);
+			/*after the amount has been put in the container, the laboratory needs to know
+			 * the amount of produce has been removed.*/
+			substractAmountFromCurrentLaboratory(fullIngredient, amount); 
 			return aContainer;
 		}
-		throw new InvalidLaboratoryAmountException("This amount cannot be returned from lab", this);
-
+		throw new InvalidLaboratoryAmountException("The requested amount cannot be returned from this laboratory", this);
 	}
 
 	/**
@@ -606,7 +621,7 @@ public class Laboratory{
 	 */
 
 	private boolean isValidAmount(String ingredientCompleteName, int amount) {
-		return ((amount >= 0) && (amount <= getFullAmountFromLabo(ingredientCompleteName)));
+		return ((amount > 0) && (amount <= getFullAmountFromLabo(ingredientCompleteName)));
 	}
 
 	/**
@@ -639,8 +654,8 @@ public class Laboratory{
 	 * 		  	The AlchemicIngredient of which the full amount must be known.
 	 * @return 	The full amount of the given ingredient within this laboratory expressed in spoons.
 	 */
-
-	public int getFullAmountFromLabo(String ingredientsCompleteName) throws IngredientNotPresentInLabException{
+	@Basic @Immutable
+	protected int getFullAmountFromLabo(String ingredientsCompleteName) throws IngredientNotPresentInLabException{
 		int full = 0;
 		AlchemicIngredient ingredient = getIngredientFromName(ingredientsCompleteName);
 		for(int i=0; i<getIngredients().size(); i++) {
