@@ -27,9 +27,16 @@ public class Recipe {
 		return operationList;
 	}
 	
-	private void setOperationList(List<String> operationList) {
-		this.operationList = operationList;
+	private void setOperationList(List<String> operationList) throws IllegalOperationException{
+		if (this.operationList.size() < 1) {
+			throw new IllegalOperationException("There is no operation in this list.");
+		}
+		else {
+			this.operationList = operationList;
+		}
+		
 	}
+	
 	
 	private List<String> nameIngredientList = null;
 	
@@ -37,8 +44,14 @@ public class Recipe {
 		return nameIngredientList;
 	}
 	
-	private void setNameIngredientList(List<String> nameIngredientList) {
-		this.nameIngredientList = nameIngredientList;
+	private void setNameIngredientList(List<String> nameIngredientList) throws IllegalNameIngredientException{
+		if (this.nameIngredientList.size() < 1) {
+			throw new IllegalNameIngredientException("There is no ingredient in this list.");
+		}
+		else {
+			this.nameIngredientList = nameIngredientList;
+		}
+		
 	}
 	
 	private List<Integer> amountList = null;
@@ -47,8 +60,14 @@ public class Recipe {
 		return amountList;
 	}
 
-	private void setAmountList(List<Integer> amountList) {
-		this.amountList = amountList;
+	private void setAmountList(List<Integer> amountList) throws IllegalAmountException{
+		if (this.amountList.size() < 1) {
+			throw new IllegalAmountException("There is no amount in this list");
+		}
+		else {
+			this.amountList = amountList;
+		}
+		
 	}
 	
 	private List<String> unitList = null;
@@ -57,8 +76,13 @@ public class Recipe {
 		return unitList;
 	}
 	
-	private void setUnitList(List<String> unitList) {
-		this.unitList = unitList;
+	private void setUnitList(List<String> unitList) throws IllegalUnitException{
+		if (this.unitList.size() < 1) {
+			throw new IllegalUnitException("There is no unit in this list");
+		}
+		else {
+			this.unitList = unitList;
+		}
 	}
 	
 	public void removeIngredientName(int element) {
