@@ -774,74 +774,48 @@ public class AlchemicIngredient {
 	 */
 	private static List<String> powderUnitsCap = new ArrayList<String>(Arrays.asList("spoon","sachet","box","sack","chest"));
 	
-	private static Map<String,Integer> liquidCapLibrary = new HashMap<String,Integer>(){
-
-		private static final long serialVersionUID = 1L;
-
-		{
-			put("spoon",1);
-			put("vial",5);
-			put("bottle",15);
-			put("jug",105);
-			put("barrel",1260);
-		}
-	};
+	private static List<Integer> liquidUnitsInSpoons = new ArrayList<Integer>(Arrays.asList(1,5,15,105,1260));
 	
-	private static Map<String,Integer> powderCapLibrary = new HashMap<String,Integer>(){
-		
-		private static final long serialVersionUID = 1L;
-
-		{
-			put("spoon",1);
-			put("sachet",7);
-			put("box",42);
-			put("sack",126);
-			put("chest",1260);
-		}
-	};
+	private static List<Integer> powderUnitsInSpoons = new ArrayList<Integer>(Arrays.asList(1,7,42,126,1260));
 	
-	public void determineCapUnit() {
+	
+	public String determineCapUnit() {
+		String capUnit = null;
 		if (state == "Liquid") {
-			for (Map.Entry<String,Integer> entry: liquidCapLibrary.entrySet()) {
-				if (this.getQuantityInSpoons() < entry.getValue()) {
-					String capUnit = entry.getKey();
+			int teller = 0;
+			for (int i = 0; i < liquidUnitsInSpoons.size(); i++) {
+				
+				if (this.getQuantityInSpoons() < liquidUnitsInSpoons.get(i)) {
+					capUnit = liquidUnitsCap.get(i);
+					break;
 				}
-				else {
-					/*als je de hele map doorlopen hebt, dan wil dit zeggen dat je quantity van je ingredient groter is, dan dat 
-					 * je container aankan, dan moet je overige hoeveelheid verwijderen en het container vullen met grootste unit*/
-				}
-			
+				teller = teller +1;
 			}
+			if (teller >= (liquidUnitsInSpoons.size() -1) ) {
+				capUnit = "barrel";
+				this.quantity = 1;
+				this.unit = "barrel";
+			}
+			
 		}
 		else {
-			for (Map.Entry<String,Integer> entry: powderCapLibrary.entrySet()) {
-				if (this.getQuantityInSpoons() < entry.getValue()) {
-					String capUnit = entry.getKey();
+			int teller = 0;
+			for (int i = 0; i < powderUnitsInSpoons.size(); i++) {
+				if (this.getQuantityInSpoons() < powderUnitsInSpoons.get(i)) {
+					capUnit = powderUnitsCap.get(i);
+					break;
 				}
-				else {
-					
-				}
-			
+				teller = teller +1;
+			}
+			if (teller >= (powderUnitsInSpoons.size() -1) ) {
+				capUnit = "chest";
+				this.quantity = 1;
+				this.unit = "chest";
+			}
 		}
-	}
+	return capUnit;
+	}	
 	
-	public int getQuantityInSpoons() {
-		int result = getQuantity();
-		if (getState()=="Liquid") {
-			for (Map.Entry<String,Integer> entry: liquidLibrary.entrySet()) {
-				if (entry.getKey() == this.unit) {
-					result = result * entry.getValue();
-				}
-			}
-		}
-		else {
-			for(Map.Entry<String, Integer> entry: powderLibrary.entrySet()) {
-				if (entry.getKey() == this.unit) {
-					result = result * entry.getValue();
-				}
-			}
-		}
-		return result;
-	}
+
 	
 }
