@@ -578,6 +578,13 @@ public class AlchemicIngredient {
 		return this.ingredientTypeList;
 	}
 	
+	/**
+	 * 
+	 * @param 	ingredientTypeList
+	 * 			The ingredientTypeList to be checked
+	 * @return	True if and only if the list is not empty and does not contain any null values.
+	 * 			| (!(ingredientTypeList.contains(null)) && !(ingredientTypeList.isEmpty()))
+	 */
 	public boolean isValidIngredientTypeList(List<IngredientType> ingredientTypeList) {
 		return (!(ingredientTypeList.contains(null)) && !(ingredientTypeList.isEmpty()));
 	}
@@ -643,7 +650,10 @@ public class AlchemicIngredient {
     
         
 	/**
-	 * Return in alphabetical order the simple names of each ingredientType of this ingredient.
+	 * Return in alphabetical order the simple names of each ingredientType of this AlchemicIngredient.
+	 * 
+	 * @return	The list containing the names of all ingredientTypes of this alchemicIngredien in alphabetical order
+	 * 			
 	 */
 	public List<String> getAlphabeticNameList(){
 		List<String> AlphabeticNameList = new ArrayList<String>();
@@ -661,21 +671,29 @@ public class AlchemicIngredient {
 	public String getSimpleName() {
 		List<String> AlphabeticNameList = getAlphabeticNameList();
 		String SimpleName = null;
-		SimpleName = AlphabeticNameList.get(0) + " mixed with";
-		for (int i=1; i<AlphabeticNameList.size();i++) {
-			if (i==AlphabeticNameList.size() - 1) {
-				SimpleName = SimpleName + " and" + AlphabeticNameList.get(i);
-			}
-			else if (i == AlphabeticNameList.size() -2) {
-				SimpleName = SimpleName + AlphabeticNameList.get(i);
-			}
-			else {
-				SimpleName = SimpleName + AlphabeticNameList.get(i) +", ";
+		SimpleName = AlphabeticNameList.get(0);
+		if (AlphabeticNameList.size()>1) {
+			SimpleName = SimpleName + "mixed with";
+			for (int i=1; i<=AlphabeticNameList.size();i++) {
+				if (i==AlphabeticNameList.size() - 1) {
+					SimpleName = SimpleName + " and" + AlphabeticNameList.get(i);
+				}
+				else if (i == AlphabeticNameList.size() -2) {
+					SimpleName = SimpleName + AlphabeticNameList.get(i);
+				}
+				else {
+					SimpleName = SimpleName + AlphabeticNameList.get(i) +", ";
+				}
 			}
 		}
 		return SimpleName;
 	}
 	
+	/**
+	 * Return the complete name of this AlchemicIngredient
+	 * 
+	 * @return
+	 */
 	public String getCompleteName() {
 		String completeName = null;
 		Temperature standardTemp = getStandardTemperature();
@@ -688,6 +706,9 @@ public class AlchemicIngredient {
 		completeName = completeName + getSimpleName();
 		return completeName;
 	}
+	
+	
+	
 	/**
 	 * Variable referencing the specialName of this ingredient.
 	 */
@@ -733,18 +754,42 @@ public class AlchemicIngredient {
 	 */
 	private Temperature temperature = null;
 	
-	
+	/**
+	 * Set the temperature of this AlchemicIngredient to the given temperture
+	 * @param 	coldness
+	 * 			The new coldness
+	 * @param 	hotness
+	 * 			The new hotness
+	 * @post	The given coldness and hotness are registered as the new temperature 
+	 * 			for this AlchemicIngredient
+	 * 			| temperature = new Temperature(coldness,hotness)
+	 * 			| getTemperature().getColdness() == coldness
+	 * 			| getTemperature().getHotness() == hotness
+	 */
 	private void setTemperature(long coldness, long hotness) {
 		temperature = new Temperature(coldness,hotness);
 	}
 	
-	
+	/**
+	 * Return the temperature of this AlchemicIgredient 
+	 */
 	public Temperature getTemperature() {
 		return temperature;
 	}
 	
+	/**
+	 * Change the temperature of this AlchemicIngredient 
+	 * 
+	 * @param 	coldness
+	 * 			The new coldness for this AlchemicIngredient
+	 * @param 	hotness
+	 * 			The new hotness for this AlchemicIngredient
+	 * @effect 	The temperature of this alchemicIngredient is set to
+	 * 			the given coldness and hotness
+	 * 			| setTemperature(coldness, hotness)
+	 */
 	protected void changeTemp(long coldness, long hotness) {
-		temperature = new Temperature(coldness,hotness);
+		setTemperature(coldness,hotness);
 	}
 	
 	public Temperature getStandardTemperature(){
@@ -764,36 +809,69 @@ public class AlchemicIngredient {
      * Laboratory
      **********************************************************/
 	
+	/**
+	 * Variable referencing the laboratory where this ingredient is stored
+	 */
 	private Laboratory laboratory = null;
+	
 	
 	public void moveToLaboratory(Laboratory laboratory) {
 		setLaboratory(laboratory);
 		
 	}
 	
+	/**
+	 * Set the laboratory of this AlchemicIngredient to the given laboratory.
+	 * 
+	 * @param 	laboratory
+	 * 			The new laboratory for this AlchemicIngredient
+	 * @post	If the laboratory is valid the laboratory of this alchemicIngredient is 
+	 * 			set to the given laboratory
+	 * 			| if (isValidLaboratory(laboratory)
+	 * 			| 	then new.getLaboratory() == laboratory
+	 * @effect	If the ingredient is not yet stored in a laboratory then the ingredient is moved to
+	 * 			the given laboratory in a container. Otherwise the ingredient has to be removed from its
+	 * 			old laboratory first.
+	 * 			| if (getLaboratory() != null)
+	 * 			|	then getLaboratory.removeIngrediet(this)
+	 * 			| IngredientContainer container = new IngredientContainer(this,getQuantity(),getUnit(),getState());
+				|  laboratory.storeNewIngredient(container);	
+	 * 			
+	 * @throws 	InvalidLaboratoryException("The given laboratory does not exist.",this)
+	 * 			The given laboratory is not valid
+	 * 			| !isValidLaboratory(laboratory)
+	 */
 	private void setLaboratory(Laboratory laboratory) throws InvalidLaboratoryException {
 		if (isValidLaboratory(laboratory)) {
-			if (getLaboratory() == null) {
-				IngredientContainer container = new IngredientContainer(this,getQuantity(),getUnit(),getState());
-				laboratory.storeNewIngredient(container);
-				this.laboratory = laboratory;
-			}
-			else {
+			if (getLaboratory() != null) {
 				getLaboratory().removeIngredient(this);
-				laboratory.addIngredient(this);
-				this.laboratory = laboratory;
 			}
+			IngredientContainer container = new IngredientContainer(this,getQuantity(),getUnit(),getState());
+			laboratory.storeNewIngredient(container);
+			this.laboratory = laboratory;
+			
 		}	
 		else {
 			throw new InvalidLaboratoryException("The given laboratory does not exist.",this);
 		}
 	}
 	
+	/**
+	 * Check whether the given laboratory is valid
+	 * 
+	 * @param 	laboratory
+	 * 			The laboratory to be checked
+	 * @return	True if and only if the given laboratory is not null
+	 * 			| result == (laboratory != null)
+	 */
 	public boolean isValidLaboratory(Laboratory laboratory) {
 		return (laboratory != null);
 	}
 	
 	
+	/**
+	 * Return the laboratory of this AlchemicIngredient
+	 */
 	public Laboratory getLaboratory() {
 		return laboratory;
 	}
@@ -804,18 +882,24 @@ public class AlchemicIngredient {
      **********************************************************/
 	
 	/**
-	 * Variable referencing the possible units of liquid containers.
+	 * Variable referencing the valid units of liquid containers.
 	 */
 	private static List<String> liquidUnitsCap = new ArrayList<String>(Arrays.asList("spoon","vial","bottle","jug","barrel"));
 	
 	
 	/**
-	 * Variable referencing the possible units of powder containers.
+	 * Variable referencing the valid units of powder containers.
 	 */
 	private static List<String> powderUnitsCap = new ArrayList<String>(Arrays.asList("spoon","sachet","box","sack","chest"));
 	
+	/**
+	 * Variable referencing the transitionnumbers to transition from a liquid unit to spoons.
+	 */
 	private static List<Integer> liquidUnitsInSpoons = new ArrayList<Integer>(Arrays.asList(1,5,15,105,1260));
 	
+	/**
+	 *  * Variable referencing the transitionnumbers to transition from a powder unit to spoons.
+	 */
 	private static List<Integer> powderUnitsInSpoons = new ArrayList<Integer>(Arrays.asList(1,7,42,126,1260));
 	
 	

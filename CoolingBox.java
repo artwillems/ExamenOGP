@@ -20,15 +20,12 @@ public class CoolingBox extends Device {
 	 * 
 	 * @param  	laboratory
 	 *         	The laboratory that owns this new cooling box.
-	 * @param	presetColdness
-	 * 			The preset coldness of the new cooling box.
-	 * @param	presetHotness
-	 * 			The preset hotness of the new cooling box.
-	 * 
+	 * @param	temperatureSetting
+	 * 			The temperature of this new coolingbox
 	 * @effect 	The new cooling box is a device with given laboratory, preset coldness and preset hotness.
 	 *         	| super(laboratory)
 	 * @effect  The preset temperature of the cooling box is set to the given preset temperature.
-	 *          | setPresetTemperature(presetTemperature) 
+	 *          | setTemperature(temperatureSetting.get(0), temperatureSetting.get(1));
 	 * @effect	The type is set to coolingBox
 	 * 			| setType("CoolingBox")
 	 */
@@ -46,18 +43,49 @@ public class CoolingBox extends Device {
 	 * Temperature
 	 **********************************************************/
 	
+	/**
+	 * Variable referencing the temperature of this coolingBox
+	 */
 	private Temperature temperature = null;
 	
+	
+	/**
+	 * Set the temperature of this coolingBox to the given temperature.
+	 * 
+	 * @param 	coldness
+	 * 			The coldness for this coolingBox
+	 * @param 	hotness
+	 * 			The hotness for this coolingBox
+	 * @post	The temperature is set to the given coldness and hotness
+	 * 			| temperature = new Temperature(coldness,hotness)
+	 * 			| getTemperature().getColdness() == coldness
+	 * 			| getTemperature().getHotness() == hotness
+	 */
 	private void setTemperature(long coldness, long hotness) {
 		temperature = new Temperature(coldness,hotness);
 	}
 	
+	
+	/**
+	 * Return the temperature of this coolingBox
+	 */
 	public Temperature getCoolingBoxTemperature() {
 		return temperature;
 	}
 	
+	/**
+	 * Change the temperature of this coolingBox
+	 * 
+	 * @param 	coldness
+	 * 			The new coldness of this coolingBox
+	 * @param	hotness
+	 * 			The new hotness of this coolingBox
+	 * @effect 	The temperature of this coolingBox is set to 
+	 * 			the giving coldness and hotness
+	 * 			| setTemperature(coldness,hotness)
+	 */
 	public void changeCoolingBoxTemperature(long coldness, long hotness) {
-		temperature = new Temperature(coldness,hotness);
+		setTemperature(coldness, hotness);
 	}
 	
 	
@@ -65,13 +93,7 @@ public class CoolingBox extends Device {
 	 * methodes
 	 **********************************************************/
 	
-	 /**
-	 * Add an ingredient into this oven.
-	 */
-    @Override
-	public void addIngredientFrom(IngredientContainer container)  {
-    	
-	}
+	 
 
     /**
 	 * Heat the ingredient. 

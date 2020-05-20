@@ -20,7 +20,7 @@ public class Oven extends Device {
 	 **********************************************************/
 	
 	/**
-	 * Initialize a new oven with given laboratory, that owns this oven, and given temperature setting.
+	 * Initialize a new oven with given laboratory where this oven is stored, and given temperature setting.
 	 * 
 	 * @param  	laboratory
 	 *         	The laboratory that owns this new oven.
@@ -28,13 +28,13 @@ public class Oven extends Device {
 	 *         	The temperature setting of the new oven.
 	 * @effect 	The new oven is a device with given laboratory and temperature setting.
 	 *         	| super(laboratory)
+	 * @effect	The temperature of this oven is set to the given coldness and hotness
+	 * 			| setTemperature(temperatureSetting.get(0), temperatureSetting.get(1));
 	 * @effect	The type is set to Oven
 	 * 			| setType("Oven")
 	 * 
 	 */
 	
-	/**NOG AANPASSEN VOOR TEMPERATUUR*/
-	@Raw
 	public Oven(Laboratory laboratory, List<Long> temperatureSetting) {
 		super(laboratory);
 		setTemperature(temperatureSetting.get(0), temperatureSetting.get(1));
@@ -46,18 +46,50 @@ public class Oven extends Device {
 	 * Temperature
 	 **********************************************************/
 	
+	/**
+	 * The temperature of this oven
+	 */
 	private Temperature temperature = null;
 	
+	
+	/**
+	 * Set the temperature of this oven to the given temperature
+	 * 
+	 * @param 	coldness
+	 * 			The coldness for this oven
+	 * @param 	hotness
+	 * 			The hotness for this oven
+	 * @post	The temperature is set to the given coldness and hotness
+	 * 			| temperature = new Temperature(coldness,hotness)
+	 * 			| getTemperature().getColdness() == coldness
+	 * 			| getTemperature().getHotness() == hotness
+	 */
 	private void setTemperature(long coldness, long hotness) {
 		temperature = new Temperature(coldness, hotness);
 	}
 	
+	
+	/**
+	 * Return the temperature of this oven.
+	 */
 	public Temperature getOvenTemperature() {
 		return temperature;
 	}
 	
+	
+	/**
+	 * Change the temperature of this oven
+	 * 
+	 * @param 	coldness
+	 * 			The new coldness of this oven
+	 * @param	hotness
+	 * 			The new hotness of this oven
+	 * @effect 	The temperature of this oven is set to 
+	 * 			the giving coldness and hotness
+	 * 			| setTemperature(coldness,hotness)
+	 */
 	public void changeOvenTemperature(long coldness, long hotness) {
-		temperature = new Temperature(coldness,hotness);
+		setTemperature(coldness, hotness);
 	}
 	
 	
@@ -66,13 +98,7 @@ public class Oven extends Device {
 	 * methodes
 	 **********************************************************/
 	
-	 /**
-	 * Add an ingredient into this oven.
-	 */
-    @Override
-	public void addIngredientFrom(IngredientContainer container)  {
-    	
-	}
+	 
 
     /**
 	 * Heat the ingredient. 

@@ -5,17 +5,38 @@ import java.lang.Math;
 
 public class Kettle extends Device{
 	
+	/**
+	 * Initialize a new Kettle in a laboratory.
+	 * 
+	 * @param 	laboratory
+	 * 			The laboratory of this kettle
+	 * @effect	The kettle is initialized as a device with the laboratory reference
+	 * 			| super(laboratory)
+	 * @effect	The type of this kettle is set to "Kettle"
+	 * 			| setType("Kettle")
+	 */			
 	public Kettle(Laboratory laboratory) {
 		super(laboratory);
 		setType("Kettle");
 	}
 	
+	/**
+	 * Add an ingredient from a container to the kettle
+	 * 
+	 * @post	If the ingredient and the kettle are stored in the same laboratory
+	 * 			the ingredient is added to the ingredientList
+	 * 			| if (haveSameLaboratory(container.getAlchemicIngredient()))
+	 * 			| 	then getIngredientList().contains(container.getAlchemicIngredient())
+	 * @throws	DifferentLaboratoryException("The kettle and the ingredient have to be stored in the same laboratory",this)
+	 * 
+	 */
+	@Override
 	public void addIngredientFrom(IngredientContainer container) throws DifferentLaboratoryException{
 		if (haveSameLaboratory(container.getAlchemicIngredient())) {
 			this.ingredientList.add(container.getAlchemicIngredient());
 		}
 		else {
-			throw new DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory",this);
+			throw new DifferentLaboratoryException("The kettle and the ingredient have to be stored in the same laboratory",this);
 		}
 	}
 	
@@ -24,6 +45,10 @@ public class Kettle extends Device{
      * AlchemicIngredient
      **********************************************************/
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public List<AlchemicIngredient> getPotentialIngredientList(){
 		List<AlchemicIngredient> ingredientList = getIngredientList();
 		List<Long> temperatureList = new ArrayList<Long>();
