@@ -734,16 +734,6 @@ public class Laboratory{
 		this.recipeList = recipeList;
 	}
 	
-	private int posIngredientList = 0;
-	
-	public int getPosIngredientList() {
-		return posIngredientList;
-	}
-	
-	private void setPosIngredientList(int posIngredientList) {
-		this.posIngredientList = posIngredientList;
-	}
-
 	
 	public void add(int amount, String unit, String ingredientName) {
 		IngredientContainer container = this.getAmountFromLabo(ingredientName, amount, unit);
@@ -770,7 +760,7 @@ public class Laboratory{
 		return result;
 	}
 	
-	/*wss rekening houden met verschillende toestanden van ingredient, want als je ze mixt, moet dat wss zelfde toestand zijn??*/
+
 	public IngredientContainer mix(List<IngredientContainer> listContainers) {
 		Kettle kettle = this.getKettle(); 
 		for (int i = 0; i < recipeList.size(); i++) {
@@ -787,7 +777,7 @@ public class Laboratory{
 		return ((operation == "Add") || (operation == "heat") || (operation == "cool") || (operation == "mix"));
 	}
 	
-	public void execute(Recipe recipe,int integer) throws IllegalOperationException {
+	public void execute(Recipe recipe,int number) throws IllegalOperationException {
 		if (recipe.getOperationList().get(recipe.getOperationList().size() -1) != "mix" ){
 			recipe.getOperationList().add("mix");
 		}
@@ -797,15 +787,20 @@ public class Laboratory{
 				  throw new IllegalOperationException("This is an illegal operation");
 			  }
 			  else if (recipe.getOperationList().get(i) == "Add") {
-				  /*neem string uit ingredientList die op dat moment in use is, splits de string om, zet string getal om naar int*/
-				  String ingredientString = recipe.getIngredientList().get(posIngredientList); /*bv "3 drops Mercurial Acid" */
-				  String[] splitIngredient = ingredientString.split(" ",3);
-				  int amount = Integer.parseInt(splitIngredient[0]); /*bv 3*/
-				  String unit = splitIngredient[1]; /*bv "drops" */
-				  String ingredientName = splitIngredient[2]; /*bv "Mercurial Acid" */
-				
-				  this.add(amount, unit, ingredientName);
-				  posIngredientList = posIngredientList + 1;
+				  String ingredientName = recipe.getNameIngredientList().get(0);
+				  int amount = number*(recipe.getAmountList().get(0));
+				  String unit = recipe.getUnitList().get(0);
+				  
+				  if (isValidAmount(ingredientName, amount, unit)) {
+					  this.add(amount, unit, ingredientName);
+					  recipe.removeIngredientName(0);
+					  recipe.removeAmount(0);
+					  recipe.removeUnit(0);
+				  }
+				  else {
+					  break;
+				  }
+				  
 			  }
 			  else if(recipe.getOperationList().get(i) == "heat") {
 				  IngredientContainer result = this.heat(this.getRecipeList().get(lastUsed)); /*container werd gestopt in recipeList, dus haal die eruit maar aan de hand van LastUsed*/
@@ -825,7 +820,22 @@ public class Laboratory{
 			  }
 			}
 		
-		this.storeNewIngredient(this.getRecipeList().get(0));
+		if (recipe.getNameIngredientList().size() >= 1) {
+			for (int i = 0; i < recipe.getNameIngredientList().size(); i++) {
+				if (this.isValidAmount(recipe.getNameIngredientList().get(i), number*(recipe.getAmountList().get(i)),recipe.getUnitList().get(i))){
+					this.storeNewIngredient(this.getAmountFromLabo(recipe.getNameIngredientList().get(i),number*(recipe.getAmountList().get(i)),recipe.getUnitList().get(i)));
+				}
+				else {
+					this.storeNewIngredient(this.getFullAmountFromLabo(recipe.getNameIngredientList().get(i));
+				}
+				
+			}
+		}
+		
+		for (int i = 0; i < this.getRecipeList().size(); i++) {
+			this.storeNewIngredient(this.getRecipeList().get(i));
+		}
+		
 	}
 	
 	

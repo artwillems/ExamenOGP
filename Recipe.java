@@ -12,9 +12,11 @@ public class Recipe {
      * constructor
      **********************************************************/
 	
-	public Recipe(List<String> operationList, List<String> ingredientList, List<RecipeBook> recipeBooks) {
+	public Recipe(List<String> operationList, List<String> nameIngredientList, List<Integer> amountList, List<String> unitList, List<RecipeBook> recipeBooks) {
 		setOperationList(operationList);
-		setIngredientList(ingredientList);
+		setNameIngredientList(nameIngredientList);
+		setAmountList(amountList);
+		setUnitList(unitList);
 		setRecipeBook(recipeBooks);
 	}
 	
@@ -29,27 +31,47 @@ public class Recipe {
 		this.operationList = operationList;
 	}
 	
-	private List<String> ingredientList = null;
+	private List<String> nameIngredientList = null;
 	
-	public List<String> getIngredientList(){
-		return ingredientList;
+	public List<String> getNameIngredientList(){
+		return nameIngredientList;
 	}
 	
-	private void setIngredientList(List<String> ingredientList) {
-		this.ingredientList = ingredientList;
+	private void setNameIngredientList(List<String> nameIngredientList) {
+		this.nameIngredientList = nameIngredientList;
 	}
 	
+	private List<Integer> amountList = null;
 	
+	public List<Integer> getAmountList(){
+		return amountList;
+	}
 
+	private void setAmountList(List<Integer> amountList) {
+		this.amountList = amountList;
+	}
 	
+	private List<String> unitList = null;
 	
+	public List<String> getUnitList(){
+		return unitList;
+	}
 	
+	private void setUnitList(List<String> unitList) {
+		this.unitList = unitList;
+	}
 	
+	public void removeIngredientName(int element) {
+		this.nameIngredientList.remove(element);
+	}
 	
+	public void removeAmount(int element) {
+		this.amountList.remove(element);
+	}
 	
-	
-	
-	
+	public void removeUnit(int element) {
+		this.unitList.remove(element);
+	}
 	/**********************************************************
      * unidirectionele relatie met recipebooks
      **********************************************************/
