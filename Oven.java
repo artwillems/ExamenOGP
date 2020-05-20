@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.HashMap;
 
 
@@ -82,10 +83,11 @@ public class Oven extends Device {
     		throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
     	}
     	else {
+    		int range = (new Random().nextInt(10+1)) - 5;
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);
     		if (getOvenTemperature().getColdness() == 0) {
     			
-    			long newHotness = getOvenTemperature().getHotness(); /*Hier komt nog een term voor de 5 procent*/
+    			long newHotness = getOvenTemperature().getHotness() ; /*Hier komt nog een term voor de 5 procent*/
     			if (ingredient.getTemperature().getHotness() < newHotness) {
     				ingredient.changeTemp(0, newHotness);
     			}

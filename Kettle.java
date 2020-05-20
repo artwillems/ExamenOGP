@@ -108,7 +108,7 @@ public class Kettle extends Device{
 	
 	public List<IngredientType> getIngredientTypeList(){
 		List<IngredientType> ingredientTypeList = new ArrayList<IngredientType>();
-		for (int i = 0; i < getIngredientList().size();i++) {
+		for (int i = 0; i <= getIngredientList().size();i++) {
 			for (int j =0;j<getIngredientList().get(i).getIngredientTypeList().size();j++) {
 				if (!ingredientTypeList.contains(getIngredientList().get(i).getIngredientTypeList().get(j))){
 					ingredientTypeList.add(getIngredientList().get(i).getIngredientTypeList().get(j));
@@ -130,10 +130,12 @@ public class Kettle extends Device{
 			int quantity = getQuantity();
 			List<Long> temperature = getTemperature();
 			List<IngredientType> ingredientTypeList = getIngredientTypeList();
+			for (int i = 0; i<= getIngredientList().size();i++) {
+				getIngredientList().get(i).terminate();
+			}
 			this.ingredientList.clear();
-			AlchemicIngredient newIngredient = new AlchemicIngredient();
+			AlchemicIngredient newIngredient = new AlchemicIngredient(quantity,"spoon",ingredientTypeList,temperature.get(0),temperature.get(1),state);
 			ingredientList.add(newIngredient);
-			/*nieuw ingredient toevoegen*/
 		}
 	}
 	

@@ -73,7 +73,7 @@ public class Device {
      **********************************************************/
 	
 
-    private List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
+    protected List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
     
     
     public List<AlchemicIngredient> getIngredientList(){

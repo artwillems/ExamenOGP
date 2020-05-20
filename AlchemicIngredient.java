@@ -17,19 +17,19 @@ public class AlchemicIngredient {
 	 * hotness, coldness, state and special name.
 	 * 
 	 * @param 	quantity
-	 * 			The quantity of the new ingredient.	
+	 * 			The quantity of the new AlchemicIngredient.	
 	 * @param 	unit
-	 * 			The unit of the new ingredient in which the quantity is measured.
+	 * 			The unit of the new AlchemicIngredient in which the quantity is measured.
 	 * @param 	ingredientTypeList
-	 * 			The ingredientType list of the new ingredient.
+	 * 			The ingredientType list of the new AlchemicIngredient.
 	 * @param 	hotness
-	 * 			The hotness of the new ingredient.
+	 * 			The hotness of the new AlchemicIngredient.
 	 * @param 	coldness
-	 * 			The coldness of the new ingredient.
+	 * 			The coldness of the new AlchemicIngredient.
 	 * @param 	state
-	 * 			The state of the new ingredient.
+	 * 			The state of the new AlchemicIngredient.
 	 * @param 	specialName
-	 * 			The special name of the new ingredient.
+	 * 			The special name of the new AlchemicIngredient.
 	 * @effect	The ingredientType list is set to the given ingredientType list (must be valid)
 	 * 			| setIngredientTypeList(ingredientTypeList)
 	 * @effect	The state is set to the given state (must be valid)
@@ -58,20 +58,20 @@ public class AlchemicIngredient {
 	
 	
 	/**
-	 * Initialize a new ingredient with a quantity, unit and ingredientType list, 
+	 * Initialize a new AlchemicIngredient with a quantity, unit and ingredientType list, 
 	 * 
 	 * @param 	quantity
-	 * 			The quantity of the new ingredient.	
+	 * 			The quantity of the new AlchemicIngredient.	
 	 * @param 	unit
-	 * 			The unit of the new ingredient in which the quantity is measured.
+	 * 			The unit of the new AlchemicIngredient in which the quantity is measured.
 	 * @param 	ingredientTypeList
-	 * 			The ingredientType list of the new ingredient.
+	 * 			The ingredientType list of the new AlchemicIngredient.
 	 * @param	coldness
-	 * 			The coldness of the new ingredient.
+	 * 			The coldness of the new AlchemicIngredient.
 	 * @param 	hotness
-	 * 			The hotness of the new ingredient.
+	 * 			The hotness of the new AlchemicIngredient.
 	 * @pre		The ingredietTypeList can only consist of one ingredientType;
-	 * @effect	This new ingredient is initialized with a quantity, unit, ingredientTypeList, coldness, hotness
+	 * @effect	This new AlchemicIngredient is initialized with a quantity, unit, ingredientTypeList, coldness, hotness
 	 * 			and without a special name (null)
 	 * 			| this(quantity,unit,ingredientTypeList,coldness,hotness,"Powder",null);
 	 * @effect 	The state is set to the standard state of its ingredientType
@@ -85,22 +85,22 @@ public class AlchemicIngredient {
 		
 	
 	/**
-	 * Initialize a new ingredient with a quantity, unit, ingredientType list, 
+	 * Initialize a new AlchemicIngredient with a quantity, unit, ingredientType list, 
 	 * hotness, coldness and state.
 	 * 
 	 * @param 	quantity
-	 * 			The quantity of the new ingredient.	
+	 * 			The quantity of the new AlchemicIngredient.	
 	 * @param 	unit
-	 * 			The unit of the new ingredient in which the quantity is measured.
+	 * 			The unit of the new AlchemicIngredient in which the quantity is measured.
 	 * @param 	ingredientTypeList
-	 * 			The ingredientType list of the new ingredient.
+	 * 			The ingredientType list of the new AlchemicIngredient.
 	 * @param 	hotness
-	 * 			The hotness of the new ingredient.
+	 * 			The hotness of the new AlchemicIngredient.
 	 * @param 	coldness
-	 * 			The coldness of the new ingredient.
+	 * 			The coldness of the new AlchemicIngredient.
 	 * @param 	state
-	 * 			The state of the new ingredient.
-	 *@effect	This new ingredient is initialized with a given quantity, unit, ingredientType list, hotness,
+	 * 			The state of the new AlchemicIngredient.
+	 *@effect	This new AlchemicIngredient is initialized with a given quantity, unit, ingredientType list, hotness,
 	 *			coldness, state and without a special name.
 	 *			| this(quantity,unit,ingredientTypeList, hotness, coldness, state ,null)
 
@@ -110,20 +110,20 @@ public class AlchemicIngredient {
 	}
 	
 	/**
-	 * Initialize a new ingredient with a quantity, ingredientType list, 
+	 * Initialize a new AlchemicIngredient with a quantity, ingredientType list, 
 	 * hotness, coldness, state and special name.
 	 * 
 	 * @param 	quantity
-	 * 			The quantity of the new ingredient.	
+	 * 			The quantity of the new AlchemicIngredient.	
 	 * @param 	ingredientTypeList
-	 * 			The ingredientType list of the new ingredient.
+	 * 			The ingredientType list of the new AlchemicIngredient.
 	 * @param 	hotness
-	 * 			The hotness of the new ingredient.
+	 * 			The hotness of the new AlchemicIngredient.
 	 * @param 	coldness
-	 * 			The coldness of the new ingredient.
+	 * 			The coldness of the new AlchemicIngredient.
 	 * @param 	state
-	 * 			The state of the new ingredient.
-	 *@effect	This new ingredient is initialized with a given quantity, a spoon unit, ingredientType list, hotness,
+	 * 			The state of the new AlchemicIngredient.
+	 *@effect	This new AlchemicIngredient is initialized with a given quantity, a spoon unit, ingredientType list, hotness,
 	 *			coldness, state and without a special name.
 	 *			| this(quantity,"spoon",ingredientTypeList, hotness, coldness, state ,null)
 
@@ -134,15 +134,15 @@ public class AlchemicIngredient {
 	
 	
 	/**
-	 * This new ingredient is initialized as an ingredient of the ingredientType water with a given 
+	 * This new AlchemicIngredient is initialized as an AlchemicIngredient of the ingredientType water with a given 
 	 * quantity.
 	 * 
 	 * @param 	quantity
-	 * 			The quantity of the new ingredient.
-	 * @effect	This new ingredient is initialized with a given quantity, a spoon unit,
-	 * 			the ingredientType water, standard temperature, Liquid state and without a special name (null)
-	 * @effect	The temperature is set to the standard temperature of water
-	 * 			| setTemperature(water.getTemperature().get(1), water.getTemperature().get(0))
+	 * 			The quantity of the new AlchemicIngredient.
+	 * @effect	This new AlchemicIngredient is initialized with a given quantity, a spoon unit,
+	 * 			the ingredientType water (null), standard temperature of coldness 0 and hotness 20, Liquid state and without a special name (null)
+	 * 			| this(quantity, "spoon", null, (long) 0, (long 20), "Liquid", null)
+	 *
 	 */
 	public AlchemicIngredient(int quantity) {
 		this(quantity, "spoon", null, (long) 0, (long) 20, "Liquid",null);
@@ -187,8 +187,12 @@ public class AlchemicIngredient {
 	 * @post	The given quantity is registered as the quantity of this ingredient.
 	 * 			| new.getQuantity() == quantity
 	 */
-	private void setQuantity(int quantity) {
-		this.quantity = quantity;
+	private void setQuantity(int quantity) InValidQuantityException{
+		if (isCorrectQuantity(quantity)) {
+			this.quantity = quantity;
+		}
+		else {
+			throw new InvalidQuantityException("The ingredient must have a valid quantity", this);
 		}
 	
 	/**
@@ -234,6 +238,9 @@ public class AlchemicIngredient {
 	}
 	
 	
+	/**
+	 * This map states the different transitions between a liquid unit and a spoon. 
+	 */
 	private static Map<String,Integer> liquidLibrary = new HashMap<String,Integer>(){
 
 		private static final long serialVersionUID = 1L;
@@ -249,6 +256,10 @@ public class AlchemicIngredient {
 		}
 	};
 	
+	
+	/**
+	 * This map states the different transitions between a powder unit and a spoon.
+	 */
 	private static Map<String,Integer> powderLibrary = new HashMap<String,Integer>(){
 		
 		private static final long serialVersionUID = 1L;
@@ -274,7 +285,7 @@ public class AlchemicIngredient {
 	
 	
 	/**
-	 * Variable referencing whether or not an AlchemicIngredient has been termintated. 
+	 * Variable referencing whether or not an AlchemicIngredient has been terminated. 
 	 */
 	private boolean terminated = false;
 	
@@ -308,7 +319,8 @@ public class AlchemicIngredient {
 	/**
 	 * Terminate this alchemicIngredient.
 	 * 
-	 * @effect	
+	 * @effect	The termination is set to true.
+	 * 			| setTerminated()
 	 */
 	protected void terminate() {
 		setTerminated();
@@ -319,25 +331,25 @@ public class AlchemicIngredient {
      **********************************************************/
 	
 	/**
-	 * Variable referencing the possible units of liquid ingredients.
+	 * Variable referencing the valid units of liquid ingredients.
 	 */
 	private static List<String> liquidUnits = new ArrayList<String>(Arrays.asList("drop","spoon","vial","bottle","jug","barrel","storeroom"));
 	
 	
 	/**
-	 * Variable referencing the possible units of powder ingredients.
+	 * Variable referencing the valid units of powder ingredients.
 	 */
 	private static List<String> powderUnits = new ArrayList<String>(Arrays.asList("pinch","spoon","sachet","box","sack","chest","storeroom"));
 	
 	/**
-	 * Return the list of possible liquid units.
+	 * Return the list of valid liquid units.
 	 */
 	public static List<String> getLiquidUnits(){
 		return liquidUnits;
 	}
 	
 	/**
-	 * Return the list of possible powder units.
+	 * Return the list of valid powder units.
 	 */
 	public static List<String> getPowderUnits(){
 		return powderUnits;
@@ -375,7 +387,10 @@ public class AlchemicIngredient {
 	 * 			The unit to check.
 	 * @return	True if this unit is a powder unit if the ingredient is a powder or  
 	 * 			if the unit is a liquid unit if the ingredient is a liquid.
-	 * 			
+	 * 			| if (this.getState() == "Powder")
+	 * 			|	then result == getPowderUnits().contains(unit)
+	 * 			| 	else result == getLiquidUnits().contains(unit) 
+	 * 
 	 */
 	public boolean isValidUnit(String unit) {
 		if (this.getState() == "Powder") {
@@ -399,10 +414,14 @@ public class AlchemicIngredient {
 	 * 
 	 * @param 	unit
 	 * 			The new unit of this alchemicIngredient
-	 * @effect	If the Alchemic hasn't already been terminated the unit 
-	 * 			| setUnit
-	 * @throws IngredientAlreadyTerminatedException
-	 */
+	 * @effect	If the Alchemic hasn't already been terminated and the unit is valid then
+	 * 			the unit is set to the given unit.
+	 * 			| if (!isTerminated()) and if (isValidUnit(unit))
+	 * 			|	then setUnit(unit)
+	 * @throws 	IngredientAlreadyTerminatedException("This ingredient has already been terminated",this)
+	 * 			The ingredient has been terminated or the unit is invalid
+	 * 			| isTerminated() || ! isValidUnit(unit)
+	 */			
 	protected void changeUnit(String unit) throws IngredientAlreadyTerminatedException {
 		if(!isTerminated()) {
 			if (isValidUnit(unit)) {
@@ -487,7 +506,19 @@ public class AlchemicIngredient {
 	}
 	
 	
-	
+	/**
+	 * Change the state of this ingredient.
+	 * 
+	 * @effect	If the file has not been terminated yet, the state is set 
+	 * 			to the opposite state.
+	 * 			|	if (!isTerminated)
+	 * 			|		then if (getState() == "Liquid")
+	 * 			|			then setState("Powder")
+	 * 			|			else setState("Liquid")
+	 * @throws 	IngredientAlreadyTerminatedException("This ingredient has already been terminated",this)
+	 * 			This file has been terminated
+	 * 			| isTerminated()
+	 */
 	protected void changeState() throws IngredientAlreadyTerminatedException {
 		if (!isTerminated()) {
 			if (getState()=="Liquid") {
@@ -508,10 +539,13 @@ public class AlchemicIngredient {
      * IngredientType
      **********************************************************/
 	
+	/**
+	 * Variable referencing the standard ingredientType water of an AlchemicIngredient 
+	 */
 	private static final IngredientType water = new IngredientType("Water","Liquid",0,20);
 	
 	/**
-	 * Variable referencing the ingredientType of this ingredient.
+	 * Variable referencing the ingredientTypes of this ingredient.
 	 */
 	private List<IngredientType> ingredientTypeList = new ArrayList<IngredientType>();
 
@@ -520,7 +554,13 @@ public class AlchemicIngredient {
 	 * 
 	 * @param 	ingredientTypeList
 	 * 			The new list of ingredientTypes of this ingredient.
-	 * @post	
+	 * @post	If the ingredientTypeList is valid then the ingredientTypeList of this ingredient is 
+	 * 			registered as the given ingredientTypeList. Otherwise the ingredientType of this AlchemicIngredient
+	 * 			is registered as water.
+	 * 			| if (isValidIngredientTypeList(ingredientTypeList)
+	 * 			|	then new.getIngredientTypeList() == ingredientTypeList
+	 * 			|	else new.getIngredientTypeList().get(0) == water
+	 * 
 	 */
 	private void setIngredientTypeList(List<IngredientType> ingredientTypeList) {
 		if (isValidIngredientTypeList(ingredientTypeList)) {
