@@ -763,10 +763,85 @@ public class AlchemicIngredient {
      * IngredientContainer
      **********************************************************/
 	
+	/**
+	 * Variable referencing the possible units of liquid containers.
+	 */
+	private static List<String> liquidUnitsCap = new ArrayList<String>(Arrays.asList("spoon","vial","bottle","jug","barrel"));
 	
+	
+	/**
+	 * Variable referencing the possible units of powder containers.
+	 */
+	private static List<String> powderUnitsCap = new ArrayList<String>(Arrays.asList("spoon","sachet","box","sack","chest"));
+	
+	private static Map<String,Integer> liquidCapLibrary = new HashMap<String,Integer>(){
+
+		private static final long serialVersionUID = 1L;
+
+		{
+			put("spoon",1);
+			put("vial",5);
+			put("bottle",15);
+			put("jug",105);
+			put("barrel",1260);
+		}
+	};
+	
+	private static Map<String,Integer> powderCapLibrary = new HashMap<String,Integer>(){
+		
+		private static final long serialVersionUID = 1L;
+
+		{
+			put("spoon",1);
+			put("sachet",7);
+			put("box",42);
+			put("sack",126);
+			put("chest",1260);
+		}
+	};
 	
 	public void determineCapUnit() {
-		
+		if (state == "Liquid") {
+			for (Map.Entry<String,Integer> entry: liquidCapLibrary.entrySet()) {
+				if (this.getQuantityInSpoons() < entry.getValue()) {
+					String capUnit = entry.getKey();
+				}
+				else {
+					/*als je de hele map doorlopen hebt, dan wil dit zeggen dat je quantity van je ingredient groter is, dan dat 
+					 * je container aankan, dan moet je overige hoeveelheid verwijderen en het container vullen met grootste unit*/
+				}
+			
+			}
+		}
+		else {
+			for (Map.Entry<String,Integer> entry: powderCapLibrary.entrySet()) {
+				if (this.getQuantityInSpoons() < entry.getValue()) {
+					String capUnit = entry.getKey();
+				}
+				else {
+					
+				}
+			
+		}
+	}
+	
+	public int getQuantityInSpoons() {
+		int result = getQuantity();
+		if (getState()=="Liquid") {
+			for (Map.Entry<String,Integer> entry: liquidLibrary.entrySet()) {
+				if (entry.getKey() == this.unit) {
+					result = result * entry.getValue();
+				}
+			}
+		}
+		else {
+			for(Map.Entry<String, Integer> entry: powderLibrary.entrySet()) {
+				if (entry.getKey() == this.unit) {
+					result = result * entry.getValue();
+				}
+			}
+		}
+		return result;
 	}
 	
 }
