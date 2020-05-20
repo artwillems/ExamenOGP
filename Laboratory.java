@@ -329,8 +329,8 @@ public class Laboratory{
 	 * @return 	a new container of given capacity
 	 */
 
-	public IngredientContainer createContainer(int amount) {
-		IngredientContainer newContainer = new IngredientContainer(null, amount, null, null);
+	public IngredientContainer createContainer(int amount, String unit, String state) {
+		IngredientContainer newContainer = new IngredientContainer(null, amount, unit, state);
 		return newContainer;
 	}
 
@@ -342,7 +342,7 @@ public class Laboratory{
 	 * @return	True if the quantity of the AlchemicIngredient is a positive number and lower than the capacity of this laboratory.
 	 * 			| ((ingredient.getQuantity() >= 0) && (ingredient.getQuantity() <= getCapacity()))
 	 */
-
+	/*nog controleren*/
 	private boolean isValidNewAmount(AlchemicIngredient ingredient) {
 		int quant = ingredient.getQuantity();
 		return((quant >= 0) && (quant <= getCapacity()));
@@ -372,7 +372,7 @@ public class Laboratory{
 	 * 			then a new no such device in lab exception is thrown.
 	 * 			|throw new NoSuchInLabDeviceException("message", this)
 	 */
-
+	/*nog controleren*/
 	private AlchemicIngredient useOven(IngredientContainer container) {
 		Oven oven = getOven(); 
 		if(!isValidOvenAddition()) {
@@ -402,7 +402,7 @@ public class Laboratory{
 	 * 			then a new no such device in lab exception is thrown.
 	 * 			|throw new NoSuchInLabDeviceException("message", this)
 	 */
-
+	/*nog controleren*/
 	private AlchemicIngredient useCoolingBox(IngredientContainer container) throws NoSuchInLabDeviceException{
 		CoolingBox fridge = getCoolingBox();
 		if(!isValidCoolingAddition()) {
@@ -428,7 +428,7 @@ public class Laboratory{
 	 * 			The new AlchemicIngredient that needs to be brought back to its standardTemperatures.
 	 * @return	The AlchemicIngredient brought to its standardTemperature.
 	 */
-
+	/*nog controleren*/
 	private AlchemicIngredient ingredientBroughtToStandardTemp(IngredientContainer fromContainer) {
 		AlchemicIngredient ingredient = fromContainer.getAlchemicIngredient();
 		if(hasStandardTemperature(ingredient)) {
@@ -461,7 +461,7 @@ public class Laboratory{
 	 * 			a new invalid laboratory amount exception is thrown.
 	 * 			| throw new InvalidLaboratoryAmountException
 	 */
-
+	/*nog controleren*/
 	public void storeNewIngredient(IngredientContainer fromContainer) throws InvalidLaboratoryAmountException{
 		AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer);
 		if(isValidNewAmount(ingredientToBeAdded)) {
@@ -593,8 +593,15 @@ public class Laboratory{
 	 * @return 	a new IngredientContainer with the requested ingredient in its appropriate container
 	 */
 
-	public IngredientContainer getAmountFromLabo(String ingr, int amount) throws InvalidLaboratoryAmountException{
-		if(isValidAmount(ingr, amount)) {
+	public IngredientContainer getAmountFromLabo(String ingr, int amount, String unit) throws InvalidLaboratoryAmountException{
+		if(isValidAmount(ingr, amount,unit)) {
+			AlchemicIngredient fullIngredient = getIngredientFromName(ingr);
+			this.substractAmountFromCurrentLaboratory(fullIngredient, amount,unit);
+			IngredientContainer container = new IngredientContainer
+			
+			
+			
+			
 			/* call corresponding AlchemicIngredient from String ingredient*/
 			AlchemicIngredient fullIngredient = getIngredientFromName(ingr);
 			String unit = fullIngredient.getUnit(); 
