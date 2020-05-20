@@ -89,7 +89,7 @@ public class Device {
 	}
 	
     private void setContainerList(List<AlchemicIngredient> ingredientList) throws InvalidIngredientListException {
-    	if (!isValidInput(List<AlchemicIngredient> ingredientList)) {
+    	if (!isValidInput(ingredientList)) {
     		throw new InvalidIngredientListException("There are no ingredients put in this device");
     	}
     	else {
@@ -262,22 +262,13 @@ public class Device {
 			throw new IllegalResultException("There can only be returned one total result from the device");
 		}
 		else {
-			IngredientContainer newContainer = new IngredientContainer(ingredientList.get(0),newQuantity);
+			IngredientContainer newContainer = new IngredientContainer(ingredientList.get(0),1,ingredientList.get(0).determineCapUnit(),ingredientList.get(0).getState());
 			ingredientList.clear();
 			return newContainer;
 		}
 	}
 	
-	/*deze functie moet verwijderd worden*/
-	public int sumOfQuantities() {
-		int sum = 0;
-		for (int i = 0; i < quantityList.size(); i++) {
-			  sum = sum + quantityList.get(i);
-			}
-		return sum;
-	}
-
-	/*HEEFT HET NUT DEZE IN SUPERCLASS TE ZETTEN? WANT BIJ IEDERE SUBCLASS ANDERS, EN HIER GEVEN WE NIKS VAN CODE IN*/
+	
 	public void executeAlchemicOperation() throws NoIngredientInDeviceException {
 		if (this.countIngredients() < 1) {
 			throw new NoIngredientInDeviceException("There is no ingredient in this device",this);

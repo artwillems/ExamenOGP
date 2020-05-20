@@ -759,7 +759,14 @@ public class AlchemicIngredient {
 	}
 	
 	
+	/**********************************************************
+     * IngredientContainer
+     **********************************************************/
 	
 	
+	
+	public void determineCapUnit() {
+		
+	}
 	
 }
