@@ -89,11 +89,12 @@ public class DeviceTest {
 		
 	}
 	
+	/*
 	@Test (expected InvalidIngredientListException.class)
 	public void testConstructorInvalidLaboratory{
 		
 	}
-	
+	*/
 	
 	
 	@Test

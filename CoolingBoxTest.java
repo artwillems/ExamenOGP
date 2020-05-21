@@ -27,10 +27,11 @@ class CoolingBoxTest {
 	
 	private static Laboratory laboOfMilkCoolingBox, laboOfLegalConstructorTestBox, laboOfIllegalConstructorTestBox;
 	private static IngredientType typeMilk;
-	private static List<IngredientType> typeMilkList, typeSaltList;
-	private static AlchemicIngredient milk;
+	private static List<IngredientType> typeMilkList;
+	private static AlchemicIngredient milk, cooledMilk, coldMilk;
 	private static CoolingBox boxAtStandardTemp, legalConstructorTestBox, illegalConstructorTestBox;
 	private static List<Long> temperatureSetting, invalidTemperatureSetting;
+	private static IngredientContainer standardTempIngrContainer, cooledMilkContainer, coldMilkContainer;
 	
 	
 	@BeforeClass
@@ -53,8 +54,12 @@ class CoolingBoxTest {
 	@Before
 	public void setUpMuttableFixture() {
 		milk = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Liquid");
+		coldMilk = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 30, (long) 0,"Liquid");
 		boxAtStandardTemp = new CoolingBox(laboOfMilkCoolingBox,temperatureSetting);
 		legalConstructorTestBox = new CoolingBox(laboOfLegalConstructorTestBox,temperatureSetting);
+		standardTempIngrContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
+		coldMilkContainer = new IngredientContainer(coldMilk,coldMilk.getQuantity(),coldMilk.getUnit(),coldMilk.getState());
+		
 		
 	}
 	
@@ -98,7 +103,27 @@ class CoolingBoxTest {
 		boxAtStandardTemp.executeAlchemicOperation();
 	}
 	
-	public void TestCoolHotIngredient{
-		boxAtStandard
+	@Test
+	public void TestCoolHotIngredient(){
+		boxAtStandardTemp.addIngredientFrom(standardTempIngrContainer);
+		boxAtStandardTemp.executeAlchemicOperation();
+		cooledMilkContainer = boxAtStandardTemp.removeAlchemicResult();
+		cooledMilk = cooledMilkContainer.getAlchemicIngredient();
+		cooledMilkContainer.delete();
+		assertEquals(cooledMilk.getTemperature().getColdness(),boxAtStandardTemp.getCoolingBoxTemperature().getColdness);
+		assertEquals(cooledMilk.getTemperature().getHotness(),boxAtStandardTemp.getCoolingBoxTemperature().getHotness);
+	}
+	
+	
+	
+	@Test
+	public void testCoolColdIngredient() {
+		boxAtStandardTemp.addIngredientFrom(coldMilkContainer);
+		boxAtStandardTemp.executeAlchemicOperation();
+		coldMilkContainer = boxAtStandardTemp.removeAlchemicResult();
+		coldMilk = coldMilkContainer.getAlchemicIngredient();
+		coldMilkContainer.delete();
+		assertEquals(coldMilk.getTemperature().getColdness(),(long) 30);
+		assertEquals(coldMilk.getTemperature().getHotness(),(long) 0);
 	}
 }
