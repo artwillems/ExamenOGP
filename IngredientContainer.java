@@ -2,7 +2,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IngredientContainer {
-
+	
+	/**********************************************************
+     * Constructors
+     **********************************************************/
+	/**
+	 * Initialize a new ingredient container with a given alchemicIngredient, capacity amount, capacity unit, capacity state. 
+	 * 
+	 * @param 	ingredient
+	 * 			The alchemic ingredient of the new ingredientContainer.
+	 * @param 	capAmount
+	 * 			The capacity amount of the new ingredientContainer.
+	 * @param 	capUnit
+	 * 			The capacity unit of the new ingredientContainer.
+	 * @param 	capState
+	 * 			The capacity state of the new ingredientContainer.
+	 * 
+	 * @effect	The alchemic ingredient is set to the given alchemic ingredient (must be valid)
+	 * 			| setIngredient(ingredient)
+	 * @effect	The alchemic ingredient is set to the given capacity amount (must be valid)
+	 * 			| setCapAmount(capAmount)
+	 * @effect	The alchemic ingredient is set to the given capacity unit (must be valid)
+	 * 			| setCapUnit(capUnit)
+	 * @effect	The alchemic ingredient is set to the given capacity state (must be valid)
+	 * 			| setCapState(capState)
+	 * */
 	public IngredientContainer(AlchemicIngredient ingredient, int capAmount, String capUnit, String capState){
 		setIngredient(ingredient);
 		setCapAmount(capAmount);
@@ -10,26 +34,130 @@ public class IngredientContainer {
 		setCapState(capState);
 	}
 	
+	/**
+	 * Initialize a new ingredient container with a given capacity amount, capacity unit, capacity state. 
+	 * 
+	 * @param 	capAmount
+	 * 			The capacity amount of the new ingredientContainer.
+	 * @param 	capUnit
+	 * 			The capacity unit of the new ingredientContainer.
+	 * @param 	capState
+	 * 			The capacity state of the new ingredientContainer.
+	 * 
+	 * 
+	 * */
+	public IngredientContainer(int capAmount, String capUnit, String capState) {
+		this(null, capAmount, capUnit, capState);
+	}
+	
+	/**********************************************************
+     * alchemic ingredient
+     **********************************************************/
+	
+	/**
+	 * Variable referencing the alchemic ingredient of this ingredientContainer.
+	 */
 	private AlchemicIngredient ingredient = null;
 	
-		
-  
+	/**
+	 * Return the alchemic ingredient of this ingredientContainer.
+	 */
 	@Basic @Raw
 	public AlchemicIngredient getAlchemicIngredient() {
 		return ingredient;
 	}
 
+	/**
+	 * Set the alchemic ingredient of this ingredientContainer to the given alchemic ingredient.
+	 *
+	 * @param 	ingredient
+	 * 			The new alchemic ingredient for this ingredientContainer.
+	 * 
+	 * @throws 	IllegalStateException
+	 *         	The given alchemic ingredient has not the same state as the ingredientContainer
+	 *         	| !isValidState()
+	 * @throws 	IllegalAmountException
+	 *         	The amount of the given alchemic ingredient is too big for this ingredientContainer
+	 *         	| !isValidAmount()
+	 */
+	private void setIngredient(AlchemicIngredient ingredient) throws IllegalStateException, IllegalAmountException{
+		if (!isValidState()){
+			throw new IllegalStateException("The state of the alchemic ingredient is not the same state as the capacity");
+		}
+		else if (!isValidAmount()){
+			throw new IllegalAmountException("The amount of alchemic ingredient is too big for this container");
+		}
+		else {
+			 this.ingredient = ingredient; 
+		}
+		 
+		}
+	
+	/**********************************************************
+     * capacity amount
+     **********************************************************/
+	
+	/**
+	 * Variable referencing the capacity amount of this ingredientContainer.
+	 */
 	private int capAmount = 0;
 	
+	/**
+	 * Return the capacity amount of this ingredientContainer.
+	 */
+	@Basic @Raw
 	public int getCapAmount() {
 		return this.capAmount;
 	}
+	
+	/*controleren of de hoeveelheid van alchemicIngredient volledig in hoeveelheid van capacity kan, eerst alles omzetten in spoons om zo te controleren*/
+	
+	public boolean isValidAmount() {
+		return (this.getAlchemicIngredient().getQuantityInSpoons() <= this.getQuantityCapInSpoons()); 
+	}
+	
+	/**
+	 * Set the capacity amount of this ingredientContainer to the given capacity amount.
+	 *
+	 * @param 	capAmount
+	 * 			The new capacity amount for this ingredientContainer.
+	 * 
+	 * @throws 	IllegalCapacityException
+	 *         	The given capacity amount for this ingredientContainer is not valid
+	 *         	| !isValidCapacity()
+	 */
+	private void setCapAmount(int capAmount) throws IllegalCapacityException {
+		if (!isValidCapacity()){
+			throw new IllegalCapacityException("The capacity is illegal");
+		}
+		else {
+			this.capAmount = capAmount;
+		}
+	}
+	
+	/**********************************************************
+     * capacity unit
+     **********************************************************/
 	
 	private String capUnit = null;
 	
 	public String getCapUnit() {
 		return this.capUnit;
 	}
+	
+	private void setCapUnit(String capUnit) throws IllegalCapacityException {
+		if (!isValidCapacity()){
+			throw new IllegalCapacityException("The capacity is illegal");
+		}
+		else {
+			this.capUnit = capUnit;
+		}
+	}
+	
+	
+	/**********************************************************
+     * capacity state
+     **********************************************************/
 	
 	private String capState = null;
 	
@@ -91,11 +219,7 @@ public class IngredientContainer {
 	}
 	
 	
-	/*controleren of de hoeveelheid van alchemicIngredient volledig in hoeveelheid van capacity kan, eerst alles omzetten in spoons om zo te controleren*/
-	
-	public boolean isValidAmount() {
-		return (this.getAlchemicIngredient().getQuantityInSpoons() <= this.getQuantityCapInSpoons()); 
-	}
+
 	
 	/*zet de amount van je capacity van constructor om in spoons*/
 	public int getQuantityCapInSpoons() {
@@ -148,37 +272,11 @@ public class IngredientContainer {
 		}
 	
 
-	private void setCapUnit(String capUnit) throws IllegalCapacityException {
-		if (!isValidCapacity()){
-			throw new IllegalCapacityException("The capacity is illegal");
-		}
-		else {
-			this.capUnit = capUnit;
-		}
-	}
+
 	
-	private void setCapAmount(int capAmount) throws IllegalCapacityException {
-		if (!isValidCapacity()){
-			throw new IllegalCapacityException("The capacity is illegal");
-		}
-		else {
-			this.capAmount = capAmount;
-		}
-	}
 	
-	private void setIngredient(AlchemicIngredient ingredient) throws IllegalStateException, IllegalAmountException{
-		if (!isValidState()){
-			throw new IllegalStateException("The state of the alchemic ingredient is not the same state as the capacity");
-		}
-		else if (!isValidAmount()){
-			throw new IllegalAmountException("The amount of alchemic ingredient is too big for this container");
-		}
-		else {
-			 this.ingredient = ingredient; 
-		}
-		 
-		}
 	
+
 	
 	  
 	  /**********************************************************************
