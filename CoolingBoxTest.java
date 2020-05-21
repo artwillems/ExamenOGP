@@ -110,8 +110,8 @@ class CoolingBoxTest {
 		cooledMilkContainer = boxAtStandardTemp.removeAlchemicResult();
 		cooledMilk = cooledMilkContainer.getAlchemicIngredient();
 		cooledMilkContainer.delete();
-		assertEquals(cooledMilk.getTemperature().getColdness(),boxAtStandardTemp.getCoolingBoxTemperature().getColdness);
-		assertEquals(cooledMilk.getTemperature().getHotness(),boxAtStandardTemp.getCoolingBoxTemperature().getHotness);
+		assertEquals(cooledMilk.getTemperature().getColdness(),boxAtStandardTemp.getCoolingBoxTemperature().getColdness());
+		assertEquals(cooledMilk.getTemperature().getHotness(),boxAtStandardTemp.getCoolingBoxTemperature().getHotness());
 	}
 	
 	

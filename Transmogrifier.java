@@ -205,8 +205,8 @@ public class Transmogrifier extends Device{
 		String newUnit = changeUnit(ingredient); 
 		String newState = changeState(ingredient); 
 		List<IngredientType> type = ingredient.getIngredientTypeList(); 
-		long hotness = ingredient.getHotness();
-		long coldness = ingredient.getColdness(); 
+		long hotness = ingredient.getTemperature().getHotness();
+		long coldness = ingredient.getTemperature().getColdness(); 
 		AlchemicIngredient transmogrified = new AlchemicIngredient(newQuant, newUnit, type, hotness, coldness, newState); 
 		return transmogrified; 
 	}
@@ -218,7 +218,11 @@ public class Transmogrifier extends Device{
 	
 	@Override
 	public void executeAlchemicOperation() {
-		List<AlchemicIngredient> ingredientsInLaboratory = this.getLaboratory().getIngredients();
+		AlchemicIngredient result = setTransmogrifiedIngredient(getIngredientList().get(0));
+		getIngredientList().get(0).terminate();
+		this.ingredientList.clear();
+		this.ingredientList.add(result);
+		
 		/**
 		 * ingredientsInLaboratory.remove(AlchemicIngredient ingredient); 
 		 * ingredientsInLaboratory.add(setTransmogrifiedIngredient);

@@ -30,7 +30,7 @@ class KettleTest {
 	private static IngredientType typeMilk, typeCola, typeCoffee;
 	private static AlchemicIngredient milk, cola, coffee, ingredientFromKettle,resultIngredient;
 	private static List<IngredientType> typeMilkList, typeColaList, typeCoffeeList, ingredientTypeList;
-	private static List<AlchemicIngredient> ingredientList; resultIngredient;
+	private static List<AlchemicIngredient> ingredientList, resultIngredient;
 	private static IngredientContainer milkContainer, colaContainer, coffeeContainer,resultContainer;
 	private static List<Long> temperatureList;
 	
@@ -69,7 +69,7 @@ class KettleTest {
 		assertEquals(standardKettle.getType(),"Kettle");
 	}
 	
-	@Test (expected DifferentLaboratoryException("The kettle and the ingredient have to be stored in the same laboratory",this).class)
+	@Test (expected DifferentLaboratoryException("The kettle and the ingredient have to be stored in the same laboratory",this).class);
 	public void TestAdditionOfIngredientFromDifferentLab() {
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
 		standardKettle.addIngredientFrom(milkContainer);
@@ -230,7 +230,7 @@ class KettleTest {
 		
 		}
 	
-	@Test (expected NoIngredientInDeviceException("There is no ingredient in this device",this).class);
+	@Test (expected NoIngredientInDeviceException("There is no ingredient in this device",this).class)
 	public void TestExecuteAlchemicOperation_illegalCount() {
 		standardKettle = new Kettle(standardKettleLabo);
 		executeAlchemicOperation();
