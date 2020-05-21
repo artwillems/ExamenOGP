@@ -98,7 +98,7 @@ public class Device {
     }
     
 	public boolean isValidInput(List<AlchemicIngredient> ingredientList) {
-		return (ingredientList.size() <= 1);
+		return (ingredientList.size() <= 1 && !ingredientList.contains(null));
 	}
 	/**********************************************************
      * laboratory
@@ -183,7 +183,7 @@ public class Device {
 	@Raw 
 	public boolean canHaveAsLaboratory(Laboratory laboratory) {
 		if (this.isTerminated())
-			return (laboratory == null);
+			return false;
 		else 
 			return ( (laboratory != null) && (!this.isTerminated()));
 	}

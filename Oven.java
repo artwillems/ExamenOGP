@@ -113,13 +113,13 @@ public class Oven extends Device {
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);
     		if (getOvenTemperature().getColdness() == 0) {
     			
-    			long newHotness = getOvenTemperature().getHotness() ; /*Hier komt nog een term voor de 5 procent*/
+    			long newHotness = getOvenTemperature().getHotness() * (1 + (range/100)) ; /*Hier komt nog een term voor de 5 procent*/
     			if (ingredient.getTemperature().getHotness() < newHotness) {
     				ingredient.changeTemp(0, newHotness);
     			}
     		}
     		else {
-    			long newColdness = getOvenTemperature().getColdness(); /*Hier komt nog een term voor de 5 procent*/
+    			long newColdness = getOvenTemperature().getColdness() * (1 + (range/100)); /*Hier komt nog een term voor de 5 procent*/
     			if (ingredient.getTemperature().getColdness() > newColdness) {
     				ingredient.changeTemp(newColdness,0);
     			}

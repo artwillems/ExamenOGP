@@ -121,7 +121,7 @@ public class Temperature {
 				this.hotness = hotness;
 			}
 			else {
-				this.hotness = this.getDefaultHotness();
+				this.hotness = getDefaultHotness();
 			}
 			
 		}
