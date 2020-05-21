@@ -276,7 +276,9 @@ public class Laboratory{
 		}
 	}
 	
-	
+	public void addKettle(Kettle kettle) {
+		setKettle(kettle);
+	}
 		
 		
 		
