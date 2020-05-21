@@ -88,7 +88,7 @@ public class Laboratory{
 	 * Variable referencing all the ingredients present in the laboratory
 	 */
 
-	private List<AlchemicIngredient> listOfIngredients = null;
+	private List<AlchemicIngredient> listOfIngredients = new ArrayList<AlchemicIngredient>();
 
 	/**
 	 * Check if the different ingredient types in the laboratory are unique, meaning there is not two times
@@ -363,16 +363,19 @@ public class Laboratory{
 		Oven oven = getOven(); 
 		if(!isValidOvenAddition()) {
 			AlchemicIngredient ingredient = container.getAlchemicIngredient();
+			container.delete();
 			long newColdness = ingredient.getStandardTemperature().getColdness();
 			long newHotness = ingredient.getStandardTemperature().getHotness();
 			oven.changeOvenTemperature(newColdness, newHotness);
 			oven.addIngredientFrom(container);
 			oven.executeAlchemicOperation();
-			AlchemicIngredient result = oven.removeAlchemicResult().getAlchemicIngredient();
+			IngredientContainer resultContainer = oven.removeAlchemicResult();
+			AlchemicIngredient result = resultContainer..getAlchemicIngredient();
+			resultContainer.delete();
 			return result;
 		}
 		else {
-			throw new NoSuchInLabDeviceException("There is no oven present in this laboratory! Please make one", this);
+			throw new NoSuchInLabDeviceException("There is no oven present in this laboratory!", this);
 		}
 	
 		
@@ -423,14 +426,14 @@ public class Laboratory{
 		else {
 
 			/*bring the ingredient back to its standard temperature using an oven or cooling box*/
-			AlchemicIngredient adaptedIngredient = null;
+			AlchemicIngredient adaptedIngredient;
 			if(ingredient.getTemperature().getHotness() < ingredient.getStandardTemperature().getHotness()) {
 
-				Oven thisOven = getOven();
+				
 				adaptedIngredient = useOven(fromContainer);
 			}
 			else {
-				CoolingBox thisFridge = getCoolingBox();
+				
 				adaptedIngredient = useCoolingBox(fromContainer);
 			}
 		return adaptedIngredient;

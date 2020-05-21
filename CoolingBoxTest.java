@@ -1,5 +1,5 @@
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+
 
 import org.junit.jupiter.api.Test;
 
@@ -26,9 +26,9 @@ import java.util.HashMap;
 class CoolingBoxTest {
 	
 	private static Laboratory laboOfMilkCoolingBox, laboOfLegalConstructorTestBox, laboOfIllegalConstructorTestBox;
-	private static IngredientType typeMilk, saltType;
+	private static IngredientType typeMilk;
 	private static List<IngredientType> typeMilkList, typeSaltList;
-	private static AlchemicIngredient milk, salt;
+	private static AlchemicIngredient milk;
 	private static CoolingBox boxAtStandardTemp, legalConstructorTestBox, illegalConstructorTestBox;
 	private static List<Long> temperatureSetting, invalidTemperatureSetting;
 	
@@ -39,11 +39,8 @@ class CoolingBoxTest {
 		laboOfLegalConstructorTestBox = new Laboratory(40);
 		laboOfIllegalConstructorTestBox = new Laboratory(50);
 		typeMilk = new IngredientType("Milk","Liquid",0,20);
-		saltType = new IngredientType("Salt","Powder",0,20);
 		typeMilkList = new ArrayList<IngredientType>();
 		typeMilkList.add(typeMilk);
-		typeSaltList = new ArrayList<IngredientType>();
-		typeSaltList.add(saltType);
 		temperatureSetting = new ArrayList<Long>();
 		temperatureSetting.add((long)0);
 		temperatureSetting.add((long)20);
@@ -56,8 +53,8 @@ class CoolingBoxTest {
 	@Before
 	public void setUpMuttableFixture() {
 		milk = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Liquid");
-		salt = new AlchemicIngredient(30,"spoon",typeSaltList,(long) 0, (long) 10, "Powder");
 		boxAtStandardTemp = new CoolingBox(laboOfMilkCoolingBox,temperatureSetting);
+		legalConstructorTestBox = new CoolingBox(laboOfLegalConstructorTestBox,temperatureSetting);
 		
 	}
 	
@@ -65,11 +62,10 @@ class CoolingBoxTest {
 	
 	@Test
 	public void testConstructorLaboratoryTemperatureSetting_Legal() {
-		legalConstructorTestBox = new CoolingBox(laboOfLegalConstructorTestBox,temperatureSetting);
 		assertEquals(legalConstructorTestBox.getType(),"CoolingBox");
 		assertEquals((long) legalConstructorTestBox.getCoolingBoxTemperature().getColdness(),(long) 0);
 		assertEquals((long) legalConstructorTestBox.getCoolingBoxTemperature().getHotness(),(long) 20);
-		assertEquals(legalConstructorTestBox.getLaboratory(),laboOfLegalConstructorTestBox);
+	
 	}	
 	
 	@Test 
@@ -81,8 +77,28 @@ class CoolingBoxTest {
 		assertTrue(illegalConstructorTestBox.getCoolingBoxTemperature().getHotness(),(long) 20);
 	}
 	
+	@Test 
+	public void testChangeCoolingBoxTemperature_InvalidTemperature() {
+		legalConstructorTestBox.changeCoolingBoxTemperature(30, 30);
+		assertFalse(legalConstructorTestBox.getCoolingBoxTemperature().getColdness(),(long) 30);
+		assertFalse(legalConstructorTestBox.getCoolingBoxTemperature().getHotness(),(long) 30);
+		assertTrue(legalConstructorTestBox.getCoolingBoxTemperature().getColdness(),(long) 0);
+		assertTrue(legalConstructorTestBox.getCoolingBoxTemperature().getHotness(),(long) 20);
+	}
 	
+	@Test
+	public void testChangeCoolingBoxTemperature_ValidTemperature() {
+		legalConstructorTestBox.changeCoolingBoxTemperature(20, 0);
+		assertTrue(legalConstructorTestBox.getCoolingBoxTemperature().getColdness(),(long)20);
+		assertTrue(legalConstructorTestBox.getCoolingBoxTemperature().getHotness(),(long) 0);
+		
+	}
+	@Test (expected NoIngredientInDeviceException("There is no ingredient in this device",this).class)
+	public void TestEmptyDeviceExcecution() {
+		boxAtStandardTemp.executeAlchemicOperation();
+	}
 	
-	
-	
+	public void TestCoolHotIngredient{
+		boxAtStandard
+	}
 }
