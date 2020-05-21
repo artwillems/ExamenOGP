@@ -66,9 +66,6 @@ public class Laboratory{
 		return this.capacity;
 	}
 
-	public long getCapacityInSpoons() {
-		return 6300*this.capacity;
-	}
 	/**
 	 * Checks whether the capacity for this laboratory is greater than or equal to zero
 	 *
@@ -83,6 +80,30 @@ public class Laboratory{
 		return (capacity > 0 && capacity <= Long.MAX_VALUE);
 	}
 
+	/****************************************
+	 * available capacity from this laboratory in spoons
+	 *************************/
+	
+	private long availableCapInSpoons = 0;
+	
+	public long getAvailableCapInSpoons() {
+		return 6300*this.capacity;
+	}
+	
+	private void setAvailableCapInSpoons(long availableCapInSpoons) {
+		if(isValidAvailableCapInSpoons(availableCapInSpoons)) {
+			this.availableCapInSpoons = availableCapInSpoons;
+		}
+
+	}
+	
+	public void changeAvailableCapInSpoons(long availableCapInSpoons) {
+		setAvailableCapInSpoons(availableCapInSpoons);
+	}
+	private boolean isValidAvailableCapInSpoons(long availableCapInSpoons) {
+		return (availableCapInSpoons > 0 && availableCapInSpoons <= Long.MAX_VALUE);
+	}
+	
 	/************************************
 	 * Ingredients
 	 ********************************/
@@ -469,6 +490,7 @@ public class Laboratory{
 	 */
 	@Model
 	private void combineAmounts(AlchemicIngredient ingredient) throws InvalidLaboratoryAmountException{
+		this.addToCapacityLabo(ingredient.getQuantity(),ingredient.getUnit());
 		for (int i = 0; i < listOfIngredients.size(); i++) {
 			if (listOfIngredients.get(i).getCompleteName() == ingredient.getCompleteName()) {
 				AlchemicIngredient originalIngr = listOfIngredients.get(i);
@@ -484,8 +506,10 @@ public class Laboratory{
 					this.substractFromCapacityLabo(ingredient.getQuantity(), ingredient.getUnit());
 					listOfIngredients.remove(i);
 					originalIngr.terminate();
+					ingredient.terminate();
 					resultContainer.delete();
 					listOfIngredients.add(result);
+				
 				}
 				
 				else {
@@ -515,12 +539,14 @@ public class Laboratory{
 	 * 			| throw new InvalidLaboratoryAmountException
 	 */
 	
-	public void storeNewIngredient(IngredientContainer fromContainer) {
+	public void storeNewIngredient(IngredientContainer fromContainer) throws IllegalAdditionException{
 		AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer);
-		/*isValidNewAmount nog checken*/
-		if(isValidNewAmount(ingredientToBeAdded)) {
+		if(isValidAddition(ingredientToBeAdded.getQuantity(),ingredientToBeAdded.getUnit())) {
 			this.combineAmounts(ingredientToBeAdded);
 			fromContainer.setDelete(true);
+		}
+		else {
+			throw new IllegalAdditionException("There is not enough space available to store this alchemic ingredient in this laboratory",this);
 		}
 		
 	}
@@ -599,10 +625,9 @@ public class Laboratory{
 	};
 	
 	
-	public IngredientContainer getAmountFromLabo(String ingrName, int amount, String unit) throws InvalidLaboratoryAmountException{
-		/*isValidAmount nog checken*/
+	public IngredientContainer getAmountFromLabo(String ingrName, int amount, String unit) throws InvalidLaboratoryAmountException, InvalidAdditionException{
 		AlchemicIngredient ingr = this.getIngredientFromName(ingrName);
-		if(isValidAmount(ingrName, amount,unit)) {
+		if(isValidAddition(amount,unit)) {
 				if (ingr.getQuantityInSpoons() < this.getAmountInSpoons(amount, unit)) {
 					AlchemicIngredient ingrForLabo = new AlchemicIngredient(ingr.getQuantityInSpoons()-this.getAmountInSpoons(amount, unit),"spoon",ingr.getIngredientTypeList(),ingr.getTemperature().getHotness(), ingr.getTemperature().getColdness(),ingr.getState(),ingr.getSpecialName());
 					AlchemicIngredient ingrToReturn = new AlchemicIngredient(amount, unit,ingr.getIngredientTypeList(),ingr.getTemperature().getHotness(), ingr.getTemperature().getColdness(),ingr.getState(),ingr.getSpecialName());
@@ -620,19 +645,38 @@ public class Laboratory{
 				else if (ingr.getQuantityInSpoons() == this.getAmountInSpoons(amount, unit)) {
 					return this.getFullAmountFromLabo(ingrName);
 				}
+				else {
+					throw new InvalidLaboratoryAmountException("There is not enough ingredient in this laboratory", this);
+				}
 		}
 		else {
-			throw new InvalidLaboratoryAmountException("The requested amount cannot be returned from this laboratory", this);
+			throw new InvalidAdditionException("The capacity of this laboratory is too sma", this);
 				}
 	}
 	
-	
+	/*mss nog ergens controleren of het mogelijk is om die substraction af te trekken*/
 	private void substractFromCapacityLabo(int amount,String unit) {
-		/*pas de storeroom van je labo aan */
+			int substraction = this.getAmountInSpoons(amount, unit);
+			long result = this.getAvailableCapInSpoons() - substraction;
+			this.changeAvailableCapInSpoons(result);
+		}
+		
+	
+	public boolean isValidSubstraction(int amount,String unit) {
+		int substraction = this.getAmountInSpoons(amount, unit);
+		return ((this.getAvailableCapInSpoons() >= substraction) && (substraction != 0));
 	}
 	
+	public boolean isValidAddition(int amount,String unit) {
+		int addition = this.getAmountInSpoons(amount, unit);
+		return ((this.getAvailableCapInSpoons() >= addition) && (addition != 0));
+	}
+	
+	/*mss nog ergens controleren of het mogelijk is om die addition te doen*/
 	private void addToCapacityLabo(int amount, String unit) {
-		/*pas de storeroom van je labo aan */
+		int addition = this.getAmountInSpoons(amount, unit);
+		long result = this.getAvailableCapInSpoons() + addition;
+		this.changeAvailableCapInSpoons(result);
 	}
 	
 	
