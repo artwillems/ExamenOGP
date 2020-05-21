@@ -98,7 +98,7 @@ class CoolingBoxTest {
 		assertTrue(legalConstructorTestBox.getCoolingBoxTemperature().getHotness(),(long) 0);
 		
 	}
-	@Test (expected NoIngredientInDeviceException("There is no ingredient in this device",this).class)
+	@Test (expected NoIngredientInDeviceException("There is no ingredient in this device",this).class);
 	public void TestEmptyDeviceExcecution() {
 		boxAtStandardTemp.executeAlchemicOperation();
 	}

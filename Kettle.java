@@ -27,6 +27,8 @@ public class Kettle extends Device{
 	 * 			the ingredient is added to the ingredientList
 	 * 			| if (haveSameLaboratory(container.getAlchemicIngredient()))
 	 * 			| 	then getIngredientList().contains(container.getAlchemicIngredient())
+	 * @effect	If the ingredient is added to the kettle, its container is deleted.
+	 * 			| container.delete()
 	 * @throws	DifferentLaboratoryException("The kettle and the ingredient have to be stored in the same laboratory",this)
 	 * 
 	 */
@@ -34,6 +36,7 @@ public class Kettle extends Device{
 	public void addIngredientFrom(IngredientContainer container) throws DifferentLaboratoryException{
 		if (haveSameLaboratory(container.getAlchemicIngredient())) {
 			this.ingredientList.add(container.getAlchemicIngredient());
+			container.delete();
 		}
 		else {
 			throw new DifferentLaboratoryException("The kettle and the ingredient have to be stored in the same laboratory",this);

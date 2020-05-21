@@ -95,7 +95,7 @@ public class OvenTest{
 		
 	}
 	
-	@Test (expected NoIngredientInDeviceException("There is no ingredient in this device",this).class)
+	@Test (expected NoIngredientInDeviceException("There is no ingredient in this device",this).class);
 	public void TestEmptyDeviceExcecution() {
 		ovenAtStandardTemp.executeAlchemicOperation();
 	}
@@ -108,8 +108,8 @@ public class OvenTest{
 		heatedMilk = heatedMilkContainer.getAlchemicIngredient();
 		heatedMilkContainer.delete();
 		assertEquals(heatedMilk.getTemperature().getColdness(),ovenAtStandardTemp.getOvenTemperature().getColdness());
-		assertTrue(heatedMilk.getTemperature().getHotness()<=OvenAtStandardTemp.getOvenTemperature().getHotness()*1.05);
-		assertTrue(heatedMilk.getTemperature().getHotness()>=OvenAtStandardTemp.getOvenTemperature().getHotness()*0.95);
+		assertTrue(heatedMilk.getTemperature().getHotness()<=ovenAtStandardTemp.getOvenTemperature().getHotness()*1.05);
+		assertTrue(heatedMilk.getTemperature().getHotness()>=ovenAtStandardTemp.getOvenTemperature().getHotness()*0.95);
 	}
 	
 	@Test

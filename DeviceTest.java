@@ -23,6 +23,7 @@ import java.util.HashMap;
  */
 public class DeviceTest {
 
+	private static final String expected = null;
 	private static Oven terminatedDevice, emptyDevice, constructorTestDevice, deviceWithMilk;
 	private static Laboratory laboratoryOfTerminatedDevice, laboratoryOfMilkDevice, validLaboOfConstructorTestDevice;
 	private static Laboratory laboratoryOfEmptyDevice, terminatedLaboratory;
@@ -113,13 +114,13 @@ public class DeviceTest {
 	}
 	
 	
-	@Test (expected IllegalStateException.class)
+	@Test (expected IllegalStateException("Device is terminated!").class);
 	public void moveTerminatedDevice() {
 		terminatedDevice.moveTo(laboratoryOfMilkDevice);
 		
 	}
 	
-	@Test (expected IllegalLaboratoryException.class)
+	@Test (expected IllegalLaboratoryException("This device cannot be placed in the given laboratory",this).class);
 	public void moveToIllegalLaboratory() {
 		emptyDevice.moveTo(null);
 	}
@@ -146,7 +147,7 @@ public class DeviceTest {
 
 
 	
-	@Test (excpected DifferentLaboratoryException)
+	@Test (expected DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory",this).class);
 	public void testAdditionIngredientDifferentLab() {
 		deviceWithMilk.addIngredientFrom(saltContainer);
 	}
@@ -178,7 +179,7 @@ public class DeviceTest {
 	}
 	
 	
-	@Test (expected IllegalIngredientAddition.class)
+	@Test (expected IllegalIngredientAdditionException.class)
 	public void testInvalidContainerAddition() {
 		deviceWithMilk.addIngredientFrom(saltContainer);
 		}
