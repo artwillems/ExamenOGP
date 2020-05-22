@@ -8,9 +8,9 @@ import java.util.Set;
 
 
 /**
- * A class laboratory for doing Alchemic procedures on AlchemicIngredients with a certain Device.
+ * A class of laboratories.
  *
- * @author willemsart, Jérôme D'hulst en Marie Levrau
+ * @author Jérôme D'hulst, Marie Levrau en willemsart
  *
  */
 
@@ -22,10 +22,10 @@ public class Laboratory{
 
 	/**
 	 *
-	 * Initializes a new laboratory with a given store room capacity, list of ingredients and devices
+	 * Initialize a new laboratory with given store room capacity.
 	 *
 	 * @param 	capacity
-	 * 		  	The capacity of the laboratory.
+	 * 		  	The capacity of the laboratory in storerooms.
 	 *
 	 * @effect 	The capacity is set to the given capacity in storerooms (must be valid)
 	 * 		   	|setLabCapaCity(capacity)
@@ -39,69 +39,112 @@ public class Laboratory{
 	 * Capacity
 	 *************************/
 
+	/**
+	 * Variable referencing the capacity of this laboratory.
+	 */
 	private long capacity = 0;
-
-	/******
+	
+	/**
+	 * Return the capacity of this laboratory expressed in storerooms
 	 *
-	 * Set the capacity for this laboratory expressed in storerooms
+	 */
+	@Raw @Basic 
+	public long getCapacity() {
+		return capacity;
+	}
+
+	/**
+	 * Set the capacity for this laboratory to the given capacity expressed in storerooms
 	 *
 	 * @param	capacity
 	 * 		  	The capacity for this laboratory in storerooms
+	 * @throws 	IllegalLabCapacity
+	 * 			This laboratory capacity is not valid
+	 * 			| isValidLaboCapacity(capacity)
 	 */
-
-	private void setLabCapacity(long capacity) {
+	private void setLabCapacity(long capacity) throws IllegalLabCapacity{
 		if(isValidLaboCapacity(capacity)) {
 			this.capacity = capacity;
+		}
+		else {
+			throw new IllegalLabCapacity("The given capacity is illegal for this laboratory",this);
 		}
 
 	}
 
-	/**
-	 * Give the capacity of this laboratory in storerooms
-	 *
-	 * @return	the capacity of this laboratory in storerooms
-	 */
-	@Basic
-	public long getCapacity() {
-		return this.capacity;
-	}
 
 	/**
-	 * Checks whether the capacity for this laboratory is greater than or equal to zero
+	 * Check whether the capacity for this laboratory is a legal capacity.
 	 *
 	 * @param	capacity
-	 * 		  	The capacity for this laboratory
+	 * 		  	The capacity for this laboratory (expressed in storerooms) to be checked
 	 * @return 	True if the capacity is larger than zero and smaller than or equal to the largest possible number.
-	 * 		   	| if(capacity >= 0)
-	 * 		  	| return true
+	 * 		   	| result == 
+	 * 			| 	(capacity > 0) && (capacity <= Long.MAX_VALUE)
 	 */
-
-	private boolean isValidLaboCapacity(long capacity) {
-		return (capacity > 0 && capacity <= Long.MAX_VALUE);
+	public boolean isValidLaboCapacity(long capacity) {
+		return ((capacity > 0) && (capacity <= Long.MAX_VALUE));
 	}
 
-	/****************************************
-	 * available capacity from this laboratory in spoons
-	 *************************/
+	/**************************************************************
+	 * The available capacity in this laboratory measured in spoons
+	 *************************************************************/
 	
+	/**
+	 * Variable referencing the available capacity of this laboratory measured in spoons.
+	 */
 	private long availableCapInSpoons = 0;
 	
+	/**
+	 * Return the available capacity of this laboratory measured in spoons
+	 */
+	@Raw @Basic
 	public long getAvailableCapInSpoons() {
 		return 6300*this.capacity;
 	}
 	
-	private void setAvailableCapInSpoons(long availableCapInSpoons) {
+	/**
+	 * Set the available capacity of this laboratory to the given available capacity expressed in spoons
+	 *
+	 * @param	availableCapInSpoons
+	 * 		  	The available capacity of this laboratory in spoons
+	 * @throws 	IllegalLabCapacity
+	 * 			This available capacity is not valid
+	 * 			| isValidAvailableCapInSpoons(availableCapInSpoons)
+	 */
+	private void setAvailableCapInSpoons(long availableCapInSpoons) throws IllegalLabCapacity {
 		if(isValidAvailableCapInSpoons(availableCapInSpoons)) {
 			this.availableCapInSpoons = availableCapInSpoons;
+		}
+		else {
+			throw new IllegalLabCapacity("The given available capacity is illegal for this laboratory",this);
 		}
 
 	}
 	
+	/**
+	 * Set the available capacity of this laboratory to the given available capacity expressed in spoons
+	 *
+	 * @param	availableCapInSpoons
+	 * 		  	The available capacity of this laboratory in spoons
+	 * @effect 	The available capacity is set to the given available capacity in spoons 
+	 * 		   	|setLabCapaCity(availableCapInSpoons)
+	 */
 	public void changeAvailableCapInSpoons(long availableCapInSpoons) {
 		setAvailableCapInSpoons(availableCapInSpoons);
 	}
-	private boolean isValidAvailableCapInSpoons(long availableCapInSpoons) {
-		return (availableCapInSpoons > 0 && availableCapInSpoons <= Long.MAX_VALUE);
+	
+	/**
+	 * Check whether the available capacity of this laboratory is a legal available capacity.
+	 *
+	 * @param	availableCapInSpoons
+	 * 		  	The available capacity of this laboratory (expressed in spoons) to be checked
+	 * @return 	True if the available capacity is larger than zero and smaller than or equal to the largest possible number.
+	 * 		   	| result == 
+	 * 			| 	(availableCapInSpoons > 0) && (availableCapInSpoons <= Long.MAX_VALUE)
+	 */
+	public boolean isValidAvailableCapInSpoons(long availableCapInSpoons) {
+		return ((availableCapInSpoons > 0) && (availableCapInSpoons <= Long.MAX_VALUE));
 	}
 	
 	/************************************
@@ -109,22 +152,27 @@ public class Laboratory{
 	 ********************************/
 
 	/**
-	 * Variable referencing all the ingredients present in the laboratory
+	 * Variable referencing a list of all the ingredients present in this laboratory
 	 */
-
 	private List<AlchemicIngredient> listOfIngredients = new ArrayList<AlchemicIngredient>();
+	
+	/**
+	 * Return the list of all ingredients present in this laboratory.
+	 */
+	@Raw @Basic
+	protected List<AlchemicIngredient> getIngredients(){
+		return this.listOfIngredients;
+	}
 
 	/**
-	 * Check if the different ingredient types in the laboratory are unique, meaning there is not two times
-	 * the same AlchemicIngredient.getCompleteName().
+	 * Check if there are no ingredients in the given list with the same ingredient type.
 	 *
 	 * @param	list
-	 * 		  	The list of all the ingredients that are put into this laboratory
-	 * @return 	True if some ingredient's complete name does not appear more than once in the list of ingredients,
-	 * 			false if otherwise.
-	 * 			| (uniqueIngredients.size() == fullNamesOfIngredients.size())
+	 * 		  	The list of the ingredients to be checked
+	 * @return 	True if for each ingredient in this list the complete name does not appear more than once in this list and the given list is not empty.
+	 * 			| result ==
+	 * 			| 	(uniqueIngredients.size() == fullNamesOfIngredients.size()) && (list.size() >= 1)
 	 */
-
 	private boolean areThereNoDoubleIngredients(List<AlchemicIngredient> list) {
 		List<String> fullNamesOfIngredients = new ArrayList<String>();
 		for(AlchemicIngredient ingredient : list) {
@@ -132,17 +180,26 @@ public class Laboratory{
 			fullNamesOfIngredients.add(fullNameOfIngredient);
 		}
 		Set<String> uniqueIngredients = new HashSet<String>(fullNamesOfIngredients);
-		return (uniqueIngredients.size() == fullNamesOfIngredients.size());
+		return ((uniqueIngredients.size() == fullNamesOfIngredients.size()) && (list.size() >= 1));
 	}
 
 	/**
-	 * Give a list of all ingredients present at the laboratory.
+	 * Set the list of ingredients for this laboratory to the given list of ingredients
 	 *
-	 * @return	the list of ingredients
+	 * @param	listOfIngredients
+	 * 		  	The list of ingredients for this laboratory
+	 * @throws 	IllegalListOfIngredients
+	 * 			The given list of ingredients is illegal
+	 * 			| areThereNoDoubleIngredients(listOfIngredients)
 	 */
-	@Basic
-	protected List<AlchemicIngredient> getIngredients(){
-		return this.listOfIngredients;
+	private void setListOfIngredients(List<AlchemicIngredient> listOfIngredients) throws IllegalListOfIngredients {
+		if(areThereNoDoubleIngredients(listOfIngredients)) {
+			this.listOfIngredients = listOfIngredients;
+		}
+		else {
+			throw new IllegalListOfIngredients("The given list of ingredients in this laboratory is illegal",this);
+		}
+
 	}
 
 	/**************************************************
@@ -152,17 +209,25 @@ public class Laboratory{
 	/**
 	 * Variable referencing the Oven in this lab.
 	 */
-
 	private Oven ovenInLab = null;
 
-
 	/**
-	 * Initialize a new oven for 
-	 * 
-	 * @param ovenInLab
-	 * @throws
+	 * Return the oven in this laboratory
 	 */
+	@Raw @Basic
+	public Oven getOven() {
+		return ovenInLab; 
+	}
 	
+	/**
+	 * Set the oven in this lab to the given oven. 
+	 * 
+	 * @param 	ovenInLab
+	 * 		  	The oven for this laboratory
+	 * @throws	AlreadyDeviceInLabException
+	 * 			There is already an Oven in this laboratory
+	 * 			|isValidOvenAddition()
+	 */
 	private void setOven(Oven ovenInLab) throws AlreadyDeviceInLabException {
 		if(isValidOvenAddition()) {
 			this.ovenInLab = ovenInLab;
@@ -174,18 +239,18 @@ public class Laboratory{
 	}
 
 	/**
-	 * Checks whether there is already an oven present in this Laboratory.
+	 * Check whether there is already an oven present in this laboratory.
 	 * 
-	 * @return 	True if there is no oven already present in the lab.
-	 * 			| this.ovenInLab.equals(null);
+	 * @return 	True if there is no oven already present in this laboratory.
+	 * 			| result ==
+	 * 			| 		ovenInLab.equals(null);
 	 */
-	
-	private boolean isValidOvenAddition() {
-		return this.ovenInLab.equals(null); 
+	public boolean isValidOvenAddition() {
+		return ovenInLab.equals(null); 
 	}
 	
 	/**
-	 * Add a new oven to this laboratory
+	 * Add the given oven to this laboratory
 	 * 
 	 * @param 	newOven
 	 * 			The newOven added in this laboratory.
@@ -199,74 +264,93 @@ public class Laboratory{
 	/**
 	 * Variable referencing the Transmogrifier in this laboratory
 	 */
-
 	private Transmogrifier transmogrifierInLab = null;
 	
 	/**
-	 * Checks if there is already a Transmogrifier present in this Laboratory.
-	 * 
-	 * @return	true if there is no transmogrifier already present in this lab, false otherwise
-	 * 			|this.transmogrifierInLab.equals(null)		
+	 * Return the transmogrifier in this laboratory
 	 */
+	@Raw @Basic
+	public Transmogrifier getTransmogrifier() {
+		return transmogrifierInLab; 
+	}
 	
-	private boolean transmogCanBeAdded() {
-		return this.transmogrifierInLab.equals(null); 
+	/**
+	 * Check whether there is already a transmogrifier present in this laboratory.
+	 * 
+	 * @return	True if there is no transmogrifier already present in this laboratory.
+	 * 			| result == 
+	 * 			|		transmogrifierInLab.equals(null)		
+	 */
+	public boolean isValidTransmogrifier() {
+		return transmogrifierInLab.equals(null); 
 	}
 
 	/**
-	 * Initialize a new Transmogrifier for this laboratory
+	 * Set the transmogrifier in this lab to the given transmogrifier. 
 	 * 
-	 * @param	transmogrifierInLab
-	 * 			the transmogrifier that needs to be added to this laboratory
-	 * @throws
+	 * @param 	transmogrifierInLab
+	 * 		  	The transmogrifier for this laboratory
+	 * @throws	AlreadyDeviceInLabException
+	 * 			There is already a transmogrifier in this laboratory
+	 * 			|isValidTransmogrifier()
 	 */
-	
 	private void setTransmogrifier(Transmogrifier transmogrifierInLab) throws AlreadyDeviceInLabException {
-		if(transmogCanBeAdded()) {
+		if(isValidTransmogrifier()) {
 			this.transmogrifierInLab = transmogrifierInLab;
 		}
 		else {
-			throw new AlreadyDeviceInLabException("This lab already has a transmogrifier",this);
+			throw new AlreadyDeviceInLabException("This laboratory already has a transmogrifier",this);
 		}
 	}
 
 	/**
-	 * Add a new Transmogrifier to this Laboratory
+	 * Add the given transmogrifier to this laboratory
 	 * 
-	 * @param	transmo
-	 * 			The transmogrifier that needs to be added to this Laboratory		
+	 * @param 	newTransmogrifier
+	 * 			The newTransmogrifier added in this laboratory.
+	 * @effect	The new transmogrifier is set to the given transmogrifier.
+	 * 			| setTransmogrifier(newTransmogrifier)
 	 */
-	
-	public void addTransmogrifier(Transmogrifier transmo) {
-		setTransmogrifier(transmo); 
+	public void addTransmogrifier(Transmogrifier newTransmogrifier) {
+		setTransmogrifier(newTransmogrifier); 
 	}
 	
 	/**
 	 * Variable referencing the CoolingBox in this lab
 	 */
-
 	private CoolingBox coolingBoxInLab = null;
 	
 	/**
-	 * Checks whether a CoolingBox can be added to this laboratory
-	 * 
-	 * @return	True if there is not already a CoolingBox present in this laboratory
-	 * 			|this.coolingBoxInLab.equals(null)
+	 * Return the coolingBox in this laboratory
 	 */
+	@Raw @Basic
+	public CoolingBox getCoolingBox() {
+		return coolingBoxInLab; 
+	}
+
 	
-	private boolean isValidCoolingAddition() {
-		return this.coolingBoxInLab.equals(null); 
+	/**
+	 * Check whether there is already a coolingBox present in this laboratory.
+	 * 
+	 * @return 	True if there is no coolingBox already present in this laboratory.
+	 * 			| result ==
+	 * 			| 		 coolingBoxInLab.equals(null)
+	 */
+	public boolean isValidCoolingBoxAddition() {
+		return coolingBoxInLab.equals(null); 
 	}
 
 	/**
-	 * Initialize a new CoolingBox for this Laboratory
+	 * Set the coolingBox in this lab to the given coolingBox. 
 	 * 
-	 * @param	coolingBoxInLab
-	 * 			The CoolingBox that needs to be added to the laboratory. 		
+	 * @param 	coolingBoxInLab
+	 * 		  	The coolingBox for this laboratory
+	 * @throws	AlreadyDeviceInLabException
+	 * 			There is already a coolingBox in this laboratory
+	 * 			|isValidCoolingBoxAddition()
 	 */
-	
 	private void setCoolingBox(CoolingBox coolingBoxInLab) throws AlreadyDeviceInLabException{
-		if(isValidCoolingAddition()) {
+		if(isValidCoolingBoxAddition()) {
 			this.coolingBoxInLab = coolingBoxInLab;
 		}
 		else {
@@ -275,21 +359,41 @@ public class Laboratory{
 	}
 	
 	/**
-	 * Add a new CoolingBox to this laboratory
+	 * Add the given coolingBox to this laboratory
 	 * 
-	 * @param	coolingBox
-	 * 			The coolingbox to be added to this Laboratory
+	 * @param 	newCoolingBox
+	 * 			The newCoolingBox added in this laboratory.
+	 * @effect	The new coolingBox is set to the given coolingBox.
+	 * 			| setCoolingBox(newCoolingBox)
 	 */
-	
-	public void addCoolingBox(CoolingBox coolingBox) {
-		setCoolingBox(coolingBox); 
+	public void addCoolingBox(CoolingBox newCoolingBox) {
+		setCoolingBox(newCoolingBox); 
 	}
 
-	
+	/**
+	 * Variable referencing the kettle in this lab
+	 */
 	private Kettle kettleInLab = null;
 
+	/**
+	 * Return the kettle in this laboratory
+	 */
+	@Raw @Basic
+	public Kettle getKettle(){
+		return kettleInLab; 
+	}
+	
+	/**
+	 * Set the kettle in this lab to the given kettle. 
+	 * 
+	 * @param 	kettleInLab
+	 * 		  	The kettle for this laboratory
+	 * @throws	AlreadyDeviceInLabException
+	 * 			There is already a kettle in this laboratory
+	 * 			|isValidKettleAddition()
+	 */
 	private void setKettle(Kettle kettleInLab) throws AlreadyDeviceInLabException {
-		if (isValidKettle(kettleInLab)) {
+		if (isValidKettleAddition()) {
 			this.kettleInLab = kettleInLab;
 		}
 		else {
@@ -297,51 +401,31 @@ public class Laboratory{
 		}
 	}
 	
-	public void addKettle(Kettle kettle) {
-		setKettle(kettle);
+	/**
+	 * Add the given kettle to this laboratory
+	 * 
+	 * @param 	newKettle
+	 * 			The newKettle added in this laboratory.
+	 * @effect	The new kettle is set to the given kettle.
+	 * 			| setKettle(newKettle)
+	 */
+	public void addKettle(Kettle newKettle) {
+		setKettle(newKettle);
 	}
 		
 		
-		
-	private boolean canKettleBeAdded(){
-		return this.kettleInLab.equals(null); 
+	/**
+	 * Check whether there is already a kettle present in this laboratory.
+	 * 
+	 * @return 	True if there is no kettle already present in this laboratory.
+	 * 			| result ==
+	 * 			| 		kettleInLab.equals(null)
+	 */
+	public boolean isValidKettleAddition() {
+		return kettleInLab.equals(null); 
 	}
 	
-	public Kettle getKettle(){
-		return this.kettleInLab; 
-	}
-	
 
-	/**
-	 * Seek an oven in this laboratory
-	 * NOTE: Voorlopig is het Immutable, kan nog veranderen naargelang implementatie
-	 *
-	 * @return	the first oven that is present in this laboratory
-	 */
-	@Immutable @Basic
-	public Oven getOven() {
-		return this.ovenInLab; 
-	}
-
-	/**
-	 * Seek a CoolingBox in this laboratory
-	 *
-	 * @return	The first CoolingBox that is found in this laboratory.
-	 */
-	@Immutable @Basic
-	public CoolingBox getCoolingBox() {
-		return this.coolingBoxInLab; 
-	}
-
-	/**
-	 * Seek a transmogrifier in this laboratory
-	 *
-	 * @return The first tranmogrifier that is found in the laboratory
-	 */
-	@Immutable @Basic 
-	public Transmogrifier getTransmogrifier() {
-		return this.transmogrifierInLab; 
-	}
 
 	/********************************************
 	 * storing and adding ingredients
