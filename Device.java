@@ -90,7 +90,7 @@ public class Device {
 	
     private void setContainerList(List<AlchemicIngredient> ingredientList) throws InvalidIngredientListException {
     	if (!isValidInput(ingredientList)) {
-    		throw new InvalidIngredientListException("There are no ingredients put in this device");
+    		throw new InvalidIngredientListException("There are no ingredients put in this device",this);
     	}
     	else {
     		this.ingredientList = ingredientList;
@@ -144,7 +144,7 @@ public class Device {
 	 * 
 	 * @post 	This device is terminated.
 	 *       	| new.isTerminated()
-	 * @throws 	IllegalStateException
+	 * @throws 	IllegalStateException("This device cannot be terminated")
 	 * 		   	This device is not yet terminated and it can not be terminated.
 	 * 		   	| !isTerminated() && !canBeTerminated()
 	 */

@@ -103,10 +103,27 @@ public class Oven extends Device {
     /**
 	 * Heat the ingredient.
 	 * 
-	 * @post	if 
+	 * @post	if the device has an ingredient to use, the ingredient is heated. If the ingredient has 
+	 * 			a higher temperature than the oven, the ingredient keeps his temperature. Otherwise
+	 * 			the ingredient get heated within a range of 5 percent of the ovenTemperature. Afterwards
+	 * 			the ingredient is added to the cleared list of this oven
+	 * 			| if (!this.countIngredients()<1)
+	 * 			|	range =  (new Random().nextInt(10+1)) - 5
+	 * 			|	if (getOvenTemperature().getColdness()==0)
+	 * 			|		then  newHotness = getOvenTemperature().getHotness() * (1 + (range/100)) 
+	 * 			|			if (ingredient.getTemperature().getHotness() < newHotness)
+	 * 			|				then ingredient.changeTemp(0,0)
+	 * 			|					 ingredient.changeTemp(0,newHotness)
+	 * 			|	else
+	 * 			|		new Coldness = getOvenTemperature().getColdness() * (1 + (range/100))
+	 * 			|		if (ingredient.getTemperature().getColdness() > newColdness)
+	 * 			|		ingredient.changeTemp(0, 0)
+     *			|		ingredient.changeTemp(newColdness,0)
+     *			| this.getIngredientList().clear();
+     *			|  this.getIngredientList().add(ingredient)
 	 */
     @Override
-    public void executeAlchemicOperation() {
+    public void executeAlchemicOperation() throws NoIngredientInDeviceException{
     	if (this.countIngredients() < 1) {
     		throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
     	}
@@ -115,14 +132,16 @@ public class Oven extends Device {
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);
     		if (getOvenTemperature().getColdness() == 0) {
     			
-    			long newHotness = getOvenTemperature().getHotness() * (1 + (range/100)) ; /*Hier komt nog een term voor de 5 procent*/
+    			long newHotness = getOvenTemperature().getHotness() * (1 + (range/100)) ; 
     			if (ingredient.getTemperature().getHotness() < newHotness) {
+    				ingredient.changeTemp(0,0);
     				ingredient.changeTemp(0, newHotness);
     			}
     		}
     		else {
-    			long newColdness = getOvenTemperature().getColdness() * (1 + (range/100)); /*Hier komt nog een term voor de 5 procent*/
+    			long newColdness = getOvenTemperature().getColdness() * (1 + (range/100)); 
     			if (ingredient.getTemperature().getColdness() > newColdness) {
+    				ingredient.changeTemp(0, 0);
     				ingredient.changeTemp(newColdness,0);
     			}
     		}

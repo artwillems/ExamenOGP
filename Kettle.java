@@ -257,6 +257,9 @@ public class Kettle extends Device{
 	 * 			|	getIngredientList().get(i).terminate()
 	 * 			|  this.ingredientList.clear()
 	 * 			|  ingredientList.add(newIngredient)
+	 * @throws	NoIngredientInDeviceException("There is no ingredient in this device",this)
+	 * 			The kettle does not have an ingredient
+	 * 			| this.countIngredient()<1
 	 */
 	public void executeAlchemicOperation() throws NoIngredientInDeviceException{
 		if (this.countIngredients()<1) {

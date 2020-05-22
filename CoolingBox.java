@@ -95,11 +95,32 @@ public class CoolingBox extends Device {
 	
 	 
 
-    /**
-	 * Heat the ingredient. 
-	 */
+	  /**
+	   * Heat the ingredient.
+	   * 
+	   * @post	if the device has an ingredient to use, the ingredient is cooled. If the ingredient has 
+	   * 			a lower temperature than the coolingBox, the ingredient keeps his temperature. Otherwise
+	   * 			the ingredient gets cooled to the coolingBoxTemperature. Afterwards
+	   * 			the ingredient is added to the cleared list of this coolingbox
+	   * 			| if (!this.countIngredients()<1)
+	   * 			|	if (getCoolingBoxTemperature().getColdness()==0)
+	   * 			|		then  newHotness = getCoolingBoxTemperature().getHotness()
+	   * 			|			if (ingredient.getTemperature().getHotness() < newHotness)
+	   * 			|				then ingredient.changeTemp(0,0)
+	   * 			|					 ingredient.changeTemp(0,newHotness)
+	   *  			|	else
+	   * 			|		new Coldness = getCoolingBoxTemperature().getColdness()
+	   * 			|		if (ingredient.getTemperature().getColdness() > newColdness)
+	   * 			|		ingredient.changeTemp(0, 0)
+	   *			|		ingredient.changeTemp(newColdness,0)
+	   *			| this.getIngredientList().clear();
+	   *			|  this.getIngredientList().add(ingredient)    
+	   * @throws	NoIngredientInDeviceException("There is no ingredient in this device",this)
+	   * 			The coolingBox does not have an ingredient
+	   * 			| this.countIngredients()<1
+	   */
     @Override
-    public void executeAlchemicOperation() {
+    public void executeAlchemicOperation() throws NoIngredientInDeviceException{
     	if (this.countIngredients() < 1) {
     		throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
     	}
@@ -108,12 +129,14 @@ public class CoolingBox extends Device {
     		if (getCoolingBoxTemperature().getColdness() == 0) {
     			long newHotness = getCoolingBoxTemperature().getHotness(); 
     			if (ingredient.getTemperature().getHotness() > newHotness) {
+    				ingredient.changeTemp(0, 0);
     				ingredient.changeTemp(0, newHotness);
     			}
     		}
     		else {
     			long newColdness = getCoolingBoxTemperature().getColdness(); 
     			if (ingredient.getTemperature().getColdness() < newColdness) {
+    				ingredient.changeTemp(0,0);
     				ingredient.changeTemp(newColdness,0);
     			}
     		}

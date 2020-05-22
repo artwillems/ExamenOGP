@@ -24,8 +24,8 @@ public class Transmogrifier extends Device{
 	 * AlchemicIngredient. 
 	 *
 	 * @param	labo
-	 * 			The laboratory that has this transmogrifier. 
-	 * @effect	The new transmogrifier is a device with a given laboratory.
+	 * 			The laboratory of this transmogrifier. 
+	 * @effect	The new transmogrifier is initialized as a device with a given laboratory.
 	 * 			| super(labo)
 	 * @effect	The type is set to transmogrifier
 	 * 			| setType("Transmogrifier")
@@ -102,7 +102,18 @@ public class Transmogrifier extends Device{
 	 * 
 	 * @param	ingredient
 	 * 			The ingredient that needs to be transmogrified. 
-	 * @return	The new unit of the transmogrified ingredient. 
+	 * @return	The new unit of the transmogrified ingredient. If the ingredient is Liquid 
+	 * 			unit conversion is found by looking in the liquid to powder map
+	 * 			Otherwise the unit conversion is found by looking in the powder to liquid map
+	 * 			| if (unitBfrTransmog == "Liquid")
+	 * 			|	then for an entry in liquidToPowder.entrySet()
+	 * 			|		if (ingredient.getUnit().equals(entry.getKey())
+	 * 			|			then newUnit = entry.getValue
+	 * 			|  else
+	 * 			|	for an entry in powderToLiquid.entrySet()
+	 * 			|		if (ingredient.getUnit().equals(entry.getKey())
+	 * 			|			then newUnit = entry.getValue()
+	 * 			| result == newUnit
 	 */
 	
 	private String changeUnit(AlchemicIngredient ingredient) {
@@ -116,12 +127,15 @@ public class Transmogrifier extends Device{
 				}
 			}
 		}
-		Map<String, String> powderToLiquid = powderToLiquid(); 
-		for(Map.Entry<String, String> entry : powderToLiquid.entrySet()) {
-			if(ingredient.getUnit().equals(entry.getKey())) {
-				newUnit = entry.getValue(); 
+		else {
+			Map<String, String> powderToLiquid = powderToLiquid(); 
+			for(Map.Entry<String, String> entry : powderToLiquid.entrySet()) {
+				if(ingredient.getUnit().equals(entry.getKey())) {
+					newUnit = entry.getValue(); 
+				}
 			}
 		}
+		
 		return newUnit; 
 	}
 	
@@ -165,7 +179,17 @@ public class Transmogrifier extends Device{
 	 * 
 	 * @param	ingredient
 	 * 			The ingredient that has to be transmogrified. 
-	 * @return	The new quantity of the transmogrified ingredient. 
+	 * @return	The new quantity of the transmogrified ingredient is formed depending on the state of the ingredient
+	 * 			If the state is liquid than the liquidConversion map is used otherwise the powderConversion map is used
+	 * 			| if (ingredient.getState() == "Liquid")
+	 * 			|	then for an entry of liquidConversion.entrySet()
+	 * 			|		if (ingredient.getUnit() == entry.getKey())
+	 * 			|			then newQuantity = quantityBfrTransmog * entry.getValue()
+	 * 			|  else
+	 * 			|	for an entry of powderConversion.entrySet()
+	 * 			|		if (ingredient.getUnit() == entry.getKey())
+	 * 			|			then newQuantity = quantityBfrTransmpg * entry.getValue()
+	 * 			| result == newQuantity 
 	 * 
 	 */
 	
@@ -198,24 +222,51 @@ public class Transmogrifier extends Device{
 	 * @param	ingredient
 	 * 			The AlchemicIngredient that has to be transmogrified
 	 * @return	the transmogrified of the original AlchemicIngredient
+	 *			| newQuant = changeQuantity(ingredient)
+	 *			| newUnit = changeUnit(ingredient)
+	 *			| newState = changeState(ingredient)
+	 *			| if (newQuant != ingredient.getQuantity())
+	 *			|   result == new AlchemicIngredient(newQuant,newUnit,type,hotness,coldness,newState)
+	 * @effect 	If the quantity does not change, the characteristics of the ingredient are directly changed without forming 
+	 * 			a new ingredient
+	 * 			| if (newQuant == ingredient.getQuantity())
+	 * 			|	then ingredient.changeState()
+	 * 			|		 ingredient.changeUnit(newUnit)
+	 * @return	If the quantity does not change, the ingredient itself is returned with changed characteristics
+	 * 			| result == ingredient
+	 * 					
 	 */
 
 	private AlchemicIngredient setTransmogrifiedIngredient(AlchemicIngredient ingredient) {
 		int newQuant = changeQuantity(ingredient);
 		String newUnit = changeUnit(ingredient); 
 		String newState = changeState(ingredient); 
-		List<IngredientType> type = ingredient.getIngredientTypeList(); 
-		long hotness = ingredient.getTemperature().getHotness();
-		long coldness = ingredient.getTemperature().getColdness(); 
-		AlchemicIngredient transmogrified = new AlchemicIngredient(newQuant, newUnit, type, hotness, coldness, newState); 
-		return transmogrified; 
+		if (newQuant == ingredient.getQuantity()) {
+			ingredient.changeState();
+			ingredient.changeUnit(newUnit);
+			return ingredient;
+		}
+		else {
+			List<IngredientType> type = ingredient.getIngredientTypeList(); 
+			long hotness = ingredient.getTemperature().getHotness();
+			long coldness = ingredient.getTemperature().getColdness(); 
+			AlchemicIngredient transmogrified = new AlchemicIngredient(newQuant, newUnit, type, hotness, coldness, newState); 
+			return transmogrified; 
+		}
 	}
 	
 	
-	/**
-	 * THIS METHOD WILL HAVE TO REQUIRE AN ALCHEMIC INGREDIENT. 
-	 */
 	
+	/**
+	 * Execute the AlchemicOperation of this transmogrifier
+	 * 
+	 * @effect	the ingredient is adapted 
+	 * 			result = setTransmogrifiedIngreient(getIngredientList().get(0)
+	 * @post	The oldIngredient is terminated and the changed ingredient is added to the cleared list
+	 * 			| getIngredientList().get(0).terminate()
+	 * 			| this.ingredientList.clear()
+	 * 			| this.ingredientList.add(result)
+	 */
 	@Override
 	public void executeAlchemicOperation() {
 		AlchemicIngredient result = setTransmogrifiedIngredient(getIngredientList().get(0));
