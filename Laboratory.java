@@ -607,7 +607,7 @@ public class Laboratory{
 	 * 			| 	if (listOfIngredients.get(i) ==  ingredient)
 	 * 			|		listOfIngredients.remove(i)	
 	 */
-	public void removeIngredient(AlchemicIngredient ingredient) {
+	protected void removeIngredient(AlchemicIngredient ingredient) {
 		for (int i = 0; i < listOfIngredients.size(); i++) {
 			if (listOfIngredients.get(i) ==  ingredient) {
 				listOfIngredients.remove(i);
@@ -617,51 +617,36 @@ public class Laboratory{
 	
 
 	
-	
 	/**
-	 * Combine the given alchemic ingredient with the alchemic ingredient in the list of ingredients that has the same ingredient type  
+	 * Combine two alchemic ingredients with use of a kettle.  
 	 *
-	 * @param	ingredient
-	 * 			The alchemic ingredient that needs to be combined
+	 * @param	ingredientFromList
+	 * 			One of the alchemic ingredients that needs to be combined
+	 * @param 	ingrToAdd
+	 * 			The other alchemic ingredient that needs to be add
+	 * @return	Create two new containers, each with a given alchemic ingredient. Combine the ingredients with the kettle from this laboratory.
+	 * 			Return the ingredient from the container.
+	 * 			|IngredientContainer container1 = new IngredientContainer(ingredientFromList,1,ingredientFromList.determineCapUnit(),ingredientFromList.getState());
+	 * 			|IngredientContainer newContainer = new IngredientContainer(ingrToAdd,1,ingrToAdd.determineCapUnit(),ingrToAdd.getState());		
+	 *			|Kettle kettle = this.getKettle();
+	 *			|kettle.addIngredientFrom(container1);
+	 *			|kettle.addIngredientFrom(newContainer);
+	 *			|kettle.executeAlchemicOperation();
+	 *			|IngredientContainer resultContainer = kettle.removeAlchemicResult();
+	 *			|result == resultContainer.getAlchemicIngredient();
+	 *			|resultContainer.delete();
 	 */
-	/*nog specificatie bijtypen*/
-	@Model
-	private void combineAmounts(AlchemicIngredient ingredient) throws InvalidLaboratoryAmountException{
-		this.addToCapacityLabo(ingredient.getQuantity(),ingredient.getUnit());
-		for (int i = 0; i < listOfIngredients.size(); i++) {
-			if (listOfIngredients.get(i).getCompleteName() == ingredient.getCompleteName()) {
-				AlchemicIngredient originalIngr = listOfIngredients.get(i);
-				IngredientContainer container1 = new IngredientContainer(originalIngr,1,originalIngr.determineCapUnit(),originalIngr.getState());
-				IngredientContainer newContainer = new IngredientContainer(ingredient,1,ingredient.determineCapUnit(),ingredient.getState());
-				Kettle kettle = this.getKettle();
-				kettle.addIngredientFrom(container1);
-				kettle.addIngredientFrom(newContainer);
-				kettle.executeAlchemicOperation();
-				IngredientContainer resultContainer = kettle.removeAlchemicResult();
-				AlchemicIngredient result = resultContainer.getAlchemicIngredient();
-				if (result.getQuantityInSpoons() < this.getCapacityInSpoons()) {
-					this.substractFromCapacityLabo(ingredient.getQuantity(), ingredient.getUnit());
-					listOfIngredients.remove(i);
-					originalIngr.terminate();
-					ingredient.terminate();
-					resultContainer.delete();
-					listOfIngredients.add(result);
-				
-				}
-				
-				else {
-					throw new InvalidLaboratoryAmountException("The amount of ingredient you want to add, exceeds the laboratory capacity", this);
-				}
-				
-				
-				
-			}
-			else {
-				listOfIngredients.add(ingredient);
-				this.substractFromCapacityLabo(ingredient.getQuantity(), ingredient.getUnit());
-			}
-		
-		}
+	private AlchemicIngredient combineAmounts(AlchemicIngredient ingredientFromList, AlchemicIngredient ingrToAdd) {
+		IngredientContainer container1 = new IngredientContainer(ingredientFromList,1,ingredientFromList.determineCapUnit(),ingredientFromList.getState());
+		IngredientContainer newContainer = new IngredientContainer(ingrToAdd,1,ingrToAdd.determineCapUnit(),ingrToAdd.getState());
+		Kettle kettle = this.getKettle();
+		kettle.addIngredientFrom(container1);
+		kettle.addIngredientFrom(newContainer);
+		kettle.executeAlchemicOperation();
+		IngredientContainer resultContainer = kettle.removeAlchemicResult();
+		AlchemicIngredient result = resultContainer.getAlchemicIngredient();
+		resultContainer.delete();
+		return result;
 
 	}
 	
@@ -672,26 +657,52 @@ public class Laboratory{
 	 * 			The ingredient container that contains the alchemic ingredient that needs to be stored in this laboratory
 	 * @effect	Bring the alchemic ingredient from the given ingredient container to its standard temperature
 	 * 			| AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer)
-	 * @effect 	If there is enough space available in this laboratory, then combine the ingredient with the ingredient in this laboratory based on the same ingredient type and put it back in the list
-	 * 			Then delete the given container.		
-	 * 			| if(isValidAddition(ingredientToBeAdded.getQuantity(),ingredientToBeAdded.getUnit())
-	 * 			| 		then this.combineAmounts(ingredientToBeAdded);
-	 * 			|			 fromContainer.setDelete(true);
-	 * @throws	IllegalAdditionException("There is not enough space available to store this alchemic ingredient in this laboratory",this)
+	 * @effect 	If there is enough storage available in this laboratory, if there is an alchemic ingredient in the list 
+	 * 			with the same ingredient type as the given alchemic ingredient, combine both ingredients to a new ingredient. 
+	 * 			Terminate both ingredients and add the new ingredient to the list of this laboratory. Adapt the available capacity of this laboratory.
+	 * 			If there exists no alchemic ingredient in this laboratory with the same ingredient type, add the alchemic ingredient from the given
+	 * 			container to the list of this laboratory. Adapt the available capacity of this laboratory.
+	 * 			| if(isValidSubstraction(ingredientToBeAdded.getQuantity(),ingredientToBeAdded.getUnit())
+	 * 			|		for an i in listOfIngredients
+	 * 			|			if (listOfIngredients.get(i).getCompleteName() == ingredientToBeAdded.getCompleteName())
+	 * 			|				then AlchemicIngredient result = this.combineAmounts(listOfIngredients.get(i), ingredientToBeAdded);
+	 * 			| 			 		 listOfIngredients.remove(i);
+	 * 			|					 listOfIngredients.get(i).terminate();
+	 * 			| 					 ingredientToBeAdded.terminate();
+	 * 			|			 		 listOfIngredients.add(result);	
+	 * 			|			 		 this.substractFromCapacityLabo(ingredientToBeAdded.getQuantity(), ingredientToBeAdded.getUnit())
+	 * 			|			else
+	 * 			|			   	then listOfIngredients.add(ingredientToBeAdded);
+	 * 			|					 this.substractFromCapacityLabo(ingredientToBeAdded.getQuantity(), ingredientToBeAdded.getUnit());
+	 * @throws	IllegalSubstractionException("Illegal substraction of the available capacity of this laboratory",this)
 	 * 			There is not enough place to store the alchemic ingredient from the given container in this laboratory
-	 * 			| !isValidAddition(ingredientToBeAdded.getQuantity(),ingredientToBeAdded.getUnit())
+	 * 			| !isValidSubstraction(ingredientToBeAdded.getQuantity(),ingredientToBeAdded.getUnit())
 	 */
-	public void storeNewIngredient(IngredientContainer fromContainer) throws IllegalAdditionException{
+	public void storeNewIngredient(IngredientContainer fromContainer) throws IllegalSubstractionException{
 		AlchemicIngredient ingredientToBeAdded = ingredientBroughtToStandardTemp(fromContainer);
-		if(isValidAddition(ingredientToBeAdded.getQuantity(),ingredientToBeAdded.getUnit())) {
-			this.combineAmounts(ingredientToBeAdded);
-			fromContainer.setDelete(true);
+		if(isValidSubstraction(ingredientToBeAdded.getQuantity(),ingredientToBeAdded.getUnit())) {
+			for (int i = 0; i < listOfIngredients.size(); i++) {
+				if (listOfIngredients.get(i).getCompleteName() == ingredientToBeAdded.getCompleteName()) {
+					AlchemicIngredient result = this.combineAmounts(listOfIngredients.get(i), ingredientToBeAdded);
+					listOfIngredients.remove(i);
+					listOfIngredients.get(i).terminate();
+					ingredientToBeAdded.terminate();
+					listOfIngredients.add(result);	
+					this.substractFromCapacityLabo(ingredientToBeAdded.getQuantity(), ingredientToBeAdded.getUnit());
+				}
+				else {
+					listOfIngredients.add(ingredientToBeAdded);
+					this.substractFromCapacityLabo(ingredientToBeAdded.getQuantity(), ingredientToBeAdded.getUnit());
+				}
+			}
 		}
 		else {
-			throw new IllegalAdditionException("There is not enough space available to store this alchemic ingredient in this laboratory",this);
+			throw new IllegalSubstractionException("Illegal substraction of the available capacity of this laboratory ",this);
 		}
 		
 	}
+	
+
 	
 	/**
 	 * Return the alchemic ingredient based on its given complete name.
@@ -730,27 +741,27 @@ public class Laboratory{
 	 * 			The complete name of the ingredient 
 	 * @post	Get the ingredient in this lab with given complete name
 	 * 			| AlchemicIngredient ingr = this.getIngredientFromName(ingrCompleteName)
-	 * @post	If this is a valid substraction from this laboratory, then remove this ingredient from this lab.
-	 * 			Create a new container with this ingredient and adapt the laboratory capacity.
-	 * 			| if (isValidSubstraction(ingr.getQuantity(), ingr.getUnit()))
+	 * @post	If this is a valid addition to the available capacity of this laboratory, then remove this ingredient from this lab.
+	 * 			Create a new container with this ingredient and adapt the available laboratory capacity.
+	 * 			| if (isValidAddition(ingr.getQuantity(), ingr.getUnit()))
 	 * 			|	then this.removeIngredient(ingr);
 	 * 			|		 IngredientContainer container = new IngredientContainer(ingr,1,ingr.determineCapUnit(),ingr.getState())
 	 * 			|		 this.addToCapacityLabo(ingr.getQuantity(), ingr.getUnit())
-	 * @throws	IllegalSubstractionException("This is an illegal substraction from this laboratory",this)
-	 * 			This is an illegal substraction from this laboratory
-	 * 			| !(isValidSubstraction(ingr.getQuantity(), ingr.getUnit())
+	 * @throws	IllegalAdditionException("This is an illegal addition to the available capacity of this laboratory",this)
+	 * 			This is an illegal addition to the available capacity of this laboratory
+	 * 			| !(isValidAddition(ingr.getQuantity(), ingr.getUnit())
 	 * @return	The ingredient container that contains the full amount of alchemic ingredient with given complete name.
 	 */
-	protected IngredientContainer getFullAmountFromLabo(String ingrCompleteName) throws IllegalSubstractionException{
+	protected IngredientContainer getFullAmountFromLabo(String ingrCompleteName) throws IllegalAdditionException{
 		AlchemicIngredient ingr = this.getIngredientFromName(ingrCompleteName);
-		if (isValidSubstraction(ingr.getQuantity(), ingr.getUnit())) {
+		if (isValidAddition(ingr.getQuantity(), ingr.getUnit())) {
 			this.removeIngredient(ingr);
 			IngredientContainer container = new IngredientContainer(ingr,1,ingr.determineCapUnit(),ingr.getState());
 			this.addToCapacityLabo(ingr.getQuantity(), ingr.getUnit());
 			return container;
 		}
 		else {
-			throw new IllegalSubstractionException("This is an illegal substraciton from this laboratory",this);
+			throw new IllegalAdditionException("This is an illegal addition to the available capacity of this laboratory",this);
 		}
 	}
 	
@@ -804,14 +815,16 @@ public class Laboratory{
 	 * 			The unit of the given amount that needs to be checked
 	 * @post	Get the given amount measured in spoons
 	 * 			| int substraction = this.getAmountInSpoons(amount, unit);
-	 * @return 	True if the capacity (in spoons) of this laboratory is greater than or equal to the available capacity (in spoons) of this laboratory
+	 * @return 	True if the available capacity (in spoons) from this laboratory is greater then the amount (in spoons) that needs to be substracted
+	 * 
+	 * 
 	 * 			and if the substraction is greater than or equal to zero
 	 * 			| result ==	
-	 * 			| 		(this.getCapacityInSpoons() >= substraction + this.getAvailableCapInSpoons()) && (substraction >= 0)
+	 * 			| 		(this.getAvailableCapInSpoons() >= substraction) && (substraction >= 0)
 	 */
 	public boolean isValidSubstraction(int amount,String unit) {
 		int substraction = this.getAmountInSpoons(amount, unit);
-		return ((this.getCapacityInSpoons() >= substraction + this.getAvailableCapInSpoons()) && (substraction >= 0));
+		return ((this.getAvailableCapInSpoons() >= substraction ) && (substraction >= 0));
 	}
 	
 	/**
@@ -823,14 +836,14 @@ public class Laboratory{
 	 * 			The unit of the given amount that needs to be checked
 	 * @post	Get the given amount measured in spoons
 	 * 			| int addition = this.getAmountInSpoons(amount, unit);
-	 * @return 	True if the available capacity (in spoons) from this laboratory is greater then the amount (in spoons) that needs to be substract
-	 * 			and if the substraction is greater than or equal to zero
+	 * @return 	True if the capacity (in spoons) of this laboratory is greater than or equal to the available capacity (in spoons) of this laboratory plus the addition (in spoons)
+	 * 			and if the addition is greater than or equal to zero
 	 * 			| result ==	
-	 * 			| 		(this.getAvailableCapInSpoons() >= substraction) && (substraction >= 0)
+	 * 			| 		(this.getCapacityInSpoons() >= this.getAvailableCapInSpoons() + addition) && (addition >= 0)
 	 */
 	public boolean isValidAddition(int amount,String unit) {
 		int addition = this.getAmountInSpoons(amount, unit);
-		return ((this.getAvailableCapInSpoons() >= addition) && (addition >= 0));
+		return ((this.getCapacityInSpoons() >= this.getAvailableCapInSpoons() + addition) && (addition >= 0));
 	}
 	
 	/**
@@ -847,7 +860,6 @@ public class Laboratory{
 	 * @effect	Adapt the available capacity in this laboratory
 	 * 			| this.changeAvailableCapInSpoons(result)
 	 */
-	/*mss nog ergens controleren of het mogelijk is om die addition te doen*/
 	private void addToCapacityLabo(int amount, String unit) {
 		int addition = this.getAmountInSpoons(amount, unit);
 		long result = this.getAvailableCapInSpoons() + addition;
@@ -900,18 +912,46 @@ public class Laboratory{
 		}
 	};
 	
-	/*nog specificatie typen*/
+	/**
+	 * Return an ingredient container that contains an alchemic ingredient with given name, amount and unit
+	 * 
+	 * @param 	ingrName
+	 * 			The name of the alchemic ingredient
+	 * @param	amount
+	 * 			The amount of the alchemic ingredient
+	 * @param	unit
+	 * 			The unit of the alchemic ingredient
+	 * @post 	Get the alchemic ingredient from this laboratory with given name
+	 * 			| AlchemicIngredient ingr = this.getIngredientFromName(ingrName);
+	 * @throws	IllegalAdditionException("This is an illegal addition to the available capacity of this laboratory",this)
+	 * 			This is an illegal addition to the available capacity of this laboratory
+	 * 			| !(isValidAddition(amount,unit)
+	 * @throws	InvalidLaboratoryAmountException("There is not enough ingredient in this laboratory", this)
+	 * 			There is not enough alchemic ingredient with given name in this laboratory to return a given amount measured in its given unit
+	 * 			| !(this.getAmountInSpoons(amount, unit) < ingr.getQuantityInSpoons()) || !(ingr.getQuantityInSpoons() == this.getAmountInSpoons(amount, unit))
+	 * @return	If this is a valid addition of a given amount with given unit to the available capacity of this laboratory, then check if there is enough ingredient in this laboratory.
+	 * 			If there is enough alchemic ingredient in this laboratory, then put the asked amount in a new container en put the rest of the ingredient back in this laboratory, return the container.
+	 * 			If the asked amount of an ingredient is the exact amount available in this laboratory, take the full ingredient en put it in a new container, return the container.
+	 * 			| if(isValidAddition(amount,unit))
+	 * 			|	if((this.getAmountInSpoons(amount, unit) < ingr.getQuantityInSpoons())
+	 * 			|		then AlchemicIngredient ingrForLabo = new AlchemicIngredient(ingr.getQuantityInSpoons()-this.getAmountInSpoons(amount, unit),"spoon",ingr.getIngredientTypeList(),ingr.getTemperature().getHotness(), ingr.getTemperature().getColdness(),ingr.getState(),ingr.getSpecialName());
+	 * 			|			 AlchemicIngredient ingrToReturn = new AlchemicIngredient(amount, unit,ingr.getIngredientTypeList(),ingr.getTemperature().getHotness(), ingr.getTemperature().getColdness(),ingr.getState(),ingr.getSpecialName());
+	 * 			|			 this.removeIngredient(ingr);
+	 * 			|			 ingr.terminate();
+	 * 			|			 listOfIngredients.add(ingrForLabo);
+	 * 			|			 this.addToCapacityLabo(amount, unit);
+	 * 			|			 result == new IngredientContainer(ingrToReturn,1,ingrToReturn.determineCapUnit(),ingrToReturn.getState());
+	 * 			|	else	 
+	 * 			|		then result == this.getFullAmountFromLabo(ingrName)
+	 * 			 
+	 */
 	public IngredientContainer getAmountFromLabo(String ingrName, int amount, String unit) throws InvalidLaboratoryAmountException, InvalidAdditionException{
 		AlchemicIngredient ingr = this.getIngredientFromName(ingrName);
 		if(isValidAddition(amount,unit)) {
-				if (ingr.getQuantityInSpoons() < this.getAmountInSpoons(amount, unit)) {
+				if (this.getAmountInSpoons(amount, unit) < ingr.getQuantityInSpoons()) {
 					AlchemicIngredient ingrForLabo = new AlchemicIngredient(ingr.getQuantityInSpoons()-this.getAmountInSpoons(amount, unit),"spoon",ingr.getIngredientTypeList(),ingr.getTemperature().getHotness(), ingr.getTemperature().getColdness(),ingr.getState(),ingr.getSpecialName());
 					AlchemicIngredient ingrToReturn = new AlchemicIngredient(amount, unit,ingr.getIngredientTypeList(),ingr.getTemperature().getHotness(), ingr.getTemperature().getColdness(),ingr.getState(),ingr.getSpecialName());
-					for (int i = 0; i < listOfIngredients.size(); i++) {
-						if (listOfIngredients.get(i).getCompleteName() ==  ingrName) {
-							listOfIngredients.remove(i);
-						}
-					}
+					this.removeIngredient(ingr);
 					ingr.terminate();
 					listOfIngredients.add(ingrForLabo);
 					this.addToCapacityLabo(amount, unit);
@@ -926,7 +966,7 @@ public class Laboratory{
 				}
 		}
 		else {
-			throw new InvalidAdditionException("The capacity of this laboratory is too sma", this);
+			throw new InvalidAdditionException("This is an illegal addition to the available capacity of this laboratory", this);
 				}
 	}
 	
@@ -936,46 +976,51 @@ public class Laboratory{
 	/**
 	 * Variable referencing the catalog of this laboratory
 	 */
-	private Map<String, Integer> catalog = new HashMap<String, Integer>();
+	private Map<String, String> catalog = new HashMap<String, String>();
 
+	
+	
 	/**
-	 * Return a catalog of all the ingredients present in this laboratory together with their amounts
-	 *
-	 * @return The catalog for this laboratory.
+	 * Return a catalog of all the ingredients in this laboratory, where the name of the ingredient is the key, the amount and unit are the values.
+	 * 
+	 * @return	The catalog of all the ingredients in this laboratory, where the name of the ingredient is the key, the amount and unit are the values.
+	 * 			|for i in listOfIngredients
+	 * 			|	String name = listOfIngredients.get(i).getCompleteName();
+	 * 			|	int amount = listOfIngredients.get(i).getQuantity();
+	 * 			|	String unit = listOfIngredients.get(i).getUnit();
+	 * 			|	String amoundAndUnit = String.valueOf(amount) + unit;
+	 * 			|	catalog.put(name, amoundAndUnit);
+	 * 			| 	result == catalog
 	 */
-	/*nog kijken of je 2 values kan meegeven aan 1 key: om zowel amount en unit te kunnen meegeven*/
-	@Raw @Basic
-	public Map<String, Integer> getCatalog(){
-		/**
-		 * If a certain AlchemicIngredient.getCompleteName() does not appear more than once in the laboratory
-		 * we can safely put them in the catalog map. Otherwise we need to take the full amount of a certain ingredient.
-		 * A map does not accept two identical keys, so when a duplicate key is added, the first one will be dropped and its
-		 * corresponding value, the full amount, but this is of no concern, since we work with getFullAmount, which will
-		 * calculate the combined amount time and again.
-		 */
-
-		if(areThereNoDoubleIngredients(getIngredients())){
-			for(AlchemicIngredient ingredient : getIngredients()) {
-				String name = ingredient.getCompleteName();
-				int quantity = ingredient.getQuantityInSpoons();
-				catalog.put(name, quantity);
-			}
-		}
-		else {
-			for(AlchemicIngredient ingredient : getIngredients()) {
-				String nameOfIngredient = ingredient.getCompleteName();
-				int amount = getFullAmountFromLabo(ingredient.getCompleteName());
-				catalog.put(nameOfIngredient, amount);
-			}
+	public Map<String, String> getCatalog(){
+		for (int i = 0; i < listOfIngredients.size(); i++) {
+			 String name = listOfIngredients.get(i).getCompleteName();
+			 int amount = listOfIngredients.get(i).getQuantity();
+			 String unit = listOfIngredients.get(i).getUnit();
+			 String amoundAndUnit = String.valueOf(amount) + unit;
+			 catalog.put(name, amoundAndUnit);
 		}
 		return catalog;
 	}
-	
-	
-	
 
 	
-	
+	/**
+	 * Checks whether there is enough ingredient in this laboratory.
+	 *
+	 * @param	ingredientCompleteName
+	 * 			The name of the ingredient
+	 * @param	amount
+	 * 			The amount to get from this ingredient
+	 * @param	unit
+	 * 			The unit of the ingredient
+	 * @return	True if the amount is a positive number and if it doesn't exceed the stock amount of ingredient.
+	 * 			| ((amount >= 0) && (this.getAmountInSpoons(amount, unit) <= getFullAmountFromLabo(ingredientCompleteName).getAlchemicIngredient().getQuantityInSpoons()))
+	 */
+
+	private boolean isValidAmount(String ingredientCompleteName, int amount, String unit) {
+		return ((amount > 0) && (this.getAmountInSpoons(amount, unit) <= getFullAmountFromLabo(ingredientCompleteName).getAlchemicIngredient().getQuantityInSpoons()));
+	}
+
 	
 	
 	/**********************************************************
@@ -1090,13 +1135,7 @@ public class Laboratory{
 		
 		if (recipe.getNameIngredientList().size() >= 1) {
 			for (int i = 0; i < recipe.getNameIngredientList().size(); i++) {
-				if (this.isValidAmount(recipe.getNameIngredientList().get(i), number*(recipe.getAmountList().get(i)),recipe.getUnitList().get(i))){
-					this.storeNewIngredient(this.getAmountFromLabo(recipe.getNameIngredientList().get(i),number*(recipe.getAmountList().get(i)),recipe.getUnitList().get(i)));
-				}
-				else {
-					this.storeNewIngredient(this.getFullAmountFromLabo(recipe.getNameIngredientList().get(i));
-				}
-				
+				this.storeNewIngredient(this.getAmountFromLabo(recipe.getNameIngredientList().get(i),number*(recipe.getAmountList().get(i)),recipe.getUnitList().get(i)));
 			}
 		}
 		
@@ -1107,7 +1146,6 @@ public class Laboratory{
 	}
 	
 	
-
 	
 	
 	
