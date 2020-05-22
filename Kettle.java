@@ -90,7 +90,7 @@ public class Kettle extends Device{
 		for (int i = 0; i <= getIngredientList().size();i++) {
 			quantity = quantity + getIngredientList().get(i).getQuantityInSpoons();
 		}
-		return quantity;
+		return (int) Math.floor(quantity);
 	}
 	
 	public List<Long> getStandardTemperature(List<AlchemicIngredient> potentialIngredients){
@@ -134,13 +134,14 @@ public class Kettle extends Device{
 		return temperature;
 	}
 	
-	public List<IngredientType> getIngredientTypeList(){
+	private List<IngredientType> getIngredientTypeList(){
 		List<IngredientType> ingredientTypeList = new ArrayList<IngredientType>();
 		for (int i = 0; i <= getIngredientList().size();i++) {
 			for (int j =0;j<getIngredientList().get(i).getIngredientTypeList().size();j++) {
 				if (!ingredientTypeList.contains(getIngredientList().get(i).getIngredientTypeList().get(j))){
 					ingredientTypeList.add(getIngredientList().get(i).getIngredientTypeList().get(j));
 				}
+				getIngredientList().get(i).terminate();
 			}
 		}
 		return ingredientTypeList;

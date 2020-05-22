@@ -59,7 +59,8 @@ class KettleTest {
 		cola = new AlchemicIngredient(30,"spoon",typeColaList,(long) 0, (long) 10,"Liquid");
 		coffee = new AlchemicIngredient(30,"spoon",typeColaList,(long) 0, (long) 40,"Liquid");
 		standardKettleLabo.addKettle(standardKettle);
-		differentKettleLabo.addIngredient(milk);
+		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
+		differentKettleLabo.addIngredient(milkContainer);
 		
 	}
 	

@@ -186,15 +186,18 @@ public class AlchemicIngredient {
 	 * 			| isCorrectQuantity(quantity)
 	 * @post	The given quantity is registered as the quantity of this ingredient.
 	 * 			| new.getQuantity() == quantity
+	 * @throws	InvalidQuantityException("The ingredient must have a valid quantity",this)
+	 * 			The quantity of the AlchemicIngredient is invalid
+	 * 			| !isCorrectQuantity(quantity)
 	 */
-	private void setQuantity(int quantity) InValidQuantityException{
+	private void setQuantity(int quantity) throws InvalidQuantityException{
 		if (isCorrectQuantity(quantity)) {
 			this.quantity = quantity;
 		}
 		else {
 			throw new InvalidQuantityException("The ingredient must have a valid quantity", this);
 		}
-	
+	}
 	/**
 	 * Check whether the given quantity is a valid quantity for an ingredient.
 	 * 
@@ -217,19 +220,33 @@ public class AlchemicIngredient {
 	
 	/**
 	 * Returns the quantity of this ingredient measured in the unit of spoons.
+	 * 
+	 * @return 	Return the quantity of this ingredient in spoons using the Map with transitions depending on the state.
+	 * 			If an ingredient is a Liquid then the transitions of the liquidLibrary are used otherwise the transitions of 
+	 * 			the powderLibrary are used
+	 * 			| result = getQuantity()
+	 * 			| if (getState() == "Liquid"
+	 * 			|	then for every entry in LiquidLibrary
+	 * 			|		if (entry.getKey() == getUnit())
+	 * 			|			then result == result * entry.getValue()
+	 * 			| else 
+	 * 			|		for every entry in powderLibrary
+	 * 			|		if (entry.getKet() == getUnit())
+	 * 			|			then result == result * entry.getValue()
+	 * 		
 	 */
 	public int getQuantityInSpoons() {
 		int result = getQuantity();
 		if (getState()=="Liquid") {
 			for (Map.Entry<String,Integer> entry: liquidLibrary.entrySet()) {
-				if (entry.getKey() == this.unit) {
+				if (entry.getKey() == getUnit()) {
 					result = result * entry.getValue();
 				}
 			}
 		}
 		else {
 			for(Map.Entry<String, Integer> entry: powderLibrary.entrySet()) {
-				if (entry.getKey() == this.unit) {
+				if (entry.getKey() == getUnit()) {
 					result = result * entry.getValue();
 				}
 			}
@@ -295,7 +312,9 @@ public class AlchemicIngredient {
 	 * 
 	 * @post	If the AlchemicIngredient hasn't already been terminated,
 	 * 			the termination is set to true.
-	 * @throws 	IngredientAlreadyTerminatedException
+	 * @throws 	IngredientAlreadyTerminatedException("This ingredient has already been terminated",this)
+	 * 			The ingredient is terminated
+	 * 			| isTerminated()
 	 */
 	private void setTerminated() throws IngredientAlreadyTerminatedException {
 		if (!isTerminated()) {
@@ -385,8 +404,8 @@ public class AlchemicIngredient {
 	 * 
 	 * @param 	unit
 	 * 			The unit to check.
-	 * @return	True if this unit is a powder unit if the ingredient is a powder or  
-	 * 			if the unit is a liquid unit if the ingredient is a liquid.
+	 * @return	True if this unit is a powder unit and if the ingredient is a powder or  
+	 * 			if the unit is a liquid unit and the ingredient is a liquid.
 	 * 			| if (this.getState() == "Powder")
 	 * 			|	then result == getPowderUnits().contains(unit)
 	 * 			| 	else result == getLiquidUnits().contains(unit) 
@@ -414,7 +433,7 @@ public class AlchemicIngredient {
 	 * 
 	 * @param 	unit
 	 * 			The new unit of this alchemicIngredient
-	 * @effect	If the Alchemic hasn't already been terminated and the unit is valid then
+	 * @effect	If the AlchemicIngredient hasn't already been terminated and the unit is valid then
 	 * 			the unit is set to the given unit.
 	 * 			| if (!isTerminated()) and if (isValidUnit(unit))
 	 * 			|	then setUnit(unit)
@@ -489,8 +508,14 @@ public class AlchemicIngredient {
 	 * Return the state for a new ingredient which is to be used when the
      * given state is not valid or not given.
      *
-     * @return   A valid state.
-     *         | isValidState(result)
+     * @return	The default state is determined by its ingredientTypes whose standardTemperature
+     * 			is closest to [0,20]. If ingredientTypes are equally close to [0,20] and one of the 
+     * 			types is a liquid the liquid has priority.
+     * 			| type = potentialIngredients.get(0);
+     * 			| for every ingredientType i in potentialIngredients
+     * 			|	if (potentialIngredients.get(i).getState() == "Liquid")
+     * 			|		type = potentialIngredients.get(i);
+     * 			| result == type.getState();
 	 * 
 	 */
 	private String getDefaultState() {
@@ -579,6 +604,7 @@ public class AlchemicIngredient {
 	}
 	
 	/**
+	 * Check whether the given ingredientTypeList is valid.
 	 * 
 	 * @param 	ingredientTypeList
 	 * 			The ingredientTypeList to be checked
@@ -590,14 +616,36 @@ public class AlchemicIngredient {
 	}
 	
 	
-	
+	/**
+	 * Return the ingredientTypes of this ingredient from which basic characteristics can be taken.
+	 * 
+	 * @return	The ingredientTypes whose  standardTemperure is closest to [0,20].
+	 * 			For every IngredientType i in the ingredientTypeList, the distance between its hotness and coldness is
+	 * 			subtracted from 20 which leads to a variable referencing a "distance". This distance is added at the 
+	 * 			same index in the temperatureList. If this distance is smaller than the
+	 * 			minimum distance a new minimum has been reached.
+	 * 			After the iteration every ingredientType whose distance is equal to the minimum is a potentialIngredient.
+	 * 			| for every ingredientType in ingredientList
+	 * 			|		coldness = ingredientTypeList.get(i).getStandardTemp().getColdness();
+			 	|		hotness  = ingredientTypeList.get(i).getStandardTemp().getHotness();
+			 	|		difference = Math.abs(20 - (hotness - coldness));
+				|		temperatureList.add(i,difference);
+	 * 			|		if (difference < minimum)
+	 * 			|			minimum = difference;
+	 * 			| for every ingredientType i in ingredientList
+	 * 			|		if (temperatureList.get(i) == minimum)
+	 * 			|			then potentialIngredients.add(ingredientTypeList.get(i));
+	 * 			|
+	 * 			| result == potentialIngredients
+	 * 				
+	 */
 	private List<IngredientType> getReferenceIngredientType(){
-		List<IngredientType> ingredientList = getIngredientTypeList();
+		List<IngredientType> ingredientTypeList = getIngredientTypeList();
 		List<Long> temperatureList = new ArrayList<Long>();
 		long minimum = Long.MAX_VALUE;
-		for (int i = 0; i <= ingredientList.size();i++) {
-			long coldness = ingredientList.get(i).getStandardTemp().getColdness();
-			long hotness  = ingredientList.get(i).getStandardTemp().getHotness();
+		for (int i = 0; i <= ingredientTypeList.size();i++) {
+			long coldness = ingredientTypeList.get(i).getStandardTemp().getColdness();
+			long hotness  = ingredientTypeList.get(i).getStandardTemp().getHotness();
 			long difference = Math.abs(20 - (hotness - coldness));
 			temperatureList.add(i,difference);
 			if (difference < minimum) {
@@ -605,9 +653,9 @@ public class AlchemicIngredient {
 			}
 		}	
 		List<IngredientType> potentialIngredients = new ArrayList<IngredientType>();
-		for (int i = 0; i<= ingredientList.size();i++) {
+		for (int i = 0; i<= ingredientTypeList.size();i++) {
 			if (temperatureList.get(i)==minimum) {
-				potentialIngredients.add(ingredientList.get(i));
+				potentialIngredients.add(ingredientTypeList.get(i));
 			}
 		}
 		
@@ -652,8 +700,14 @@ public class AlchemicIngredient {
 	/**
 	 * Return in alphabetical order the simple names of each ingredientType of this AlchemicIngredient.
 	 * 
-	 * @return	The list containing the names of all ingredientTypes of this alchemicIngredien in alphabetical order
-	 * 			
+	 * @return	The list containing the simple names of all ingredientTypes of this alchemicIngredien in alphabetical order
+	 * 			for every ingredient i in the ingredientTypelist, the simple name is added to the namelist and at last the 
+	 * 			list is sorted.
+	 * 			| for each ingredientType i in getIngredientTypeList().size() 
+	 * 			|		AlphabeticNameList.add(getIngredientTypeList().get(i).getName())
+	 * 			|  sort(AlphabeticNameList);
+	 * 			|  result == AlphabeticNameList	
+	 * 					
 	 */
 	public List<String> getAlphabeticNameList(){
 		List<String> AlphabeticNameList = new ArrayList<String>();
@@ -667,24 +721,33 @@ public class AlchemicIngredient {
 	
 	 /**
 	  * Return the simple name of this ingredient.
+	  * 
+	  * @return	The name of this ingredient which is formed by using the names of its ingredientTypes
+	  * 		in alphabetical order. 
 	  */
+	@Raw 
 	public String getSimpleName() {
 		List<String> AlphabeticNameList = getAlphabeticNameList();
 		String SimpleName = null;
 		SimpleName = AlphabeticNameList.get(0);
 		if (AlphabeticNameList.size()>1) {
 			SimpleName = SimpleName + "mixed with";
-			for (int i=1; i<=AlphabeticNameList.size();i++) {
-				if (i==AlphabeticNameList.size() - 1) {
-					SimpleName = SimpleName + " and" + AlphabeticNameList.get(i);
-				}
-				else if (i == AlphabeticNameList.size() -2) {
-					SimpleName = SimpleName + AlphabeticNameList.get(i);
-				}
-				else {
-					SimpleName = SimpleName + AlphabeticNameList.get(i) +", ";
-				}
+			if (AlphabeticNameList.size()==2) {
+				SimpleName =SimpleName + AlphabeticNameList.get(1);
 			}
+			else {
+				for (int i=1; i<=AlphabeticNameList.size();i++) {
+					if (i==AlphabeticNameList.size() - 1) {
+						SimpleName = SimpleName + " and" + AlphabeticNameList.get(i);
+					}
+					else if (i == AlphabeticNameList.size() -2) {
+						SimpleName = SimpleName + AlphabeticNameList.get(i);
+					}
+					else {
+						SimpleName = SimpleName + AlphabeticNameList.get(i) +", ";
+						}
+					}
+				}
 		}
 		return SimpleName;
 	}

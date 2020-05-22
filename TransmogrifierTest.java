@@ -60,7 +60,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"drop",typeMilkList,(long) 0, (long) 30, "Liquid");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -78,7 +78,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"pinch",typeMilkList,(long) 0, (long) 30, "Powder");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -96,7 +96,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"vial",typeMilkList,(long) 0, (long) 30, "Liquid");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -115,7 +115,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"sachet",typeMilkList,(long) 0, (long) 30, "Powder");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -134,7 +134,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Liquid");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -152,7 +152,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Powder");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -171,7 +171,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"bottle",typeMilkList,(long) 0, (long) 30, "Liquid");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -190,7 +190,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"box",typeMilkList,(long) 0, (long) 30, "Powder");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -209,7 +209,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"jug",typeMilkList,(long) 0, (long) 30, "Liquid");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -228,7 +228,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"sack",typeMilkList,(long) 0, (long) 30, "Powder");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -247,7 +247,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"barrel",typeMilkList,(long) 0, (long) 30, "Liquid");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -266,7 +266,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"chest",typeMilkList,(long) 0, (long) 30, "Powder");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -285,7 +285,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"storeroom",typeMilkList,(long) 0, (long) 30, "Liquid");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
@@ -304,7 +304,7 @@ class TransmogrifierTest {
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"storeroom",typeMilkList,(long) 0, (long) 30, "Powder");
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		standardTransLab.addIngredient(milk);
+		standardTransLab.storeNewIngredient(milkContainer);
 		standardTrans.addIngredientFrom(milkContainer);
 		standardTrans.executeAlchemicOperation();
 		resultContainer = standardTrans.removeAlchemicResult();
