@@ -724,12 +724,26 @@ public class AlchemicIngredient {
 	  * 
 	  * @return	The name of this ingredient which is formed by using the names of its ingredientTypes
 	  * 		in alphabetical order. 
+	  * 		  SimpleName = AlphabeticNameList.get(0)
+	  * 		| if (AlphabeticNameList.size()>1)
+	  * 		|	then SimpleName = SimpleName + "mixed with"
+	  * 		|  	if (AlphabeticNameList.size()==2)
+	  * 		|		then SimpleName =SimpleName + AlphabeticNameList.get(1)
+	  * 		|	else
+	  * 		|		for one i in alphabeticNameList.size() - 1
+	  * 		|			if (i == AlphabeticNameList.size() -1)
+	  * 		|				then SimpleName = SimpleName + " and" + AlphabeticNameList.get(i)
+	  * 		|			else if (i == AlphabeticNameList.size() -2)
+	  * 		|				then SimpleName = SimpleName + AlphabeticNameList.get(i)
+	  * 		|			else 
+	  * 		|				SimpleName = SimpleName + AlphabeticNameList.get(i) +", "
+	  * 		| result == SimpleName			
+	  * 			
 	  */
 	@Raw 
 	public String getSimpleName() {
 		List<String> AlphabeticNameList = getAlphabeticNameList();
-		String SimpleName = null;
-		SimpleName = AlphabeticNameList.get(0);
+		String SimpleName = AlphabeticNameList.get(0);
 		if (AlphabeticNameList.size()>1) {
 			SimpleName = SimpleName + "mixed with";
 			if (AlphabeticNameList.size()==2) {
@@ -755,7 +769,20 @@ public class AlchemicIngredient {
 	/**
 	 * Return the complete name of this AlchemicIngredient
 	 * 
-	 * @return
+	 * @return 	The complete name of an ingredient which is the simple name with a prefix Heated of Cooled
+	 * 			if the ingredient is either hotter than its standard temperature or colder than its standard
+	 * 			temperature. However if the ingredient has a specialName, the complete name is the special name
+	 * 			with the same prefix and followed by the simple name in parentheses
+	 * 			| if (getTemperature().getHotness() > standardTemp.getHotness)
+	 * 			|	then completeName = "Heated"
+	 * 			|  if (getTemperature().getColdness() > standardTemp.getColdness())
+	 * 			|	then completeName = "Cooled"
+	 * 			|  if (getSpecialName() == null)
+	 * 			|	then completeName = completeName + getSimpleName()
+	 * 			|  else
+	 * 			|	completeName = completeName + getSpecialName() + "(" + getSimpleName() + ")"
+	 * 			|  result == completeName
+	 * 				
 	 */
 	public String getCompleteName() {
 		String completeName = null;
@@ -763,10 +790,15 @@ public class AlchemicIngredient {
 		if (getTemperature().getHotness() > standardTemp.getHotness()) {
 			completeName = "Heated";
 		}
-		else if (getTemperature().getColdness()>standardTemp.getColdness()) {
+		if (getTemperature().getColdness()>standardTemp.getColdness()) {
 			completeName = "Cooled";
 		}
-		completeName = completeName + getSimpleName();
+		if (getSpecialName() == null) {
+			completeName = completeName + getSimpleName();
+		}
+		else {
+			completeName = completeName + getSpecialName() +"(" +getSimpleName() + ")";
+		}
 		return completeName;
 	}
 	
@@ -855,11 +887,26 @@ public class AlchemicIngredient {
 		setTemperature(coldness,hotness);
 	}
 	
+	
+	/**
+	 * Return the standard temperature of this AlchemicIngredient
+	 * 
+	 * @return 	the standard temperature of this AlchemicIngredient which is the standardTemperature
+	 * 			of its ingredientType which has a standardTemperature closest to [0,20]
+	 * 			If there are multiple ingredientTypes with the same distance to [0,20]
+	 * 			the hottest one is selected.
+	 * 			|  ingredientType = potentialIngredients.get(0)
+	 * 			| for an i in potentialIngredients.size()
+	 * 			|	if (potentialIngredients.get(i).getStandardTemp().getHotness()>20)
+	 * 			|		then ingredientType = potentialIngredients.get(i)
+	 * 			|			break
+	 * 			|  result == ingredientType.getStandardTemp()
+	 */
 	public Temperature getStandardTemperature(){
 		List<IngredientType> potentialIngredients = getReferenceIngredientType();
 		IngredientType ingredientType = potentialIngredients.get(0);
 		for (int i = 0; i<=potentialIngredients.size();i++) {
-			if (potentialIngredients.get(i).getStandardTemp().getHotness()>0) {
+			if (potentialIngredients.get(i).getStandardTemp().getHotness()>20) {
 				ingredientType = potentialIngredients.get(i);
 				break;
 			}
