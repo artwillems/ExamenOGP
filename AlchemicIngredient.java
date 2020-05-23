@@ -7,6 +7,24 @@ import java.util.HashMap;
 
 import be.kuleuven.cs.som.annotate.*;
 
+
+
+
+/**
+ * @invar	Each AlchemicIngredient must have a valid ingredientTypeList
+ * 			| isValidIngredientTypeList(getIngredientTypeList())
+ * @ivnar	Each AlchemicIngredient must have a valid simpleName
+ * 			| isValidName(getSimpleName)
+ * @invar	Each AlchemicIngredient must have a valid quantity
+ * 			| isValidQuantity(getQuantity)
+ * @invar	Each AlchemicIngredient must have a valid unit
+ * 			| isValidUnit(getUnit)
+ * @invar	Each AlchemicIngredient must have a valid state
+ * 			| isValidState(getState)
+ * 			
+ * @author Jérôme D'hulst
+ *
+ */
 public class AlchemicIngredient {
 	/**********************************************************
      * Constructors

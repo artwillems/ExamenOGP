@@ -3,7 +3,9 @@ import java.util.List;
 import java.lang.Math;
 
 /**
- * 
+ * @invar	The ingredientList has to be valid
+ * 			| isValidInput(getIngredientList())
+ * 			
  * 
  * @author Jérôme D'hulst, Marie Levrau, Art Willems
  *
@@ -46,6 +48,17 @@ public class Kettle extends Device{
 		else {
 			throw new DifferentLaboratoryException("The kettle and the ingredient have to be stored in the same laboratory",this);
 		}
+	}
+	
+	/**
+	 * Check whether the given ingredientList is a valid ingredientList
+	 * 
+	 * @return	True if and only if the ingredientList does not contain null values	
+	 * 			| result == (!ingredientList.contains(null))
+	 */
+	@Override
+	public boolean isValidInput(List<AlchemicIngredient> ingredientList) {
+		return ( !ingredientList.contains(null));
 	}
 	
 	
