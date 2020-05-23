@@ -43,6 +43,7 @@ public class AlchemicIngredient {
 	 * @effect	The special name is set to the given name (must be valid)
 	 * 			| setSpecialName(specialName)
 	 */
+	@Raw
 	protected AlchemicIngredient(int quantity,String unit, List<IngredientType> ingredientTypeList, long hotness, long coldness, String state, String specialName) {
 		setIngredientTypeList(ingredientTypeList);
 		setState(state);
@@ -172,6 +173,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the quantity of this ingredient measured in its own unit.
 	 */
+	@Basic @Raw
 	public int getQuantity() {
 		return this.quantity;
 	}
@@ -190,6 +192,7 @@ public class AlchemicIngredient {
 	 * 			The quantity of the AlchemicIngredient is invalid
 	 * 			| !isCorrectQuantity(quantity)
 	 */
+	@Model
 	private void setQuantity(int quantity) throws InvalidQuantityException{
 		if (isCorrectQuantity(quantity)) {
 			this.quantity = quantity;
@@ -214,7 +217,8 @@ public class AlchemicIngredient {
 	/**
 	 * Return the maximum quantity of an ingredient.
 	 */
-	public int getMaximumQuantity() {
+	@Model @Raw
+	private int getMaximumQuantity() {
 		return maximumQuantity;
 	}
 	
@@ -316,6 +320,7 @@ public class AlchemicIngredient {
 	 * 			The ingredient is terminated
 	 * 			| isTerminated()
 	 */
+	@Model
 	private void setTerminated() throws IngredientAlreadyTerminatedException {
 		if (!isTerminated()) {
 			this.terminated = true;
@@ -331,6 +336,7 @@ public class AlchemicIngredient {
 	/**
 	 * Check whether this AlchemicIngredient has already been terminated.
 	 */
+	@Basic @Raw
 	public boolean isTerminated() {
 		return terminated;
 	}
@@ -370,6 +376,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the list of valid powder units.
 	 */
+	@Raw @Basic
 	public static List<String> getPowderUnits(){
 		return powderUnits;
 		
@@ -391,12 +398,10 @@ public class AlchemicIngredient {
 	 * 			is set to the given unit.
 	 * 			| new.getUnit() == unit
 	 */
+	@Raw @Model
 	private void setUnit(String unit) {
-		if (isValidUnit(unit)) {
 			this.unit = unit;
 		}
-		
-	}
 	
 	/**
 	 * Check whether the given unit is a valid unit for this ingredient depending
@@ -411,6 +416,7 @@ public class AlchemicIngredient {
 	 * 			| 	else result == getLiquidUnits().contains(unit) 
 	 * 
 	 */
+	@Raw
 	public boolean isValidUnit(String unit) {
 		if (this.getState() == "Powder") {
 			return getPowderUnits().contains(unit);
@@ -423,6 +429,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the unit of this ingredient.
 	 */
+	@Raw @Basic
 	public String getUnit() {
 		return this.unit;
 	}
@@ -466,6 +473,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the state of this ingredient.
 	 */
+	@Raw @Basic
 	public String getState() {
 		return state;
 	}
@@ -479,6 +487,7 @@ public class AlchemicIngredient {
 	 * 			| result ==
 	 * 			|	(state == "Liquid") || (state == "Powder")
 	 */
+	@Raw
 	public boolean isValidState(String state) {
 		return ((state == "Liquid") || (state == "Powder"));
 	}
@@ -495,6 +504,7 @@ public class AlchemicIngredient {
      *          |      then new.getState().equals(state)
      *          |      else new.getState().equals(getDefaultState())
 	 */
+	@Model
 	private void setState(String state) {
 		if (isValidState(state)) {
 			this.state = state;
@@ -587,6 +597,7 @@ public class AlchemicIngredient {
 	 * 			|	else new.getIngredientTypeList().get(0) == water
 	 * 
 	 */
+	@Model
 	private void setIngredientTypeList(List<IngredientType> ingredientTypeList) {
 		if (isValidIngredientTypeList(ingredientTypeList)) {
 			this.ingredientTypeList = ingredientTypeList;
@@ -599,6 +610,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the list of ingredientTypes of this ingredient.
 	 */
+	@Basic @Raw
 	public List<IngredientType> getIngredientTypeList(){
 		return this.ingredientTypeList;
 	}
@@ -819,7 +831,7 @@ public class AlchemicIngredient {
 	 * 			| if (isValidName(specialName))
 	 * 			|		then new.getSpecialName().equals(name)
 	 */
-	private void setSpecialName(String specialName) {
+	public void setSpecialName(String specialName) {
 		if (isValidName(specialName)) {
 			this.specialName = specialName;
 		}
@@ -828,6 +840,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the special name of this ingredient.
 	 */
+	@Basic @Raw
 	public String getSpecialName() {
 		return specialName;
 	}
@@ -861,6 +874,7 @@ public class AlchemicIngredient {
 	 * 			| getTemperature().getColdness() == coldness
 	 * 			| getTemperature().getHotness() == hotness
 	 */
+	@Model
 	private void setTemperature(long coldness, long hotness) {
 		temperature = new Temperature(coldness,hotness);
 	}
@@ -868,6 +882,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the temperature of this AlchemicIgredient 
 	 */
+	@Raw @Basic
 	public Temperature getTemperature() {
 		return temperature;
 	}
@@ -925,8 +940,17 @@ public class AlchemicIngredient {
 	private Laboratory laboratory = null;
 	
 	
+	/**
+	 * Move this ingredient to another laboratory
+	 * 
+	 * @param 	laboratory
+	 * 			The new laboratory of this ingredient.
+	 * @effect	The laboratory of this ingredient is set to the given laboratory
+	 * 			| setLaboratory(laboratory)
+	 */
 	public void moveToLaboratory(Laboratory laboratory) {
 		setLaboratory(laboratory);
+		
 		
 	}
 	
@@ -947,12 +971,12 @@ public class AlchemicIngredient {
 	 * 			| IngredientContainer container = new IngredientContainer(this,getQuantity(),getUnit(),getState());
 				|  laboratory.storeNewIngredient(container);	
 	 * 			
-	 * @throws 	InvalidLaboratoryException("The given laboratory does not exist.",this)
+	 * @throws 	InvalidLaboratoryException("This ingredient can not have this laboratory as its laboratory",this)
 	 * 			The given laboratory is not valid
 	 * 			| !isValidLaboratory(laboratory)
 	 */
 	private void setLaboratory(Laboratory laboratory) throws InvalidLaboratoryException {
-		if (isValidLaboratory(laboratory)) {
+		if (canHaveAsLaboratory(laboratory)) {
 			if (getLaboratory() != null) {
 				getLaboratory().removeIngredient(this);
 			}
@@ -962,7 +986,7 @@ public class AlchemicIngredient {
 			
 		}	
 		else {
-			throw new InvalidLaboratoryException("The given laboratory does not exist.",this);
+			throw new InvalidLaboratoryException("This ingredient can not have this laboratory as its laboratory.",this);
 		}
 	}
 	
@@ -980,8 +1004,22 @@ public class AlchemicIngredient {
 	
 	
 	/**
+	 * Check whether this ingredient can have this laboratory as its laboratory
+	 * 
+	 * @param 	laboratory
+	 * 			The laboratory to be checked
+	 * @return	True if and only if the ingredient is not terminated and the laboratory is valid.
+	 * 			| result == (this.isTerminated()==false && isValidLaboratory(laboratory))
+	 */
+	public boolean canHaveAsLaboratory(Laboratory laboratory) {
+		return (this.isTerminated()==false && isValidLaboratory(laboratory));
+	}
+	
+	
+	/**
 	 * Return the laboratory of this AlchemicIngredient
 	 */
+	@Raw @Model
 	public Laboratory getLaboratory() {
 		return laboratory;
 	}

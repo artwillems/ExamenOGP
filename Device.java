@@ -72,7 +72,9 @@ public class Device {
      * ingredientList
      **********************************************************/
 	
-
+	/**
+	 * Variable referencing the ingredientList of this device
+	 */
     protected List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
     
     
@@ -88,6 +90,12 @@ public class Device {
 		return ingredientList.size();
 	}
 	
+	
+	/**
+	 * Set the ingredientList of this device
+	 * @param ingredientList
+	 * @throws InvalidIngredientListException
+	 */
     private void setContainerList(List<AlchemicIngredient> ingredientList) throws InvalidIngredientListException {
     	if (!isValidInput(ingredientList)) {
     		throw new InvalidIngredientListException("There are no ingredients put in this device",this);
@@ -195,7 +203,7 @@ public class Device {
 	 */
 	@Raw 
 	public boolean hasProperLaboratory() {
-		return (canHaveAsLaboratory(getLaboratory()) NOG DINGEN TOEVOEGEN);
+		return (canHaveAsLaboratory(getLaboratory()));
 	}
 	
 	@Raw
@@ -226,7 +234,9 @@ public class Device {
 		if (!canHaveAsLaboratory(laboratory)) {
 			throw new IllegalLaboratoryException("This device cannot be placed in the given laboratory!",this);
 		}
+		/*remove device from laboratory   overwrite in subclasses*/
 		setLaboratory(laboratory);
+		
 	}
 	
 	/**********************************************************
@@ -243,6 +253,7 @@ public class Device {
 		else {
 			if (haveSameLaboratory(container.getAlchemicIngredient())) {
 				ingredientList.add(container.getAlchemicIngredient());
+				this.laboratory.removeIngredient(container.getAlchemicIngredient());
 				container.setDelete(true);
 			}
 			else {

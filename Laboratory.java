@@ -486,7 +486,6 @@ public class Laboratory{
 	 * 			| if(!isValidOvenAddition())
 	 * 			|	then Oven oven = getOven()
 	 * 			|		 AlchemicIngredient ingredient = container.getAlchemicIngredient()
-	 * 			|		 container.delete()
 	 * 			|		 long newColdness = ingredient.getStandardTemperature().getColdness()
 	 * 			|		 long newHotness = ingredient.getStandardTemperature().getHotness()
 	 * 			|		 oven.changeOvenTemperature(newColdness, newHotness)
@@ -500,7 +499,7 @@ public class Laboratory{
 		if(!isValidOvenAddition()) {
 			Oven oven = getOven(); 
 			AlchemicIngredient ingredient = container.getAlchemicIngredient();
-			container.delete();
+			
 			long newColdness = ingredient.getStandardTemperature().getColdness();
 			long newHotness = ingredient.getStandardTemperature().getHotness();
 			oven.changeOvenTemperature(newColdness, newHotness);
@@ -532,12 +531,11 @@ public class Laboratory{
 	 * 			| if(!isValidCoolingBoxAddition())
 	 * 			|	then CoolingBox fridge = getCoolingBox()
 	 * 			|		 AlchemicIngredient ingredient = container.getAlchemicIngredient()
-	 * 			|		 container.delete()
 	 * 			|		 long theHotness = ingredient.getStandardTemperature().getHotness()
-	 * 			|		 long theColdness = ingredient.getStandardTemperature().getColdness();
-	 * 			|		 fridge.changeCoolingBoxTemperature(theColdness, theHotness);
-	 * 			|		 fridge.addIngredientFrom(container);
-	 * 			|		 fridge.executeAlchemicOperation();
+	 * 			|		 long theColdness = ingredient.getStandardTemperature().getColdness()
+	 * 			|		 fridge.changeCoolingBoxTemperature(theColdness, theHotness)
+	 * 			|		 fridge.addIngredientFrom(container)
+	 * 			|		 fridge.executeAlchemicOperation()
 	 * 			|		 IngredientContainer resultContainer = fridge.removeAlchemicResult()
 	 * 			|		 AlchemicIngredient result = resultContainer.getAlchemicIngredient()
 	 * 			|		 resultContainer.delete()
@@ -546,7 +544,6 @@ public class Laboratory{
 		if(!isValidCoolingBoxAddition()) {
 			CoolingBox fridge = getCoolingBox();
 			AlchemicIngredient ingredient = container.getAlchemicIngredient();
-			container.delete();
 			long theHotness = ingredient.getStandardTemperature().getHotness();
 			long theColdness = ingredient.getStandardTemperature().getColdness();
 			fridge.changeCoolingBoxTemperature(theColdness, theHotness);
