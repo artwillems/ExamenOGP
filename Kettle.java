@@ -56,7 +56,6 @@ public class Kettle extends Device{
 	 * @return	True if and only if the ingredientList does not contain null values	
 	 * 			| result == (!ingredientList.contains(null))
 	 */
-	@Override
 	public boolean isValidInput(List<AlchemicIngredient> ingredientList) {
 		return ( !ingredientList.contains(null));
 	}
@@ -275,7 +274,7 @@ public class Kettle extends Device{
 	 * 			| this.countIngredient()<1
 	 */
 	public void executeAlchemicOperation() throws NoIngredientInDeviceException{
-		if (this.countIngredients()<1) {
+		if (getIngredientList().size()<1) {
 			throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
 		}
 		else {

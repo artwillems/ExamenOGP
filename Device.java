@@ -18,7 +18,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 * @author Jérôme D'hulst, Marie Levrau, Art Willems
 */
 
-public class Device {
+public abstract class Device {
 	
 	/**********************************************************
      * constructor
@@ -79,50 +79,30 @@ public class Device {
     protected List<AlchemicIngredient> ingredientList = new ArrayList<AlchemicIngredient>();
     
     
-    public List<AlchemicIngredient> getIngredientList(){
-		return ingredientList;
-	}
-    
     /**
-	 * Return the number of ingredients that are put in this device.
-	 */
-	@Basic @Raw 
-	public int countIngredients() {
-		return ingredientList.size();
-	}
-	
-	
-	/**
-	 * Set the ingredientList of this device
-	 * @param 	ingredientList
-	 * 			The new ingredientList for this device
-	 * @post 	if the ingredientList is a valid list, the new ingredientList is set to the given ingredientList
-	 * 			| if (isValidInput(ingredientList)
-	 * 			| 	then new.getIngredientList() == ingredientList
-	 * @throws 	InvalidIngredientListException("There are no ingredients put in this device",this)
-	 * 			The ingredientList is invalid
-	 * 			| ! isValidInput(ingredientList)
-	 */
-    private void setContainerList(List<AlchemicIngredient> ingredientList) throws InvalidIngredientListException {
-    	if (!isValidInput(ingredientList)) {
-    		throw new InvalidIngredientListException("There are no ingredients put in this device",this);
-    	}
-    	else {
-    		this.ingredientList = ingredientList;
-    	}
+     * Return the ingredientList of this device
+     */
+    public List<AlchemicIngredient> getIngredientList(){
+    	return this.ingredientList;
     }
     
-    /**
-     * Check whether the given ingredientList is a valid ingredient list for this device
-     * @param 	ingredientList
-     * 			The ingredientList to be checked
-     * @return	true if and only if the ingredientList is smaller than or equal to one 
-     * 			and does not contain any null values.
-     * 			| result == (ingredientList.size() <= 1 && !ingredientList.contains(null))
-     */
-	public boolean isValidInput(List<AlchemicIngredient> ingredientList) {
-		return (ingredientList.size() <= 1 && !ingredientList.contains(null));
-	}
+    
+  /**
+   * Check whether the given list is valid
+   * 
+   * @param 	ingredientList
+   * 			The ingredientList to be checked
+   */
+	public abstract boolean isValidInput(List<AlchemicIngredient> ingredientList) ;
+		
+	
+    
+    
+	
+	
+    
+    
+	
 	/**********************************************************
      * laboratory
      **********************************************************/
@@ -282,33 +262,6 @@ public class Device {
 			throw new IllegalLaboratoryException("This device cannot be placed in the given laboratory",this);
 		}
 	
-	/**
-	 * Move this device into the given laboratory.
-	 *
-	 * @param   laboratory
-	 *          The laboratory where this device is moved to.
-	 * @post    This device is moved into the given laboratory
-	 *          | new.getLaboratory() == laboratory
-	 * @throws  IllegalLaboratoryException
-	 *          This device cannot have the given laboratory as the laboratory where this device can move into.
-	 *          | !canHaveAsLaboratory(laboratory)
-	 * @throws 	IllegalStateException
-	 * 			This device is already terminated
-	 * 			| isTerminated()
-	 * 
-	 */
-	@Raw @Model
-	public void moveTo(Laboratory laboratory)
-			throws IllegalLaboratoryException, IllegalStateException {
-		if (isTerminated()) 
-			throw new IllegalStateException("Device is terminated!");
-		if (!canHaveAsLaboratory(laboratory)) {
-			throw new IllegalLaboratoryException("This device cannot be placed in the given laboratory!",this);
-		}
-		/*remove device from laboratory   overwrite in subclasses*/
-		setLaboratory(laboratory);
-		
-	}
 	
 	/**********************************************************
      * Methods
@@ -318,36 +271,10 @@ public class Device {
 	 * Add an ingredient from a container to this device
 	 * 
 	 * @param 	container
-	 * 			The container containing the AlchemicIngredient
-	 * @post	If there isn't already an ingredient stored in this device and the given ingredient is stored in the same labo as this device
-	 * 			the ingredient is added to the device, removed from the storage of his laboratory and his container is deleted.
-	 * 			| if (this.countIngredients() > 1) and (haveSameLaboratory(container.getAlchemicIngredient()))
-	 * 			|	then ingredientList.add(container.getAlchemicIngredient()
-	 * 			|		 this.laboratory.removeIngredient(container.getAlchemicIngredient())
-	 * 			|		 container.setDelete(true)
-	 * @throws 	IllegalIngredientAdditionException("The device allow only one alchemic ingredient",this)
-	 * 			There already is an ingredient in this device
-	 * 			| this.countIngredients > 1
-	 * @throws 	DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory.",this);
-	 * 			The ingredient and device have different laboratory
-	 * 			| !haveSameLaboratory(container.getAlchemicIngredient())
+	 * 			The container containing the ingredient to be added to this device.
 	 */
-	public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException, DifferentLaboratoryException{
-		if (this.countIngredients() > 1) {
-    		throw new IllegalIngredientAdditionException("The device allows only one alchemic ingredient",this);
-    	}
-		else {
-			if (haveSameLaboratory(container.getAlchemicIngredient())) {
-				ingredientList.add(container.getAlchemicIngredient());
-				this.laboratory.removeIngredient(container.getAlchemicIngredient());
-				container.setDelete(true);
-			}
-			else {
-				throw new DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory.",this);
-			}
-		}
-
-	}
+	public abstract void addIngredientFrom(IngredientContainer container);
+		
 	
 	/**
 	 * Check whether an ingredient is stored in the same laboratory as this device
@@ -362,6 +289,7 @@ public class Device {
 	}
 	
 	
+
 	/**
 	 * Remove the result of a device after the operation has been executed.
 	 * 
@@ -390,18 +318,11 @@ public class Device {
 	
 	
 	/**
-	 * Execute the alchemicOperation of this device
-	 * 
-	 * @throws 	NoIngredientInDeviceException("There is no ingredient in this device",this)
-	 * 		  	The device does not have an ingredient
-	 * 			| ! (this.countIngredients() == 1)
-	 */	
-	public void executeAlchemicOperation() throws NoIngredientInDeviceException {
-		if (! (this.countIngredients() == 1)) {
-			throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
-		}
-		
-	}
+	 * Execute the alchemic operation.
+	 */
+	public abstract void executeAlchemicOperation(); 
+	
+	
 	
 	
 

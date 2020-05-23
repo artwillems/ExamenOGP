@@ -36,6 +36,8 @@ public class Transmogrifier extends Device{
 		setType("Transmogrifier");
 	}
 	
+	
+	
 	/*******************************
 	 * State
 	 ************************************/
@@ -256,6 +258,57 @@ public class Transmogrifier extends Device{
 	}
 	
 	
+	/**
+	 * Add an ingredient from a container to this device
+	 * 
+	 * @param 	container
+	 * 			The container containing the AlchemicIngredient
+	 * @post	If there isn't already an ingredient stored in this device and the given ingredient is stored in the same labo as this device
+	 * 			the ingredient is added to the device, removed from the storage of his laboratory and his container is deleted.
+	 * 			| if (this.countIngredients() >= 1) and (haveSameLaboratory(container.getAlchemicIngredient()))
+	 * 			|	then ingredientList.add(container.getAlchemicIngredient()
+	 * 			|		 this.laboratory.removeIngredient(container.getAlchemicIngredient())
+	 * 			|		 container.setDelete(true)
+	 * @throws 	IllegalIngredientAdditionException("The device allow only one alchemic ingredient",this)
+	 * 			There already is an ingredient in this device
+	 * 			| getIngredientList().size() >= 1
+	 * @throws 	DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory.",this);
+	 * 			The ingredient and device have different laboratory
+	 * 			| !haveSameLaboratory(container.getAlchemicIngredient())
+	 */
+	@Override
+	public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException, DifferentLaboratoryException{
+		if (getIngredientList().size() >= 1) {
+    		throw new IllegalIngredientAdditionException("The device allows only one alchemic ingredient",this);
+    	}
+		else {
+			if (haveSameLaboratory(container.getAlchemicIngredient())) {
+				ingredientList.add(container.getAlchemicIngredient());
+				getLaboratory().removeIngredient(container.getAlchemicIngredient());
+				container.setDelete(true);
+			}
+			else {
+				throw new DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory.",this);
+			}
+		}
+
+	}
+	
+	/**
+     * Check whether the given ingredientList is a valid ingredient list for this device
+     * @param 	ingredientList
+     * 			The ingredientList to be checked
+     * @return	true if and only if the ingredientList is smaller than or equal to one 
+     * 			and does not contain any null values.
+     * 			| result == (ingredientList.size() <= 1 && !ingredientList.contains(null))
+     */
+	public boolean isValidInput(List<AlchemicIngredient> ingredientList) {
+		return (ingredientList.size() <= 1 && !ingredientList.contains(null));
+	
+	}
+	
+	
+	
 	
 	/**
 	 * Execute the AlchemicOperation of this transmogrifier
@@ -266,18 +319,20 @@ public class Transmogrifier extends Device{
 	 * 			| getIngredientList().get(0).terminate()
 	 * 			| this.ingredientList.clear()
 	 * 			| this.ingredientList.add(result)
+	 * @throws
 	 */
 	@Override
-	public void executeAlchemicOperation() {
-		AlchemicIngredient result = setTransmogrifiedIngredient(getIngredientList().get(0));
-		getIngredientList().get(0).terminate();
-		this.ingredientList.clear();
-		this.ingredientList.add(result);
+	public void executeAlchemicOperation() throws NoIngredientInDeviceException{
+		if (getIngredientList().size()==1) {
+			AlchemicIngredient result = setTransmogrifiedIngredient(getIngredientList().get(0));
+			getIngredientList().get(0).terminate();
+			this.ingredientList.clear();
+			this.ingredientList.add(result);
+		}
+		else {
+			throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
+		}
 		
-		/**
-		 * ingredientsInLaboratory.remove(AlchemicIngredient ingredient); 
-		 * ingredientsInLaboratory.add(setTransmogrifiedIngredient);
-		 */ 
 		
 	}
 	

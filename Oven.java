@@ -10,6 +10,9 @@ import java.util.HashMap;
 /**
  * A class of ovens.
  * 
+ * @invar	Each device must have a valid ingredientList
+ * 			| isValidInput(getIngredientList)
+ * 
 * @author Jérôme D'hulst, Marie Levrau, Art Willems
 */
 
@@ -97,8 +100,60 @@ public class Oven extends Device {
 	/**********************************************************
 	 * methodes
 	 **********************************************************/
+	   /**
+     * Check whether the given ingredientList is a valid ingredient list for this device
+     * @param 	ingredientList
+     * 			The ingredientList to be checked
+     * @return	true if and only if the ingredientList is smaller than or equal to one 
+     * 			and does not contain any null values.
+     * 			| result == (ingredientList.size() <= 1 && !ingredientList.contains(null))
+     */
+	@Override
+	public boolean isValidInput(List<AlchemicIngredient> ingredientList) {
+		return (ingredientList.size() <= 1 && !ingredientList.contains(null));
 	
-	 
+	}
+	
+	
+	
+	/**
+	 * Add an ingredient from a container to this device
+	 * 
+	 * @param 	container
+	 * 			The container containing the AlchemicIngredient
+	 * @post	If there isn't already an ingredient stored in this device and the given ingredient is stored in the same labo as this device
+	 * 			the ingredient is added to the device, removed from the storage of his laboratory and his container is deleted.
+	 * 			| if (this.countIngredients() >= 1) and (haveSameLaboratory(container.getAlchemicIngredient()))
+	 * 			|	then ingredientList.add(container.getAlchemicIngredient()
+	 * 			|		 this.laboratory.removeIngredient(container.getAlchemicIngredient())
+	 * 			|		 container.setDelete(true)
+	 * @throws 	IllegalIngredientAdditionException("The device allow only one alchemic ingredient",this)
+	 * 			There already is an ingredient in this device
+	 * 			| this.countIngredients > 1
+	 * @throws 	DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory.",this);
+	 * 			The ingredient and device have different laboratory
+	 * 			| !haveSameLaboratory(container.getAlchemicIngredient())
+	 */
+	@Override
+	public void addIngredientFrom(IngredientContainer container) throws IllegalIngredientAdditionException, DifferentLaboratoryException{
+		if (getIngredientList().size() >= 1) {
+    		throw new IllegalIngredientAdditionException("The device allows only one alchemic ingredient",this);
+    	}
+		else {
+			if (haveSameLaboratory(container.getAlchemicIngredient())) {
+				ingredientList.add(container.getAlchemicIngredient());
+				getLaboratory().removeIngredient(container.getAlchemicIngredient());
+				container.setDelete(true);
+			}
+			else {
+				throw new DifferentLaboratoryException("The device and the ingredient have to be stored in the same laboratory.",this);
+			}
+		}
+
+	}
+	
+	
+	
 
     /**
 	 * Heat the ingredient.
@@ -107,7 +162,7 @@ public class Oven extends Device {
 	 * 			a higher temperature than the oven, the ingredient keeps his temperature. Otherwise
 	 * 			the ingredient get heated within a range of 5 percent of the ovenTemperature. Afterwards
 	 * 			the ingredient is added to the cleared list of this oven
-	 * 			| if (!this.countIngredients()<1)
+	 * 			| if (this.countIngredients()==1)
 	 * 			|	range =  (new Random().nextInt(10+1)) - 5
 	 * 			|	if (getOvenTemperature().getColdness()==0)
 	 * 			|		then  newHotness = getOvenTemperature().getHotness() * (1 + (range/100)) 
@@ -121,13 +176,11 @@ public class Oven extends Device {
      *			|		ingredient.changeTemp(newColdness,0)
      *			| this.getIngredientList().clear();
      *			|  this.getIngredientList().add(ingredient)
+     *@throws
 	 */
     @Override
     public void executeAlchemicOperation() throws NoIngredientInDeviceException{
-    	if (this.countIngredients() < 1) {
-    		throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
-    	}
-    	else {
+    	if (getIngredientList().size() == 1) {
     		int range = (new Random().nextInt(10+1)) - 5;
     		AlchemicIngredient ingredient = this.getIngredientList().get(0);
     		if (getOvenTemperature().getColdness() == 0) {
@@ -149,6 +202,10 @@ public class Oven extends Device {
     		this.getIngredientList().add(ingredient);
     	}
 		
+    	
+    		
+    	else {
+    		throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
 	}
     
     
