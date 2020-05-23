@@ -10,6 +10,8 @@ import java.util.Set;
 /**
  * A class of laboratories.
  *
+ * @invar	Each laboratory must have a valid capacity.
+ * 			| isValidLaboCapacity(getCapacity())
  * @author Jérôme D'hulst, Marie Levrau en willemsart
  *
  */
@@ -1083,20 +1085,15 @@ public class Laboratory{
 	}
 	
 	
-	public static boolean isValidOperation(String operation) {
-		return ((operation == "Add") || (operation == "heat") || (operation == "cool") || (operation == "mix"));
-	}
+
 	
-	public void execute(Recipe recipe,int number) throws IllegalOperationException {
+	public void execute(Recipe recipe,int number)  {
 		if (recipe.getOperationList().get(recipe.getOperationList().size() -1) != "mix" ){
 			recipe.getOperationList().add("mix");
 		}
 		
 		for (int i = 0; i < recipe.getOperationList().size(); i++) {
-			  if (!isValidOperation(recipe.getOperationList().get(i))){
-				  throw new IllegalOperationException("This is an illegal operation");
-			  }
-			  else if (recipe.getOperationList().get(i) == "Add") {
+			 if (recipe.getOperationList().get(i) == "Add") {
 				  String ingredientName = recipe.getNameIngredientList().get(0);
 				  int amount = number*(recipe.getAmountList().get(0));
 				  String unit = recipe.getUnitList().get(0);
@@ -1113,12 +1110,12 @@ public class Laboratory{
 				  
 			  }
 			  else if(recipe.getOperationList().get(i) == "heat") {
-				  IngredientContainer result = this.heat(this.getRecipeList().get(lastUsed)); /*container werd gestopt in recipeList, dus haal die eruit maar aan de hand van LastUsed*/
+				  IngredientContainer result = this.heat(this.getRecipeList().get(lastUsed)); 
 				  this.getRecipeList().remove(lastUsed);
 				  this.getRecipeList().add(result);
 			  }
 			  else if(recipe.getOperationList().get(i) == "cool") {
-				  IngredientContainer result = this.cool(this.getRecipeList().get(lastUsed)); /*container werd gestopt in recipeList, dus haal die eruit maar aan de hand van LastUsed*/
+				  IngredientContainer result = this.cool(this.getRecipeList().get(lastUsed)); 
 				  this.getRecipeList().remove(lastUsed);
 				  this.getRecipeList().add(result);
 			  }

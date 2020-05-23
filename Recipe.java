@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,9 +29,12 @@ public class Recipe {
 		return operationList;
 	}
 	
-	private void setOperationList(List<String> operationList) throws IllegalOperationException{
+	private void setOperationList(List<String> operationList) throws IllegalOperationException, IllegalListException{
 		if (this.operationList.size() < 1) {
-			throw new IllegalOperationException("There is no operation in this list.");
+			throw new IllegalListException("There is no operation in this list.");
+		}
+		else if (!isValidOperation()) {
+			throw new IllegalOperationException("This is an illegal operation");
 		}
 		else {
 			this.operationList = operationList;
@@ -37,6 +42,19 @@ public class Recipe {
 		
 	}
 	
+
+	
+	
+	public boolean isValidOperation() {
+		boolean result = true;
+		for (int i = 0; i < operationList.size(); i++) {
+			if (!operationList.get(i).contains("add") || !operationList.get(i).contains("heat") ||  !operationList.get(i).contains("cool") ||  !operationList.get(i).contains("mix")) {
+				result = false;
+				break;
+			}
+		}
+		return result;
+	}
 	
 	private List<String> nameIngredientList = null;
 	
