@@ -264,11 +264,13 @@ public class Transmogrifier extends Device{
 	 * @param 	container
 	 * 			The container containing the AlchemicIngredient
 	 * @post	If there isn't already an ingredient stored in this device and the given ingredient is stored in the same labo as this device
-	 * 			the ingredient is added to the device, removed from the storage of his laboratory and his container is deleted.
+	 * 			the ingredient is added to the device
 	 * 			| if (this.countIngredients() >= 1) and (haveSameLaboratory(container.getAlchemicIngredient()))
 	 * 			|	then ingredientList.add(container.getAlchemicIngredient()
-	 * 			|		 this.laboratory.removeIngredient(container.getAlchemicIngredient())
-	 * 			|		 container.setDelete(true)
+	 * @effect	After the addition of the ingredient to this device, the ingredient is removed from the storage of his laboratory
+	 *			| getLaboratory().removeIngredient(container.getAlchemicIngredient())
+	 * @effect	After the addition of the ingredient to this device, the container of this device is deleted
+	 *			| container.setDelete(true)
 	 * @throws 	IllegalIngredientAdditionException("The device allow only one alchemic ingredient",this)
 	 * 			There already is an ingredient in this device
 	 * 			| getIngredientList().size() >= 1

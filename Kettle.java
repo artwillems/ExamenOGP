@@ -36,6 +36,8 @@ public class Kettle extends Device{
 	 * 			| 	then getIngredientList().contains(container.getAlchemicIngredient())
 	 * @effect	If the ingredient is added to the kettle, its container is deleted.
 	 * 			| container.delete()
+	 * @effect	After the addition of the ingredient to this device, the ingredient is removed from the storage of his laboratory
+	 *			| getLaboratory().removeIngredient(container.getAlchemicIngredient())
 	 * @throws	DifferentLaboratoryException("The kettle and the ingredient have to be stored in the same laboratory",this)
 	 * 
 	 */
