@@ -35,7 +35,7 @@ class TransmogrifierTest {
 	
 	@BeforeClass
 	public void setUpImmutableFixture() {
-		standardTransLab = new Laboratory(40);
+		
 		typeMilk = new IngredientType("Milk","Liquid",0,20);
 		typeMilkList = new ArrayList<IngredientType>();
 		typeMilkList.add(typeMilk);
@@ -45,6 +45,7 @@ class TransmogrifierTest {
 	
 	@Before
 	public void setUpMutableFixture() {
+		standardTransLab = new Laboratory(40);
 		standardTrans = new Transmogrifier(standardTransLab);
 		milk = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Liquid");
 	}
