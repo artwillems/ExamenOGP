@@ -1,13 +1,32 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Model;
+import be.kuleuven.cs.som.annotate.Raw;
+/**
+ * A class of ingredient containers.
+ *
+ * @invar	Each ingredient container must have a valid capacity amount. 
+ * 			| isValidAmount()
+ * @invar	Each ingredient container must have a valid capacity unit.
+ * 			| isValidCapUnit(String capUnit)
+ * @invar	Each ingredient container must have a valid capacity state.
+ * 			| isValidState
+ * 
+ * @author Jérôme D'hulst, Marie Levrau en willemsart
+ *
+ */
 public class IngredientContainer {
 	
 	/**********************************************************
      * Constructors
      **********************************************************/
 	/**
-	 * Initialize a new ingredient container with a given alchemicIngredient, capacity amount, capacity unit, capacity state. 
+	 * Initialize a new ingredient container with a given alchemicIngredient, capacity amount, capacity unit and capacity state. 
 	 * 
 	 * @param 	ingredient
 	 * 			The alchemic ingredient of the new ingredientContainer.
@@ -43,7 +62,8 @@ public class IngredientContainer {
 	 * 			The capacity unit of the new ingredientContainer.
 	 * @param 	capState
 	 * 			The capacity state of the new ingredientContainer.
-	 * 
+	 * @effect	This new ingredientContainer is initialized with a capacity amount, capacity unit and capacity state.
+	 * 			| this(null, capAmount, capUnit, capState);
 	 * 
 	 * */
 	public IngredientContainer(int capAmount, String capUnit, String capState) {
@@ -73,13 +93,14 @@ public class IngredientContainer {
 	 * @param 	ingredient
 	 * 			The new alchemic ingredient for this ingredientContainer.
 	 * 
-	 * @throws 	IllegalStateException
+	 * @throws 	IllegalStateException("The state of the alchemic ingredient is not the same state as the capacity")
 	 *         	The given alchemic ingredient has not the same state as the ingredientContainer
 	 *         	| !isValidState()
-	 * @throws 	IllegalAmountException
+	 * @throws 	IllegalAmountException("The amount of alchemic ingredient is too big for this container")
 	 *         	The amount of the given alchemic ingredient is too big for this ingredientContainer
 	 *         	| !isValidAmount()
 	 */
+	@Model
 	private void setIngredient(AlchemicIngredient ingredient) throws IllegalStateException, IllegalAmountException{
 		if (!isValidState()){
 			throw new IllegalStateException("The state of the alchemic ingredient is not the same state as the capacity");
@@ -107,13 +128,19 @@ public class IngredientContainer {
 	 */
 	@Basic @Raw
 	public int getCapAmount() {
-		return this.capAmount;
+		return capAmount;
 	}
 	
-	/*controleren of de hoeveelheid van alchemicIngredient volledig in hoeveelheid van capacity kan, eerst alles omzetten in spoons om zo te controleren*/
 	
+	/**
+	 * Check whether this ingredientContainer can contain the amount of alchemic ingredient.
+	 *
+	 *@return True if the amount (in spoons) of the alchemic ingredient is less than or equal to the capacity amount (in spoons) of this ingredient container.
+	 *		  | result ==
+	 *		  | 	(this.getAlchemicIngredient().getQuantityInSpoons() <= this.getQuantityCapInSpoons())
+	 */
 	public boolean isValidAmount() {
-		return (this.getAlchemicIngredient().getQuantityInSpoons() <= this.getQuantityCapInSpoons()); 
+		return (this.getAlchemicIngredient().getQuantityInSpoons() <= this.getAmountCapInSpoons()); 
 	}
 	
 	/**
@@ -122,107 +149,38 @@ public class IngredientContainer {
 	 * @param 	capAmount
 	 * 			The new capacity amount for this ingredientContainer.
 	 * 
-	 * @throws 	IllegalCapacityException
-	 *         	The given capacity amount for this ingredientContainer is not valid
-	 *         	| !isValidCapacity()
+	 * @throws 	IllegalCapacityException("The capacity amount is illegal")
+	 *         	The given capacity amount for this ingredientContainer is illegal
+	 *         	| !isValidAmount()
 	 */
+	@Model
 	private void setCapAmount(int capAmount) throws IllegalCapacityException {
-		if (!isValidCapacity()){
-			throw new IllegalCapacityException("The capacity is illegal");
+		if (!isValidAmount()){
+			throw new IllegalCapacityException("The capacity amount is illegal");
 		}
 		else {
 			this.capAmount = capAmount;
 		}
 	}
 	
-	/**********************************************************
-     * capacity unit
-     **********************************************************/
-	
-	private String capUnit = null;
-	
-	public String getCapUnit() {
-		return this.capUnit;
-	}
-	
-	private void setCapUnit(String capUnit) throws IllegalCapacityException {
-		if (!isValidCapacity()){
-			throw new IllegalCapacityException("The capacity is illegal");
-		}
-		else {
-			this.capUnit = capUnit;
-		}
-	}
-	
-	
-	/**********************************************************
-     * capacity state
-     **********************************************************/
-	
-	private String capState = null;
-	
-	public String getCapState(){
-		return this.capState;
-	}
-	
-	/*Controleer of zowel de state van ingredient als state van capacity gelijk zijn, want het kan niet zijn dat je een liquid wil stockeren in een capacity voor powders*/
-	/*indien geen validstate throw error bij setAlchemicIngredient*/
-	public boolean isValidState() {
-		return (this.getAlchemicIngredient().getState() == this.getCapState());
-	}
-	
-	/*legale containers voor liquid*/
-	private static Map<String,Integer> legalCapacityLiquid = new HashMap<String,Integer>(){
-		{
-			put("spoon",1);
-			put("vial",1);
-			put("bottle",1);
-			put("jug",1);
-			put("barrel",1);
-		}
-	};
-	
-	/*legale containers voor powders*/
-	private static Map<String,Integer> legalCapacityPowder = new HashMap<String,Integer>(){
-		{
-			put("spoon",1);
-			put("sachet",1);
-			put("box",1);
-			put("sack",1);
-			put("chest",1);
-		}
-	};
-	
-	/*controleren of het een geldig container is, dus bijvoorbeel voor liquid dat het enkel [1 spoon, 1 vial, 1 bottle, 1 jug, 1 barrel] kan zijn*/
-	
-	public boolean isValidCapacity() {
-		if (this.getCapState() == "Liquid") {
-			/*kijk of je capaciteit in de legale lijst van legalCapacityLiquid zit*/
-			for (Map.Entry<String,Integer> entry: legalCapacityLiquid.entrySet()) {
-				if (entry.getKey() == this.getCapUnit()) {
-					if(entry.getValue() == this.getCapAmount()) {
-						return true;
-					}
-				}
-			}
-		}
-		else {
-			for (Map.Entry<String,Integer> entry: legalCapacityPowder.entrySet()) {
-				if (entry.getKey() == this.getCapUnit()) {
-					if(entry.getValue() == this.getCapAmount()) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	
-
-	
-	/*zet de amount van je capacity van constructor om in spoons*/
-	public int getQuantityCapInSpoons() {
+	/**
+	 * Returns the capacity amount of this ingredient container measured in the unit of spoons.
+	 * 
+	 * @return 	Return the capacity amount of this ingredient container in spoons using the Map with transitions depending on the state.
+	 * 			If an ingredient is a Liquid then the transitions of the liquidCapInSpoons are used otherwise the transitions of 
+	 * 			the powderCapInSpoons are used
+	 * 			| result = this.getCapAmount()
+	 * 			| if (getState() == "Liquid"
+	 * 			|	then for every entry in liquidCapInSpoons
+	 * 			|		if (entry.getKey() == getUnit())
+	 * 			|			then result == result * entry.getValue()
+	 * 			| else 
+	 * 			|		for every entry in powderCapInSpoons
+	 * 			|		if (entry.getKet() == getUnit())
+	 * 			|			then result == result * entry.getValue()
+	 * 		
+	 */
+	public int getAmountCapInSpoons() {
 		int result = this.getCapAmount();
 		if (getCapState()=="Liquid") {
 			for (Map.Entry<String,Integer> entry: liquidCapInSpoons.entrySet()) {
@@ -243,7 +201,9 @@ public class IngredientContainer {
 	
 
 
-	/*zet de mogelijke capaciteiten van liquid in spoons*/
+	/**
+	 * This map states the different transitions between a liquid capacity unit and a spoon. 
+	 */
 	private static Map<String,Integer> liquidCapInSpoons = new HashMap<String,Integer>(){
 		{
 			put("vial",5);
@@ -254,7 +214,9 @@ public class IngredientContainer {
 		}
 	};
 	
-	/*zet de mogelijke capaciteiten van powder in spoons*/
+	/**
+	 * This map states the different transitions between a powder capacity unit and a spoon.
+	 */
 	private static Map<String,Integer> powderCapInSpoons = new HashMap<String,Integer>(){
 		{
 	
@@ -266,17 +228,142 @@ public class IngredientContainer {
 		}
 	};
 	
+	/**********************************************************
+     * capacity unit
+     **********************************************************/
 	
-	private void setCapState(String capState) {
-			this.capState = capState;
+	/**
+	 * Variable referencing the capacity unit of this ingredientContainer.
+	 */
+	private String capUnit = null;
+	
+	/**
+	 * Variable referencing the valid capacity units of ingredient containers for liquids.
+	 */
+	private static List<String> liquidCapUnits = new ArrayList<String>(Arrays.asList("spoon","vial","bottle","jug","barrel"));
+	
+	
+	/**
+	 * Variable referencing the valid capacity units of ingredient containers for powders.
+	 */
+	private static List<String> powderCapUnits = new ArrayList<String>(Arrays.asList("spoon","sachet","box","sack","chest"));
+	
+	/**
+	 * Return the list of valid capacity liquid units.
+	 */
+	@Raw @Basic
+	public static List<String> getLiquidCapUnits(){
+		return liquidCapUnits;
+	}
+	
+	/**
+	 * Return the list of valid capacity powder units.
+	 */
+	@Raw @Basic
+	public static List<String> getPowderCapUnits(){
+		return powderCapUnits;
+		
+	}
+	
+	/**
+	 * Return the capacity unit of this ingredientContainer.
+	 */
+	@Basic @Raw
+	public String getCapUnit() {
+		return capUnit;
+	}
+	
+	/**
+	 * Set the capacity unit of this ingredientContainer to the given capacity unit.
+	 *
+	 * @param 	capUnit
+	 * 			The new capacity unit for this ingredientContainer.
+	 * 
+	 * @throws 	IllegalCapacityException("The capacity unit is illegal")
+	 *         	The given capacity unit for this ingredientContainer is illegal
+	 *         	| !isValidCapUnit(capUnit)
+	 */
+	@Model
+	private void setCapUnit(String capUnit) throws IllegalCapacityException {
+		if (!isValidCapUnit(capUnit)){
+			throw new IllegalCapacityException("The capacity unit is illegal");
 		}
+		else {
+			this.capUnit = capUnit;
+		}
+	}
 	
-
-
+	
+	/**
+	 * Check whether the given unit is a valid unit for this ingredient container depending
+	 * on its state (powder or liquid).
+	 * 
+	 * @param 	capUnit
+	 * 			The capacity unit to check.
+	 * @return	True if this capacity unit is a powder unit and if the ingredient container is made for a powder or  
+	 * 			if the capacity unit is a liquid unit and the ingredient is container is made for a liquid.
+	 * 			| if (this.getCapState() == "Powder")
+	 * 			|	then result == getPowderCapUnits().contains(capUnit)
+	 * 			| 	else result == getLiquidCapUnits().contains(capUnit) 
+	 * 
+	 */
+	@Raw
+	public boolean isValidCapUnit(String capUnit) {
+		if (this.getCapState() == "Powder") {
+			return getPowderCapUnits().contains(capUnit);
+		}
+		else {
+			return getLiquidCapUnits().contains(capUnit);
+		}
+	}
 	
 	
 	
-
+	/**********************************************************
+     * capacity state
+     **********************************************************/
+	
+	/**
+	 * Variable referencing the capacity state of this ingredientContainer.
+	 */
+	private String capState = null;
+	
+	/**
+	 * Return the capacity state of this ingredientContainer.
+	 */
+	@Basic @Raw
+	public String getCapState(){
+		return this.capState;
+	}
+	
+	/**
+	 * Check whether the state of this ingredientContainer is valid.
+	 *
+	 * @return True if the state of this ingredient container is the same as the alchemic ingredient.
+	 *		   | result ==
+	 *		   | 	(this.getAlchemicIngredient().getState() == this.getCapState())
+	 */
+	public boolean isValidState() {
+		return (this.getAlchemicIngredient().getState() == this.getCapState());
+	}
+	
+	/**
+	 * Set the capacity state of this ingredientContainer to the given capacity state.
+	 *
+	 * @param 	capState
+	 * 			The new capacity state for this ingredientContainer.
+	 * 
+	 * @throws 	IllegalStateException("The capacity state of this ingredient container is illegal")
+	 *         	The given capacity state for this ingredientContainer is illegal
+	 *         	| !isValidState()
+	 */
+	@Model
+	private void setCapState(String capState) throws IllegalStateException{
+		if (!isValidState()) {
+			throw new IllegalStateException("The capacity state of this ingredient container is illegal");
+		}
+		this.capState = capState;
+	}
 	
 	  
 	  /**********************************************************************
@@ -306,7 +393,7 @@ public class IngredientContainer {
 	   * 			this ingredient container.
 	   * 			| new.isDeleted() == isDeleted
 	   */
-	  
+	  @Model
 	  public void setDelete(boolean isDeleted) {
 	  	this.isDeleted = isDeleted;
 	  }
@@ -323,7 +410,6 @@ public class IngredientContainer {
 	   *			The ingredient container has already been deleted.
 	   *			| this.isDeleted() == true
 	   */
-	  
 	  public void delete() throws AlreadyDeletedException{
 	  	if (this.isDeleted() == false) {
 	      	this.setDelete(true);	
