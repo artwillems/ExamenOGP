@@ -206,4 +206,6 @@ public class CoolingBox extends Device {
     
     
 }
+    
+}
 	
