@@ -986,7 +986,7 @@ public class AlchemicIngredient {
 	 * 			old laboratory first.
 	 * 			| if (getLaboratory() != null)
 	 * 			|	then getLaboratory.removeIngrediet(this)
-	 * 			| IngredientContainer container = new IngredientContainer(this,getQuantity(),getUnit(),getState());
+	 * 			|  IngredientContainer container = new IngredientContainer(this,1,this.determineCapUnit(),this.getState());
 				|  laboratory.storeNewIngredient(container);	
 	 * 			
 	 * @throws 	InvalidLaboratoryException("This ingredient can not have this laboratory as its laboratory",this)
@@ -998,7 +998,7 @@ public class AlchemicIngredient {
 			if (getLaboratory() != null) {
 				getLaboratory().removeIngredient(this);
 			}
-			IngredientContainer container = new IngredientContainer(this,getQuantity(),getUnit(),getState());
+			IngredientContainer container = new IngredientContainer(this,1,this.determineCapUnit(),this.getState());
 			laboratory.storeNewIngredient(container);
 			this.laboratory = laboratory;
 			

@@ -59,6 +59,7 @@ public abstract class Device {
 	 * @post	The given type is registered as the type of this device
 	 * 			| new.getType() == type
 	 */
+	@Model
 	protected void setType(String type) {
 		this.type = type;
 	}
@@ -66,6 +67,7 @@ public abstract class Device {
 	/**
 	 * Return the type of this device.
 	 */
+	@Basic @Raw
 	protected String getType() {
 		return type;
 	}
@@ -247,6 +249,7 @@ public abstract class Device {
 	 * 			This device can not be moved to the given laboratory
 	 * 			| !canHaveAsLaboratory(laboratory)
 	 */
+	@Model
 	private void setLaboratory(Laboratory laboratory) throws IllegalLaboratoryException {
 		if (canHaveAsLaboratory(laboratory)) {
 			if (this.getType()=="Oven")
