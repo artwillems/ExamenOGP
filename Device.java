@@ -1,3 +1,5 @@
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +84,7 @@ public abstract class Device {
     /**
      * Return the ingredientList of this device
      */
+    @Basic @Raw
     public List<AlchemicIngredient> getIngredientList(){
     	return this.ingredientList;
     }
@@ -293,26 +296,36 @@ public abstract class Device {
 	/**
 	 * Remove the result of a device after the operation has been executed.
 	 * 
-	 * @return	if the device contains one AlchemicIngredient, a container containing the result AlchemicIngredient is returned.
-	 * 			| if (ingredientList.size() == 1)
+	 * @return	if the device contains one AlchemicIngredient and has not been terminated, a container containing the result AlchemicIngredient is returned.
+	 * 			| 	if (!isTerminated())
+	 * 			|	if (ingredientList.size() == 1)
 	 * 			|	then IngredientContainer newContainer = new IngredientContainer(ingredientList.get(0),1,ingredientList.get(0).determineCapUnit(),ingredientList.get(0).getState());
 	 *			|		 result == newContainer
 	 * @post	After the ingredient has been put in a container, the ingredientList of this device is emptied.
 	 * 			| ingredientList.clear()	
-	 * @throws 	IllegalResultException(There can only be returned one total result from the device")
+	 * @throws 	IllegalResultException("There can only be returned one total result from the device")
 	 * 			This device has more than one ingredient or no ingredient to return
 	 * 			| ! (ingredientList.size() == 1)
+	 * @throws	IllegalStateException("This device has been terminated")
+	 * 			This device is terminated
+	 * 			| isTerminated()
 	 * 
 	 */
-	public IngredientContainer removeAlchemicResult() throws IllegalResultException {
-		if (ingredientList.size() == 1 ) {
-			IngredientContainer newContainer = new IngredientContainer(ingredientList.get(0),1,ingredientList.get(0).determineCapUnit(),ingredientList.get(0).getState());
-			ingredientList.clear();
-			return newContainer;
+	public IngredientContainer removeAlchemicResult() throws IllegalResultException, IllegalStateException {
+		
+		if (!isTerminated()) {
+			if (ingredientList.size() == 1 ) {
+				IngredientContainer newContainer = new IngredientContainer(ingredientList.get(0),1,ingredientList.get(0).determineCapUnit(),ingredientList.get(0).getState());
+				ingredientList.clear();
+				return newContainer;
+			}
+			else {
+			
+				throw new IllegalResultException("There can only be returned one total result from the device");
+			}
 		}
 		else {
-			
-			throw new IllegalResultException("There can only be returned one total result from the device");
+			throw new IllegalStateException("This device has been terminated");
 		}
 	}
 	

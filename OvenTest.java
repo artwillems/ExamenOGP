@@ -23,6 +23,7 @@ import java.util.HashMap;
  */
 public class OvenTest{
 	
+	private static final String expected = null;
 	private static Laboratory laboOfMilkOven, laboOfLegalConstructorTestOven, laboOfIllegalConstructorTestOven;
 	private static IngredientType typeMilk;
 	private static List<IngredientType> typeMilkList;

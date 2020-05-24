@@ -25,7 +25,7 @@ import java.util.HashMap;
  */
 class TransmogrifierTest {
 	
-	
+	private static final String expected = null;
 	private static Laboratory standardTransLab;
 	private static Transmogrifier standardTrans;
 	private static AlchemicIngredient milk, resultIngredient;

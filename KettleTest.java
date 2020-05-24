@@ -25,6 +25,7 @@ import java.util.HashMap;
  */
 class KettleTest {
 	
+	private static final String expected = null;
 	private static Kettle standardKettle;
 	private static Laboratory standardKettleLabo, differentKettleLabo;
 	private static IngredientType typeMilk, typeCola, typeCoffee;
@@ -179,7 +180,7 @@ class KettleTest {
 	}
 	
 	@Test
-	public void TestIngredientTypeList() {
+	public void TestAddIngredientToDevice() {
 		standardKettle = new Kettle(standardKettleLabo);
 		coffeeContainer = new IngredientContainer(coffee,coffee.getQuantity(),coffee.getUnit(),coffee.getState());
 		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());

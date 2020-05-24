@@ -25,6 +25,7 @@ import java.util.HashMap;
  */
 class CoolingBoxTest {
 	
+	private static final String expected = null;
 	private static Laboratory laboOfMilkCoolingBox, laboOfLegalConstructorTestBox, laboOfIllegalConstructorTestBox;
 	private static IngredientType typeMilk;
 	private static List<IngredientType> typeMilkList;

@@ -36,10 +36,11 @@ public class DeviceTest {
 	
 	@BeforeClass
 	public static void setUpImmutableFixture() {
-		laboratoryOfTerminatedDevice = new Laboratory(10);
+		
 		temperatureSetting = new ArrayList<Long>();
 		temperatureSetting.add((long) 0);
 		temperatureSetting.add((long) 20);
+		
 		terminatedDevice = new Oven(laboratoryOfTerminatedDevice,temperatureSetting);
 		terminatedDevice.terminate();
 		
@@ -50,21 +51,6 @@ public class DeviceTest {
 		typeSaltList = new ArrayList<IngredientType>();
 		typeSaltList.add(saltType);
 		
-		milk = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Liquid");
-		salt = new AlchemicIngredient(30,"spoon",typeSaltList,(long) 0, (long) 40, "Powder");
-		
-		laboratoryOfEmptyDevice = new Laboratory(30);
-		laboratoryOfMilkDevice = new Laboratory(20);
-		laboratoryOfMilkDevice.addIngredient(milk);
-		laboratoryOfEmptyDevice.addIngredient(salt);
-		
-		
-		milkEmptyDevice = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Liquid");
-		saltEmptyDevice = new AlchemicIngredient(30,"spoon",typeSaltList,(long) 0, (long) 30, "Liquid");
-		
-		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
-		saltContainer = new IngredientContainer(salt,salt.getQuantity(),salt.getUnit(),salt.getState());
-		
 		
 		
 	}
@@ -74,8 +60,26 @@ public class DeviceTest {
 	
 	@Before
 	public void setUpFixture() {
+		laboratoryOfTerminatedDevice = new Laboratory(10);
 		emptyDevice = new Oven(laboratoryOfEmptyDevice,temperatureSetting);
 		deviceWithMilk = new Oven(laboratoryOfMilkDevice,temperatureSetting);
+		
+		
+		
+		milk = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Liquid");
+		salt = new AlchemicIngredient(30,"spoon",typeSaltList,(long) 0, (long) 40, "Powder");
+		
+		milkEmptyDevice = new AlchemicIngredient(20,"spoon",typeMilkList,(long) 0, (long) 30, "Liquid");
+		saltEmptyDevice = new AlchemicIngredient(30,"spoon",typeSaltList,(long) 0, (long) 30, "Liquid");
+		
+		milkContainer = new IngredientContainer(milk,milk.getQuantity(),milk.getUnit(),milk.getState());
+		saltContainer = new IngredientContainer(salt,salt.getQuantity(),salt.getUnit(),salt.getState());
+		
+		laboratoryOfEmptyDevice = new Laboratory(30);
+		laboratoryOfMilkDevice = new Laboratory(20);
+		laboratoryOfMilkDevice.storeNewIngredient(milkContainer);
+		laboratoryOfEmptyDevice.storeNewIngredient(saltContainer);
+		
 	}
 	
 	
@@ -86,20 +90,26 @@ public class DeviceTest {
 		constructorTestDevice = new Oven(validLaboOfConstructorTestDevice,temperatureSetting);
 		assertEquals(validLaboOfConstructorTestDevice,constructorTestDevice.getLaboratory());
 		assertEquals("Oven",constructorTestDevice.getType());
-		assertEquals((int) 0, constructorTestDevice.countIngredients());
+		assertEquals((int) 0, constructorTestDevice.getIngredientList().size());
+		
 		
 	}
 	
-	/*
-	@Test (expected InvalidIngredientListException.class)
-	public void testConstructorInvalidLaboratory{
-		
-	}
-	*/
+	
 	
 	
 	@Test
 	public void testCanBeTerminated_Illegal_alreadyTerminated() {
+		assertTrue(terminatedDevice.isTerminated());
+	}
+	
+	@Test (expected IllegalStateException("This device cannot be terminated"))
+	public void testTerminateTerminatedDevice() {
+		terminatedDevice.terminate();
+		
+	}
+	
+	public void testTerminateDevice() {
 		assertTrue(terminatedDevice.isTerminated());
 	}
 	
@@ -114,24 +124,24 @@ public class DeviceTest {
 	}
 	
 	
-	@Test (expected IllegalStateException("Device is terminated!").class);
-	public void moveTerminatedDevice() {
-		terminatedDevice.moveTo(laboratoryOfMilkDevice);
-		
-	}
 	
-	@Test (expected IllegalLaboratoryException("This device cannot be placed in the given laboratory",this).class);
-	public void moveToIllegalLaboratory() {
-		emptyDevice.moveTo(null);
-	}
-	
+
 	
 	
 	
 	@Test
-	public void testInValidInput() {
-		emptyList = new ArrayList<AlchemicIngredient>();
-		assertFalse(emptyDevice.isValidInput(emptyList));
+	public void testInValidInputNullValue() {
+		testList = new ArrayList<AlchemicIngredient>();
+		testList.add(null);
+		assertFalse(emptyDevice.isValidInput(testList));
+	}
+	
+	@Test
+	public void testInvalidInputMultipleIngredients() {
+		testList = new ArrayList<AlchemicIngredient>();
+		testList.add(milk);
+		testList.add(salt);
+		assertFalse(emptyDevice.isValidInput(testList));
 	}
 	
 	
@@ -186,10 +196,21 @@ public class DeviceTest {
 	
 	
 	@Test
-	public void testRemoveAlchemicResult() {
+	public void testValidRemoveAlchemicResult() {
 		resultMilkDevice = deviceWithMilk.removeAlchemicResult();
 		assertEquals(resultMilkDevice.getAlchemicIngredient(),milk);
 		assertTrue(deviceWithMilk.getIngredientList().isEmpty());
+	}
+	
+	@Test (expected IllegalResultException("There can only be returned one total result from the device"))
+	public void testRemoveAlchemicResultFromEmptyDevice() {
+		emptyDevice = new Oven(laboratoryOfEmptyDevice,temperatureSetting);
+		milkContainer = emptyDevice.removeAlchemicResult();
+	}
+	
+	@Test (expected IllegalStateException("This device has been terminated"))
+	public void testRemoveAlchemicResultFromTerminatedDevice() {
+		milkContainer = terminatedDevice.removeAlchemicResult();
 	}
 	
 	
