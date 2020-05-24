@@ -264,7 +264,7 @@ public class Kettle extends Device{
 	 * 
 	 * @post	The new ingredient is formed with the correct characteristics
 	 * 			newIngredient = new AlchemicIngredient(quantity,"spoon",ingredientTypeList,temperature.get(0),temperature.get(1),state);
-	 * @post	After the operation a new ingredient has been formed by combining the other ingredients in to one
+	 * @effect	After the operation a new ingredient has been formed by combining the other ingredients in to one
 	 * 			Therefore the other ingredients don't exist anymore and are terminated. This one ingredient is than added 
 	 * 			to the cleared ingredientList of this kettle
 	 * 			| for an i in getingredientList().size()

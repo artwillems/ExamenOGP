@@ -6,6 +6,9 @@ import be.kuleuven.cs.som.annotate.Raw;
 /**
  * A class of cooling boxes.
  * 
+ * @invar	Each device must have a valid ingredientList
+ * 			| isValidInput(getIngredientList)
+ * 
 * @author Jérôme D'hulst, Marie Levrau, Art Willems
 */
 
@@ -152,10 +155,9 @@ public class CoolingBox extends Device {
 	  /**
 	   * Heat the ingredient.
 	   * 
-	   * @post	if the device has an ingredient to use, the ingredient is cooled. If the ingredient has 
+	   * @effect	if the device has an ingredient to use, the ingredient is cooled. If the ingredient has 
 	   * 			a lower temperature than the coolingBox, the ingredient keeps his temperature. Otherwise
-	   * 			the ingredient gets cooled to the coolingBoxTemperature. Afterwards
-	   * 			the ingredient is added to the cleared list of this coolingbox
+	   * 			the ingredient gets cooled to the coolingBoxTemperature. 
 	   * 			| if (this.countIngredients()==1)
 	   * 			|	if (getCoolingBoxTemperature().getColdness()==0)
 	   * 			|		then  newHotness = getCoolingBoxTemperature().getHotness()
@@ -167,8 +169,9 @@ public class CoolingBox extends Device {
 	   * 			|		if (ingredient.getTemperature().getColdness() > newColdness)
 	   * 			|		ingredient.changeTemp(0, 0)
 	   *			|		ingredient.changeTemp(newColdness,0)
-	   *			| this.getIngredientList().clear();
-	   *			|  this.getIngredientList().add(ingredient)    
+	   * @post		If the size of the list is equal to one the modified ingredient is added to the emptied list
+	   * 			| this.getIngredientList().clear();
+	   *			| this.getIngredientList().add(ingredient)   		 
 	   * @throws	NoIngredientInDeviceException("There is no ingredient in this device",this)
 	   * 			The coolingBox does not have an ingredient
 	   * 			| this.countIngredients()<1

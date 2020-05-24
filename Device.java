@@ -91,7 +91,7 @@ public abstract class Device {
     
     
   /**
-   * Check whether the given list is valid
+   * Check whether the given list is valid (abstract)
    * 
    * @param 	ingredientList
    * 			The ingredientList to be checked
@@ -265,13 +265,26 @@ public abstract class Device {
 			throw new IllegalLaboratoryException("This device cannot be placed in the given laboratory",this);
 		}
 	
-	
+		/**
+		 * Check whether an ingredient is stored in the same laboratory as this device
+		 * 
+		 * @param 	ingredient
+		 * 			The ingredient to be checked
+		 * @return	True if and only if the laboratories are equal.
+		 * 			| result == (getLaboratory() == ingredient.getLaboratory())
+		 */
+		public boolean haveSameLaboratory(AlchemicIngredient ingredient) {
+			return (getLaboratory() == ingredient.getLaboratory());
+		}
+		
+		
+		
 	/**********************************************************
      * Methods
      **********************************************************/
 	
 	/**
-	 * Add an ingredient from a container to this device
+	 * Add an ingredient from a container to this device (abstract)
 	 * 
 	 * @param 	container
 	 * 			The container containing the ingredient to be added to this device.
@@ -279,17 +292,7 @@ public abstract class Device {
 	public abstract void addIngredientFrom(IngredientContainer container);
 		
 	
-	/**
-	 * Check whether an ingredient is stored in the same laboratory as this device
-	 * 
-	 * @param 	ingredient
-	 * 			The ingredient to be checked
-	 * @return	True if and only if the laboratories are equal.
-	 * 			| result == (getLaboratory() == ingredient.getLaboratory())
-	 */
-	public boolean haveSameLaboratory(AlchemicIngredient ingredient) {
-		return (getLaboratory() == ingredient.getLaboratory());
-	}
+	
 	
 	
 
@@ -331,7 +334,7 @@ public abstract class Device {
 	
 	
 	/**
-	 * Execute the alchemic operation.
+	 * Execute the alchemic operation. (abstract)
 	 */
 	public abstract void executeAlchemicOperation(); 
 	

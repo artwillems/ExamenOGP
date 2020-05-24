@@ -4,9 +4,13 @@ import java.util.Map;
 import be.kuleuven.cs.som.annotate.*;
 
 
+
 /**
  * A class to transform the state of an AlchemicIngredient and with it its
  * quantity and IngredientContainer
+ * 
+ * @invar	Each device must have a valid ingredientList
+ * 			| isValidInput(getIngredientList)
  */
 
 /**

@@ -160,10 +160,9 @@ public class Oven extends Device {
     /**
 	 * Heat the ingredient.
 	 * 
-	 * @post	if the device has an ingredient to use, the ingredient is heated. If the ingredient has 
+	 * @effect	if the device has an ingredient to use, the ingredient is heated. If the ingredient has 
 	 * 			a higher temperature than the oven, the ingredient keeps his temperature. Otherwise
-	 * 			the ingredient get heated within a range of 5 percent of the ovenTemperature. Afterwards
-	 * 			the ingredient is added to the cleared list of this oven
+	 * 			the ingredient get heated within a range of 5 percent of the ovenTemperature.
 	 * 			| if (this.countIngredients()==1)
 	 * 			|	range =  (new Random().nextInt(10+1)) - 5
 	 * 			|	if (getOvenTemperature().getColdness()==0)
@@ -176,9 +175,11 @@ public class Oven extends Device {
 	 * 			|		if (ingredient.getTemperature().getColdness() > newColdness)
 	 * 			|		ingredient.changeTemp(0, 0)
      *			|		ingredient.changeTemp(newColdness,0)
-     *			| this.getIngredientList().clear();
-     *			|  this.getIngredientList().add(ingredient)
-     *@throws
+     * @post	After the heating of the ingredient, the list of this device is emptied and the ingredient is added to the list
+     * 			this.getIngredientList().clear();
+    			this.getIngredientList().add(ingredient);
+     *@throws 	NoIngredientInDeviceException("There is no ingredient or more than two ingredients in this device",this)
+     *			(getIngredientList().size() == 1)
 	 */
     @Override
     public void executeAlchemicOperation() throws NoIngredientInDeviceException{
@@ -207,7 +208,7 @@ public class Oven extends Device {
     	
     		
     	else {
-    		throw new NoIngredientInDeviceException("There is no ingredient in this device",this);
+    		throw new NoIngredientInDeviceException("There is no ingredient or more than two ingredients in this device",this);
 	}
     
     
