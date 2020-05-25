@@ -31,7 +31,7 @@ public class DeviceTest {
 	private static AlchemicIngredient milk, salt, milkEmptyDevice, saltEmptyDevice;
 	private static List<IngredientType> typeMilkList, typeSaltList;
 	private static List<Long> temperatureSetting;
-	private static List<AlchemicIngredient> emptyList, listWithMilk;
+	private static List<AlchemicIngredient> emptyList, listWithMilk, testList;
 	private static IngredientContainer milkContainer, saltContainer, resultMilkDevice;
 	
 	@BeforeClass

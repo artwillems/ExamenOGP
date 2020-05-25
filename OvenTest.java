@@ -71,19 +71,19 @@ public class OvenTest{
 	@Test 
 	public void testConstructorLaboratoryTemperatureSetting_IllegalTemperature() {
 		illegalConstructorTestOven = new Oven(laboOfIllegalConstructorTestOven,invalidTemperatureSetting);
-		assertFalse(illegalConstructorTestOven.getOvenTemperature().getColdness(),(long) 30);
-		assertFalse(illegalConstructorTestOven.getOvenTemperature().getHotness(),(long) 30);
-		assertTrue(illegalConstructorTestOven.getOvenTemperature().getColdness(),(long) 0);
-		assertTrue(illegalConstructorTestOven.getOvenTemperature().getHotness(),(long) 20);
+		assertEquals(illegalConstructorTestOven.getOvenTemperature().getColdness(),(long) 30);
+		assertEquals(illegalConstructorTestOven.getOvenTemperature().getHotness(),(long) 30);
+		assertEquals(illegalConstructorTestOven.getOvenTemperature().getColdness(),(long) 0);
+		assertEquals(illegalConstructorTestOven.getOvenTemperature().getHotness(),(long) 20);
 	}
 	
 	@Test 
 	public void testChangeOvenTemperature_InvalidTemperature() {
 		legalConstructorTestOven.changeOvenTemperature(30, 30);
-		assertFalse(legalConstructorTestOven.getOvenTemperature().getColdness(),(long) 30);
-		assertFalse(legalConstructorTestOven.getOvenTemperature().getHotness(),(long) 30);
-		assertTrue(legalConstructorTestOven.getOvenTemperature().getColdness(),(long) 0);
-		assertTrue(legalConstructorTestOven.getOvenTemperature().getHotness(),(long) 20);
+		assertEquals(legalConstructorTestOven.getOvenTemperature().getColdness(),(long) 30);
+		assertEquals(legalConstructorTestOven.getOvenTemperature().getHotness(),(long) 30);
+		assertEquals(legalConstructorTestOven.getOvenTemperature().getColdness(),(long) 0);
+		assertEquals(legalConstructorTestOven.getOvenTemperature().getHotness(),(long) 20);
 	}
 	
 	
@@ -91,8 +91,8 @@ public class OvenTest{
 	@Test
 	public void testChangeOvenTemperature_ValidTemperature() {
 		legalConstructorTestOven.changeOvenTemperature(20, 0);
-		assertTrue(legalConstructorTestOven.getOvenTemperature().getColdness(),(long)20);
-		assertTrue(legalConstructorTestOven.getOvenTemperature().getHotness(),(long) 0);
+		assertEquals(legalConstructorTestOven.getOvenTemperature().getColdness(),(long)20);
+		assertEquals(legalConstructorTestOven.getOvenTemperature().getHotness(),(long) 0);
 		
 	}
 	

@@ -237,7 +237,7 @@ class KettleTest {
 	@Test (expected NoIngredientInDeviceException("There is no ingredient in this device",this).class)
 	public void TestExecuteAlchemicOperation_illegalCount() {
 		standardKettle = new Kettle(standardKettleLabo);
-		executeAlchemicOperation();
+		standardKettle.executeAlchemicOperation();
 	}
 	
 	
